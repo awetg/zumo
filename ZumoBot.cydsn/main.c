@@ -64,6 +64,9 @@ int main()
 
     int16 adcresult =0;
     float volts = 0.0;
+    const float divider_ratio = 1.5f;
+    const float adc_max_voltage = 5.0f;
+    const float bits_max = 4095.0f;
 
     printf("\nBoot\n");
 
@@ -82,6 +85,8 @@ int main()
             adcresult = ADC_Battery_GetResult16(); // get the ADC value (0 - 4095)
             // convert value to Volts
             // you need to implement the conversion
+            
+            volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
             
             // Print both ADC results and converted value
             printf("%d %f\r\n",adcresult, volts);

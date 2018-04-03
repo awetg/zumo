@@ -1,0 +1,1269 @@
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"I2C_made.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.I2C_write,"ax",%progbits
+  20              		.align	2
+  21              		.global	I2C_write
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	I2C_write, %function
+  25              	I2C_write:
+  26              	.LFB64:
+  27              		.file 1 "ZumoLibrary\\I2C_made.c"
+   1:ZumoLibrary/I2C_made.c **** /**
+   2:ZumoLibrary/I2C_made.c ****  * @file    I2C_made.c
+   3:ZumoLibrary/I2C_made.c ****  * @brief   Basic methods for I2C communication. For more details, please refer to I2C_made.h file.
+   4:ZumoLibrary/I2C_made.c ****  * @details 
+   5:ZumoLibrary/I2C_made.c **** */
+   6:ZumoLibrary/I2C_made.c **** #include "I2C_made.h"
+   7:ZumoLibrary/I2C_made.c **** 
+   8:ZumoLibrary/I2C_made.c **** 
+   9:ZumoLibrary/I2C_made.c **** /**
+  10:ZumoLibrary/I2C_made.c **** * @brief    Write function of I2C communication
+  11:ZumoLibrary/I2C_made.c **** * @details  writing value to slave register by I2C communication
+  12:ZumoLibrary/I2C_made.c **** * @param    uint8 device_addr : Slave Device address
+  13:ZumoLibrary/I2C_made.c **** * @param    uint8 Reg : register address
+  14:ZumoLibrary/I2C_made.c **** * @param    uint8 value : value to write
+  15:ZumoLibrary/I2C_made.c **** */
+  16:ZumoLibrary/I2C_made.c **** void I2C_write(uint8 device_addr, uint8 Reg, uint8 value)             // Gyroscope: you need to cha
+  17:ZumoLibrary/I2C_made.c **** {
+  28              		.loc 1 17 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 10B5     		push	{r4, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 4, -8
+  36              		.cfi_offset 14, -4
+  37 0002 82B0     		sub	sp, sp, #8
+  38              		.cfi_def_cfa_offset 16
+  39 0004 0446     		mov	r4, r0
+  18:ZumoLibrary/I2C_made.c ****     uint8 write_buf[2] = {};
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 2
+
+
+  19:ZumoLibrary/I2C_made.c ****     write_buf[0] = Reg;                //register address that you want to write
+  40              		.loc 1 19 0
+  41 0006 8DF80410 		strb	r1, [sp, #4]
+  20:ZumoLibrary/I2C_made.c ****     write_buf[1] = value;                //value that you want to write to register
+  42              		.loc 1 20 0
+  43 000a 8DF80520 		strb	r2, [sp, #5]
+  21:ZumoLibrary/I2C_made.c ****     
+  22:ZumoLibrary/I2C_made.c ****     I2C_MasterClearStatus();
+  44              		.loc 1 22 0
+  45 000e FFF7FEFF 		bl	I2C_MasterClearStatus
+  46              	.LVL1:
+  23:ZumoLibrary/I2C_made.c ****     I2C_MasterWriteBuf(device_addr, write_buf, 2, I2C_MODE_COMPLETE_XFER);
+  47              		.loc 1 23 0
+  48 0012 0023     		movs	r3, #0
+  49 0014 0222     		movs	r2, #2
+  50 0016 01A9     		add	r1, sp, #4
+  51 0018 2046     		mov	r0, r4
+  52 001a FFF7FEFF 		bl	I2C_MasterWriteBuf
+  53              	.LVL2:
+  54              	.L2:
+  24:ZumoLibrary/I2C_made.c ****     while(((I2C_MasterStatus()) & I2C_MSTAT_WR_CMPLT) == 0);
+  55              		.loc 1 24 0 discriminator 1
+  56 001e FFF7FEFF 		bl	I2C_MasterStatus
+  57              	.LVL3:
+  58 0022 10F0020F 		tst	r0, #2
+  59 0026 FAD0     		beq	.L2
+  25:ZumoLibrary/I2C_made.c ****     
+  26:ZumoLibrary/I2C_made.c ****     return;
+  27:ZumoLibrary/I2C_made.c **** }
+  60              		.loc 1 27 0
+  61 0028 02B0     		add	sp, sp, #8
+  62              		.cfi_def_cfa_offset 8
+  63              		@ sp needed
+  64 002a 10BD     		pop	{r4, pc}
+  65              		.cfi_endproc
+  66              	.LFE64:
+  67              		.size	I2C_write, .-I2C_write
+  68              		.section	.text.I2C_read,"ax",%progbits
+  69              		.align	2
+  70              		.global	I2C_read
+  71              		.thumb
+  72              		.thumb_func
+  73              		.type	I2C_read, %function
+  74              	I2C_read:
+  75              	.LFB65:
+  28:ZumoLibrary/I2C_made.c **** 
+  29:ZumoLibrary/I2C_made.c **** 
+  30:ZumoLibrary/I2C_made.c **** /**
+  31:ZumoLibrary/I2C_made.c **** * @brief    Read function of I2C communication
+  32:ZumoLibrary/I2C_made.c **** * @details  read value from slave register by I2C communication
+  33:ZumoLibrary/I2C_made.c **** * @param    uint8 device_addr : Slave Device address
+  34:ZumoLibrary/I2C_made.c **** * @param    uint8 Reg : register address
+  35:ZumoLibrary/I2C_made.c **** */
+  36:ZumoLibrary/I2C_made.c **** uint8 I2C_read(uint8 device_addr, uint8 Reg) 
+  37:ZumoLibrary/I2C_made.c **** {
+  76              		.loc 1 37 0
+  77              		.cfi_startproc
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 3
+
+
+  78              		@ args = 0, pretend = 0, frame = 8
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              	.LVL4:
+  81 0000 30B5     		push	{r4, r5, lr}
+  82              		.cfi_def_cfa_offset 12
+  83              		.cfi_offset 4, -12
+  84              		.cfi_offset 5, -8
+  85              		.cfi_offset 14, -4
+  86 0002 83B0     		sub	sp, sp, #12
+  87              		.cfi_def_cfa_offset 24
+  88 0004 0446     		mov	r4, r0
+  38:ZumoLibrary/I2C_made.c ****    
+  39:ZumoLibrary/I2C_made.c ****     uint8 write_buf[1] = {};
+  89              		.loc 1 39 0
+  90 0006 0025     		movs	r5, #0
+  40:ZumoLibrary/I2C_made.c ****     write_buf[0] = Reg;
+  91              		.loc 1 40 0
+  92 0008 8DF80410 		strb	r1, [sp, #4]
+  41:ZumoLibrary/I2C_made.c ****     
+  42:ZumoLibrary/I2C_made.c ****     uint8 read_buf[1] = {};
+  93              		.loc 1 42 0
+  94 000c 8DF80050 		strb	r5, [sp]
+  43:ZumoLibrary/I2C_made.c ****     
+  44:ZumoLibrary/I2C_made.c ****     I2C_MasterClearStatus();
+  95              		.loc 1 44 0
+  96 0010 FFF7FEFF 		bl	I2C_MasterClearStatus
+  97              	.LVL5:
+  45:ZumoLibrary/I2C_made.c ****     CyDelay(100);
+  98              		.loc 1 45 0
+  99 0014 6420     		movs	r0, #100
+ 100 0016 FFF7FEFF 		bl	CyDelay
+ 101              	.LVL6:
+  46:ZumoLibrary/I2C_made.c ****     I2C_MasterWriteBuf(device_addr, write_buf, 1, I2C_MODE_COMPLETE_XFER);
+ 102              		.loc 1 46 0
+ 103 001a 2B46     		mov	r3, r5
+ 104 001c 0122     		movs	r2, #1
+ 105 001e 01A9     		add	r1, sp, #4
+ 106 0020 2046     		mov	r0, r4
+ 107 0022 FFF7FEFF 		bl	I2C_MasterWriteBuf
+ 108              	.LVL7:
+ 109              	.L5:
+  47:ZumoLibrary/I2C_made.c ****     while((I2C_MasterStatus() & I2C_MSTAT_WR_CMPLT) == 0);
+ 110              		.loc 1 47 0 discriminator 1
+ 111 0026 FFF7FEFF 		bl	I2C_MasterStatus
+ 112              	.LVL8:
+ 113 002a 10F0020F 		tst	r0, #2
+ 114 002e FAD0     		beq	.L5
+  48:ZumoLibrary/I2C_made.c ****     CyDelay(50);
+ 115              		.loc 1 48 0
+ 116 0030 3220     		movs	r0, #50
+ 117 0032 FFF7FEFF 		bl	CyDelay
+ 118              	.LVL9:
+  49:ZumoLibrary/I2C_made.c ****     I2C_MasterClearStatus();
+ 119              		.loc 1 49 0
+ 120 0036 FFF7FEFF 		bl	I2C_MasterClearStatus
+ 121              	.LVL10:
+  50:ZumoLibrary/I2C_made.c ****     I2C_MasterReadBuf(device_addr, read_buf, 1, I2C_MODE_COMPLETE_XFER);
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 4
+
+
+ 122              		.loc 1 50 0
+ 123 003a 0023     		movs	r3, #0
+ 124 003c 0122     		movs	r2, #1
+ 125 003e 6946     		mov	r1, sp
+ 126 0040 2046     		mov	r0, r4
+ 127 0042 FFF7FEFF 		bl	I2C_MasterReadBuf
+ 128              	.LVL11:
+ 129              	.L6:
+  51:ZumoLibrary/I2C_made.c ****     while((I2C_MasterStatus() & I2C_MSTAT_RD_CMPLT) == 0);
+ 130              		.loc 1 51 0 discriminator 1
+ 131 0046 FFF7FEFF 		bl	I2C_MasterStatus
+ 132              	.LVL12:
+ 133 004a 10F0010F 		tst	r0, #1
+ 134 004e FAD0     		beq	.L6
+  52:ZumoLibrary/I2C_made.c ****    
+  53:ZumoLibrary/I2C_made.c ****     return read_buf[0];
+  54:ZumoLibrary/I2C_made.c **** }
+ 135              		.loc 1 54 0
+ 136 0050 9DF80000 		ldrb	r0, [sp]	@ zero_extendqisi2
+ 137 0054 03B0     		add	sp, sp, #12
+ 138              		.cfi_def_cfa_offset 12
+ 139              		@ sp needed
+ 140 0056 30BD     		pop	{r4, r5, pc}
+ 141              		.cfi_endproc
+ 142              	.LFE65:
+ 143              		.size	I2C_read, .-I2C_read
+ 144              		.section	.text.convert_raw,"ax",%progbits
+ 145              		.align	2
+ 146              		.global	convert_raw
+ 147              		.thumb
+ 148              		.thumb_func
+ 149              		.type	convert_raw, %function
+ 150              	convert_raw:
+ 151              	.LFB66:
+  55:ZumoLibrary/I2C_made.c **** 
+  56:ZumoLibrary/I2C_made.c **** 
+  57:ZumoLibrary/I2C_made.c **** /**
+  58:ZumoLibrary/I2C_made.c **** * @brief    Combining 8 bits of low and high outputs to 16 bits used for sensor value
+  59:ZumoLibrary/I2C_made.c **** * @details  writing value to slave register by I2C communication
+  60:ZumoLibrary/I2C_made.c **** * @param    uint8 L : lower 8bits out of 16 bits output
+  61:ZumoLibrary/I2C_made.c **** * @param    uint8 H : higher 8bits out of 16 bits output
+  62:ZumoLibrary/I2C_made.c **** */
+  63:ZumoLibrary/I2C_made.c **** uint16 convert_raw(uint8 L, uint8 H)
+  64:ZumoLibrary/I2C_made.c **** {
+ 152              		.loc 1 64 0
+ 153              		.cfi_startproc
+ 154              		@ args = 0, pretend = 0, frame = 0
+ 155              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156              		@ link register save eliminated.
+ 157              	.LVL13:
+  65:ZumoLibrary/I2C_made.c ****     uint16 raw;
+  66:ZumoLibrary/I2C_made.c ****     raw = (int16)(L | H << 8);      //shift High bits and combine with Low bits to make 16 bits val
+  67:ZumoLibrary/I2C_made.c ****     
+  68:ZumoLibrary/I2C_made.c ****     return raw;
+  69:ZumoLibrary/I2C_made.c **** }
+ 158              		.loc 1 69 0
+ 159 0000 40EA0120 		orr	r0, r0, r1, lsl #8
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 5
+
+
+ 160              	.LVL14:
+ 161 0004 7047     		bx	lr
+ 162              		.cfi_endproc
+ 163              	.LFE66:
+ 164              		.size	convert_raw, .-convert_raw
+ 165 0006 00BF     		.text
+ 166              	.Letext0:
+ 167              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 168              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 169              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 170              		.file 5 "Generated_Source\\PSoC5/I2C.h"
+ 171              		.file 6 "Generated_Source\\PSoC5/CyLib.h"
+ 172              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 173              		.section	.debug_info,"",%progbits
+ 174              	.Ldebug_info0:
+ 175 0000 DF020000 		.4byte	0x2df
+ 176 0004 0400     		.2byte	0x4
+ 177 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 178 000a 04       		.byte	0x4
+ 179 000b 01       		.uleb128 0x1
+ 180 000c 44010000 		.4byte	.LASF30
+ 181 0010 0C       		.byte	0xc
+ 182 0011 07020000 		.4byte	.LASF31
+ 183 0015 B9000000 		.4byte	.LASF32
+ 184 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 185 001d 00000000 		.4byte	0
+ 186 0021 00000000 		.4byte	.Ldebug_line0
+ 187 0025 02       		.uleb128 0x2
+ 188 0026 01       		.byte	0x1
+ 189 0027 06       		.byte	0x6
+ 190 0028 42020000 		.4byte	.LASF0
+ 191 002c 02       		.uleb128 0x2
+ 192 002d 01       		.byte	0x1
+ 193 002e 08       		.byte	0x8
+ 194 002f 60000000 		.4byte	.LASF1
+ 195 0033 02       		.uleb128 0x2
+ 196 0034 02       		.byte	0x2
+ 197 0035 05       		.byte	0x5
+ 198 0036 FC000000 		.4byte	.LASF2
+ 199 003a 02       		.uleb128 0x2
+ 200 003b 02       		.byte	0x2
+ 201 003c 07       		.byte	0x7
+ 202 003d 99000000 		.4byte	.LASF3
+ 203 0041 03       		.uleb128 0x3
+ 204 0042 12000000 		.4byte	.LASF9
+ 205 0046 02       		.byte	0x2
+ 206 0047 3F       		.byte	0x3f
+ 207 0048 4C000000 		.4byte	0x4c
+ 208 004c 02       		.uleb128 0x2
+ 209 004d 04       		.byte	0x4
+ 210 004e 05       		.byte	0x5
+ 211 004f 2D020000 		.4byte	.LASF4
+ 212 0053 02       		.uleb128 0x2
+ 213 0054 04       		.byte	0x4
+ 214 0055 07       		.byte	0x7
+ 215 0056 87000000 		.4byte	.LASF5
+ 216 005a 02       		.uleb128 0x2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 6
+
+
+ 217 005b 08       		.byte	0x8
+ 218 005c 05       		.byte	0x5
+ 219 005d E3010000 		.4byte	.LASF6
+ 220 0061 02       		.uleb128 0x2
+ 221 0062 08       		.byte	0x8
+ 222 0063 07       		.byte	0x7
+ 223 0064 24010000 		.4byte	.LASF7
+ 224 0068 04       		.uleb128 0x4
+ 225 0069 04       		.byte	0x4
+ 226 006a 05       		.byte	0x5
+ 227 006b 696E7400 		.ascii	"int\000"
+ 228 006f 02       		.uleb128 0x2
+ 229 0070 04       		.byte	0x4
+ 230 0071 07       		.byte	0x7
+ 231 0072 17010000 		.4byte	.LASF8
+ 232 0076 03       		.uleb128 0x3
+ 233 0077 D2010000 		.4byte	.LASF10
+ 234 007b 03       		.byte	0x3
+ 235 007c 2C       		.byte	0x2c
+ 236 007d 41000000 		.4byte	0x41
+ 237 0081 05       		.uleb128 0x5
+ 238 0082 27020000 		.4byte	.LASF11
+ 239 0086 04       		.byte	0x4
+ 240 0087 E401     		.2byte	0x1e4
+ 241 0089 2C000000 		.4byte	0x2c
+ 242 008d 05       		.uleb128 0x5
+ 243 008e 06010000 		.4byte	.LASF12
+ 244 0092 04       		.byte	0x4
+ 245 0093 E501     		.2byte	0x1e5
+ 246 0095 3A000000 		.4byte	0x3a
+ 247 0099 05       		.uleb128 0x5
+ 248 009a 81000000 		.4byte	.LASF13
+ 249 009e 04       		.byte	0x4
+ 250 009f E801     		.2byte	0x1e8
+ 251 00a1 33000000 		.4byte	0x33
+ 252 00a5 02       		.uleb128 0x2
+ 253 00a6 04       		.byte	0x4
+ 254 00a7 04       		.byte	0x4
+ 255 00a8 4E000000 		.4byte	.LASF14
+ 256 00ac 02       		.uleb128 0x2
+ 257 00ad 08       		.byte	0x8
+ 258 00ae 04       		.byte	0x4
+ 259 00af F5000000 		.4byte	.LASF15
+ 260 00b3 02       		.uleb128 0x2
+ 261 00b4 01       		.byte	0x1
+ 262 00b5 08       		.byte	0x8
+ 263 00b6 F1010000 		.4byte	.LASF16
+ 264 00ba 02       		.uleb128 0x2
+ 265 00bb 08       		.byte	0x8
+ 266 00bc 04       		.byte	0x4
+ 267 00bd 36020000 		.4byte	.LASF17
+ 268 00c1 02       		.uleb128 0x2
+ 269 00c2 04       		.byte	0x4
+ 270 00c3 07       		.byte	0x7
+ 271 00c4 DA010000 		.4byte	.LASF18
+ 272 00c8 06       		.uleb128 0x6
+ 273 00c9 1C000000 		.4byte	.LASF33
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 7
+
+
+ 274 00cd 01       		.byte	0x1
+ 275 00ce 10       		.byte	0x10
+ 276 00cf 00000000 		.4byte	.LFB64
+ 277 00d3 2C000000 		.4byte	.LFE64-.LFB64
+ 278 00d7 01       		.uleb128 0x1
+ 279 00d8 9C       		.byte	0x9c
+ 280 00d9 4F010000 		.4byte	0x14f
+ 281 00dd 07       		.uleb128 0x7
+ 282 00de 00000000 		.4byte	.LASF19
+ 283 00e2 01       		.byte	0x1
+ 284 00e3 10       		.byte	0x10
+ 285 00e4 81000000 		.4byte	0x81
+ 286 00e8 00000000 		.4byte	.LLST0
+ 287 00ec 08       		.uleb128 0x8
+ 288 00ed 52656700 		.ascii	"Reg\000"
+ 289 00f1 01       		.byte	0x1
+ 290 00f2 10       		.byte	0x10
+ 291 00f3 81000000 		.4byte	0x81
+ 292 00f7 21000000 		.4byte	.LLST1
+ 293 00fb 07       		.uleb128 0x7
+ 294 00fc 0C000000 		.4byte	.LASF20
+ 295 0100 01       		.byte	0x1
+ 296 0101 10       		.byte	0x10
+ 297 0102 81000000 		.4byte	0x81
+ 298 0106 42000000 		.4byte	.LLST2
+ 299 010a 09       		.uleb128 0x9
+ 300 010b 0D010000 		.4byte	.LASF21
+ 301 010f 01       		.byte	0x1
+ 302 0110 12       		.byte	0x12
+ 303 0111 4F010000 		.4byte	0x14f
+ 304 0115 02       		.uleb128 0x2
+ 305 0116 91       		.byte	0x91
+ 306 0117 74       		.sleb128 -12
+ 307 0118 0A       		.uleb128 0xa
+ 308 0119 12000000 		.4byte	.LVL1
+ 309 011d AB020000 		.4byte	0x2ab
+ 310 0121 0B       		.uleb128 0xb
+ 311 0122 1E000000 		.4byte	.LVL2
+ 312 0126 B6020000 		.4byte	0x2b6
+ 313 012a 45010000 		.4byte	0x145
+ 314 012e 0C       		.uleb128 0xc
+ 315 012f 01       		.uleb128 0x1
+ 316 0130 50       		.byte	0x50
+ 317 0131 02       		.uleb128 0x2
+ 318 0132 74       		.byte	0x74
+ 319 0133 00       		.sleb128 0
+ 320 0134 0C       		.uleb128 0xc
+ 321 0135 01       		.uleb128 0x1
+ 322 0136 51       		.byte	0x51
+ 323 0137 02       		.uleb128 0x2
+ 324 0138 91       		.byte	0x91
+ 325 0139 74       		.sleb128 -12
+ 326 013a 0C       		.uleb128 0xc
+ 327 013b 01       		.uleb128 0x1
+ 328 013c 52       		.byte	0x52
+ 329 013d 01       		.uleb128 0x1
+ 330 013e 32       		.byte	0x32
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 8
+
+
+ 331 013f 0C       		.uleb128 0xc
+ 332 0140 01       		.uleb128 0x1
+ 333 0141 53       		.byte	0x53
+ 334 0142 01       		.uleb128 0x1
+ 335 0143 30       		.byte	0x30
+ 336 0144 00       		.byte	0
+ 337 0145 0A       		.uleb128 0xa
+ 338 0146 22000000 		.4byte	.LVL3
+ 339 014a C1020000 		.4byte	0x2c1
+ 340 014e 00       		.byte	0
+ 341 014f 0D       		.uleb128 0xd
+ 342 0150 81000000 		.4byte	0x81
+ 343 0154 5F010000 		.4byte	0x15f
+ 344 0158 0E       		.uleb128 0xe
+ 345 0159 C1000000 		.4byte	0xc1
+ 346 015d 01       		.byte	0x1
+ 347 015e 00       		.byte	0
+ 348 015f 0F       		.uleb128 0xf
+ 349 0160 1E020000 		.4byte	.LASF23
+ 350 0164 01       		.byte	0x1
+ 351 0165 24       		.byte	0x24
+ 352 0166 81000000 		.4byte	0x81
+ 353 016a 00000000 		.4byte	.LFB65
+ 354 016e 58000000 		.4byte	.LFE65-.LFB65
+ 355 0172 01       		.uleb128 0x1
+ 356 0173 9C       		.byte	0x9c
+ 357 0174 49020000 		.4byte	0x249
+ 358 0178 07       		.uleb128 0x7
+ 359 0179 00000000 		.4byte	.LASF19
+ 360 017d 01       		.byte	0x1
+ 361 017e 24       		.byte	0x24
+ 362 017f 81000000 		.4byte	0x81
+ 363 0183 63000000 		.4byte	.LLST3
+ 364 0187 08       		.uleb128 0x8
+ 365 0188 52656700 		.ascii	"Reg\000"
+ 366 018c 01       		.byte	0x1
+ 367 018d 24       		.byte	0x24
+ 368 018e 81000000 		.4byte	0x81
+ 369 0192 84000000 		.4byte	.LLST4
+ 370 0196 09       		.uleb128 0x9
+ 371 0197 0D010000 		.4byte	.LASF21
+ 372 019b 01       		.byte	0x1
+ 373 019c 27       		.byte	0x27
+ 374 019d 49020000 		.4byte	0x249
+ 375 01a1 02       		.uleb128 0x2
+ 376 01a2 91       		.byte	0x91
+ 377 01a3 6C       		.sleb128 -20
+ 378 01a4 09       		.uleb128 0x9
+ 379 01a5 3B010000 		.4byte	.LASF22
+ 380 01a9 01       		.byte	0x1
+ 381 01aa 2A       		.byte	0x2a
+ 382 01ab 49020000 		.4byte	0x249
+ 383 01af 02       		.uleb128 0x2
+ 384 01b0 91       		.byte	0x91
+ 385 01b1 68       		.sleb128 -24
+ 386 01b2 0A       		.uleb128 0xa
+ 387 01b3 14000000 		.4byte	.LVL5
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 9
+
+
+ 388 01b7 AB020000 		.4byte	0x2ab
+ 389 01bb 0B       		.uleb128 0xb
+ 390 01bc 1A000000 		.4byte	.LVL6
+ 391 01c0 CC020000 		.4byte	0x2cc
+ 392 01c4 CF010000 		.4byte	0x1cf
+ 393 01c8 0C       		.uleb128 0xc
+ 394 01c9 01       		.uleb128 0x1
+ 395 01ca 50       		.byte	0x50
+ 396 01cb 02       		.uleb128 0x2
+ 397 01cc 08       		.byte	0x8
+ 398 01cd 64       		.byte	0x64
+ 399 01ce 00       		.byte	0
+ 400 01cf 0B       		.uleb128 0xb
+ 401 01d0 26000000 		.4byte	.LVL7
+ 402 01d4 B6020000 		.4byte	0x2b6
+ 403 01d8 F4010000 		.4byte	0x1f4
+ 404 01dc 0C       		.uleb128 0xc
+ 405 01dd 01       		.uleb128 0x1
+ 406 01de 50       		.byte	0x50
+ 407 01df 02       		.uleb128 0x2
+ 408 01e0 74       		.byte	0x74
+ 409 01e1 00       		.sleb128 0
+ 410 01e2 0C       		.uleb128 0xc
+ 411 01e3 01       		.uleb128 0x1
+ 412 01e4 51       		.byte	0x51
+ 413 01e5 02       		.uleb128 0x2
+ 414 01e6 91       		.byte	0x91
+ 415 01e7 6C       		.sleb128 -20
+ 416 01e8 0C       		.uleb128 0xc
+ 417 01e9 01       		.uleb128 0x1
+ 418 01ea 52       		.byte	0x52
+ 419 01eb 01       		.uleb128 0x1
+ 420 01ec 31       		.byte	0x31
+ 421 01ed 0C       		.uleb128 0xc
+ 422 01ee 01       		.uleb128 0x1
+ 423 01ef 53       		.byte	0x53
+ 424 01f0 02       		.uleb128 0x2
+ 425 01f1 75       		.byte	0x75
+ 426 01f2 00       		.sleb128 0
+ 427 01f3 00       		.byte	0
+ 428 01f4 0A       		.uleb128 0xa
+ 429 01f5 2A000000 		.4byte	.LVL8
+ 430 01f9 C1020000 		.4byte	0x2c1
+ 431 01fd 0B       		.uleb128 0xb
+ 432 01fe 36000000 		.4byte	.LVL9
+ 433 0202 CC020000 		.4byte	0x2cc
+ 434 0206 11020000 		.4byte	0x211
+ 435 020a 0C       		.uleb128 0xc
+ 436 020b 01       		.uleb128 0x1
+ 437 020c 50       		.byte	0x50
+ 438 020d 02       		.uleb128 0x2
+ 439 020e 08       		.byte	0x8
+ 440 020f 32       		.byte	0x32
+ 441 0210 00       		.byte	0
+ 442 0211 0A       		.uleb128 0xa
+ 443 0212 3A000000 		.4byte	.LVL10
+ 444 0216 AB020000 		.4byte	0x2ab
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 10
+
+
+ 445 021a 0B       		.uleb128 0xb
+ 446 021b 46000000 		.4byte	.LVL11
+ 447 021f D7020000 		.4byte	0x2d7
+ 448 0223 3F020000 		.4byte	0x23f
+ 449 0227 0C       		.uleb128 0xc
+ 450 0228 01       		.uleb128 0x1
+ 451 0229 50       		.byte	0x50
+ 452 022a 02       		.uleb128 0x2
+ 453 022b 74       		.byte	0x74
+ 454 022c 00       		.sleb128 0
+ 455 022d 0C       		.uleb128 0xc
+ 456 022e 01       		.uleb128 0x1
+ 457 022f 51       		.byte	0x51
+ 458 0230 02       		.uleb128 0x2
+ 459 0231 7D       		.byte	0x7d
+ 460 0232 00       		.sleb128 0
+ 461 0233 0C       		.uleb128 0xc
+ 462 0234 01       		.uleb128 0x1
+ 463 0235 52       		.byte	0x52
+ 464 0236 01       		.uleb128 0x1
+ 465 0237 31       		.byte	0x31
+ 466 0238 0C       		.uleb128 0xc
+ 467 0239 01       		.uleb128 0x1
+ 468 023a 53       		.byte	0x53
+ 469 023b 02       		.uleb128 0x2
+ 470 023c 75       		.byte	0x75
+ 471 023d 00       		.sleb128 0
+ 472 023e 00       		.byte	0
+ 473 023f 0A       		.uleb128 0xa
+ 474 0240 4A000000 		.4byte	.LVL12
+ 475 0244 C1020000 		.4byte	0x2c1
+ 476 0248 00       		.byte	0
+ 477 0249 0D       		.uleb128 0xd
+ 478 024a 81000000 		.4byte	0x81
+ 479 024e 59020000 		.4byte	0x259
+ 480 0252 0E       		.uleb128 0xe
+ 481 0253 C1000000 		.4byte	0xc1
+ 482 0257 00       		.byte	0
+ 483 0258 00       		.byte	0
+ 484 0259 0F       		.uleb128 0xf
+ 485 025a 54000000 		.4byte	.LASF24
+ 486 025e 01       		.byte	0x1
+ 487 025f 3F       		.byte	0x3f
+ 488 0260 8D000000 		.4byte	0x8d
+ 489 0264 00000000 		.4byte	.LFB66
+ 490 0268 06000000 		.4byte	.LFE66-.LFB66
+ 491 026c 01       		.uleb128 0x1
+ 492 026d 9C       		.byte	0x9c
+ 493 026e 9A020000 		.4byte	0x29a
+ 494 0272 08       		.uleb128 0x8
+ 495 0273 4C00     		.ascii	"L\000"
+ 496 0275 01       		.byte	0x1
+ 497 0276 3F       		.byte	0x3f
+ 498 0277 81000000 		.4byte	0x81
+ 499 027b A5000000 		.4byte	.LLST5
+ 500 027f 10       		.uleb128 0x10
+ 501 0280 4800     		.ascii	"H\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 11
+
+
+ 502 0282 01       		.byte	0x1
+ 503 0283 3F       		.byte	0x3f
+ 504 0284 81000000 		.4byte	0x81
+ 505 0288 01       		.uleb128 0x1
+ 506 0289 51       		.byte	0x51
+ 507 028a 11       		.uleb128 0x11
+ 508 028b 72617700 		.ascii	"raw\000"
+ 509 028f 01       		.byte	0x1
+ 510 0290 41       		.byte	0x41
+ 511 0291 8D000000 		.4byte	0x8d
+ 512 0295 C6000000 		.4byte	.LLST6
+ 513 0299 00       		.byte	0
+ 514 029a 12       		.uleb128 0x12
+ 515 029b AC000000 		.4byte	.LASF34
+ 516 029f 07       		.byte	0x7
+ 517 02a0 1207     		.2byte	0x712
+ 518 02a2 A6020000 		.4byte	0x2a6
+ 519 02a6 13       		.uleb128 0x13
+ 520 02a7 76000000 		.4byte	0x76
+ 521 02ab 14       		.uleb128 0x14
+ 522 02ac 26000000 		.4byte	.LASF25
+ 523 02b0 26000000 		.4byte	.LASF25
+ 524 02b4 05       		.byte	0x5
+ 525 02b5 A4       		.byte	0xa4
+ 526 02b6 14       		.uleb128 0x14
+ 527 02b7 6E000000 		.4byte	.LASF26
+ 528 02bb 6E000000 		.4byte	.LASF26
+ 529 02bf 05       		.byte	0x5
+ 530 02c0 A7       		.byte	0xa7
+ 531 02c1 14       		.uleb128 0x14
+ 532 02c2 F6010000 		.4byte	.LASF27
+ 533 02c6 F6010000 		.4byte	.LASF27
+ 534 02ca 05       		.byte	0x5
+ 535 02cb A3       		.byte	0xa3
+ 536 02cc 14       		.uleb128 0x14
+ 537 02cd 4E020000 		.4byte	.LASF28
+ 538 02d1 4E020000 		.4byte	.LASF28
+ 539 02d5 06       		.byte	0x6
+ 540 02d6 76       		.byte	0x76
+ 541 02d7 14       		.uleb128 0x14
+ 542 02d8 3C000000 		.4byte	.LASF29
+ 543 02dc 3C000000 		.4byte	.LASF29
+ 544 02e0 05       		.byte	0x5
+ 545 02e1 A9       		.byte	0xa9
+ 546 02e2 00       		.byte	0
+ 547              		.section	.debug_abbrev,"",%progbits
+ 548              	.Ldebug_abbrev0:
+ 549 0000 01       		.uleb128 0x1
+ 550 0001 11       		.uleb128 0x11
+ 551 0002 01       		.byte	0x1
+ 552 0003 25       		.uleb128 0x25
+ 553 0004 0E       		.uleb128 0xe
+ 554 0005 13       		.uleb128 0x13
+ 555 0006 0B       		.uleb128 0xb
+ 556 0007 03       		.uleb128 0x3
+ 557 0008 0E       		.uleb128 0xe
+ 558 0009 1B       		.uleb128 0x1b
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 12
+
+
+ 559 000a 0E       		.uleb128 0xe
+ 560 000b 55       		.uleb128 0x55
+ 561 000c 17       		.uleb128 0x17
+ 562 000d 11       		.uleb128 0x11
+ 563 000e 01       		.uleb128 0x1
+ 564 000f 10       		.uleb128 0x10
+ 565 0010 17       		.uleb128 0x17
+ 566 0011 00       		.byte	0
+ 567 0012 00       		.byte	0
+ 568 0013 02       		.uleb128 0x2
+ 569 0014 24       		.uleb128 0x24
+ 570 0015 00       		.byte	0
+ 571 0016 0B       		.uleb128 0xb
+ 572 0017 0B       		.uleb128 0xb
+ 573 0018 3E       		.uleb128 0x3e
+ 574 0019 0B       		.uleb128 0xb
+ 575 001a 03       		.uleb128 0x3
+ 576 001b 0E       		.uleb128 0xe
+ 577 001c 00       		.byte	0
+ 578 001d 00       		.byte	0
+ 579 001e 03       		.uleb128 0x3
+ 580 001f 16       		.uleb128 0x16
+ 581 0020 00       		.byte	0
+ 582 0021 03       		.uleb128 0x3
+ 583 0022 0E       		.uleb128 0xe
+ 584 0023 3A       		.uleb128 0x3a
+ 585 0024 0B       		.uleb128 0xb
+ 586 0025 3B       		.uleb128 0x3b
+ 587 0026 0B       		.uleb128 0xb
+ 588 0027 49       		.uleb128 0x49
+ 589 0028 13       		.uleb128 0x13
+ 590 0029 00       		.byte	0
+ 591 002a 00       		.byte	0
+ 592 002b 04       		.uleb128 0x4
+ 593 002c 24       		.uleb128 0x24
+ 594 002d 00       		.byte	0
+ 595 002e 0B       		.uleb128 0xb
+ 596 002f 0B       		.uleb128 0xb
+ 597 0030 3E       		.uleb128 0x3e
+ 598 0031 0B       		.uleb128 0xb
+ 599 0032 03       		.uleb128 0x3
+ 600 0033 08       		.uleb128 0x8
+ 601 0034 00       		.byte	0
+ 602 0035 00       		.byte	0
+ 603 0036 05       		.uleb128 0x5
+ 604 0037 16       		.uleb128 0x16
+ 605 0038 00       		.byte	0
+ 606 0039 03       		.uleb128 0x3
+ 607 003a 0E       		.uleb128 0xe
+ 608 003b 3A       		.uleb128 0x3a
+ 609 003c 0B       		.uleb128 0xb
+ 610 003d 3B       		.uleb128 0x3b
+ 611 003e 05       		.uleb128 0x5
+ 612 003f 49       		.uleb128 0x49
+ 613 0040 13       		.uleb128 0x13
+ 614 0041 00       		.byte	0
+ 615 0042 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 13
+
+
+ 616 0043 06       		.uleb128 0x6
+ 617 0044 2E       		.uleb128 0x2e
+ 618 0045 01       		.byte	0x1
+ 619 0046 3F       		.uleb128 0x3f
+ 620 0047 19       		.uleb128 0x19
+ 621 0048 03       		.uleb128 0x3
+ 622 0049 0E       		.uleb128 0xe
+ 623 004a 3A       		.uleb128 0x3a
+ 624 004b 0B       		.uleb128 0xb
+ 625 004c 3B       		.uleb128 0x3b
+ 626 004d 0B       		.uleb128 0xb
+ 627 004e 27       		.uleb128 0x27
+ 628 004f 19       		.uleb128 0x19
+ 629 0050 11       		.uleb128 0x11
+ 630 0051 01       		.uleb128 0x1
+ 631 0052 12       		.uleb128 0x12
+ 632 0053 06       		.uleb128 0x6
+ 633 0054 40       		.uleb128 0x40
+ 634 0055 18       		.uleb128 0x18
+ 635 0056 9742     		.uleb128 0x2117
+ 636 0058 19       		.uleb128 0x19
+ 637 0059 01       		.uleb128 0x1
+ 638 005a 13       		.uleb128 0x13
+ 639 005b 00       		.byte	0
+ 640 005c 00       		.byte	0
+ 641 005d 07       		.uleb128 0x7
+ 642 005e 05       		.uleb128 0x5
+ 643 005f 00       		.byte	0
+ 644 0060 03       		.uleb128 0x3
+ 645 0061 0E       		.uleb128 0xe
+ 646 0062 3A       		.uleb128 0x3a
+ 647 0063 0B       		.uleb128 0xb
+ 648 0064 3B       		.uleb128 0x3b
+ 649 0065 0B       		.uleb128 0xb
+ 650 0066 49       		.uleb128 0x49
+ 651 0067 13       		.uleb128 0x13
+ 652 0068 02       		.uleb128 0x2
+ 653 0069 17       		.uleb128 0x17
+ 654 006a 00       		.byte	0
+ 655 006b 00       		.byte	0
+ 656 006c 08       		.uleb128 0x8
+ 657 006d 05       		.uleb128 0x5
+ 658 006e 00       		.byte	0
+ 659 006f 03       		.uleb128 0x3
+ 660 0070 08       		.uleb128 0x8
+ 661 0071 3A       		.uleb128 0x3a
+ 662 0072 0B       		.uleb128 0xb
+ 663 0073 3B       		.uleb128 0x3b
+ 664 0074 0B       		.uleb128 0xb
+ 665 0075 49       		.uleb128 0x49
+ 666 0076 13       		.uleb128 0x13
+ 667 0077 02       		.uleb128 0x2
+ 668 0078 17       		.uleb128 0x17
+ 669 0079 00       		.byte	0
+ 670 007a 00       		.byte	0
+ 671 007b 09       		.uleb128 0x9
+ 672 007c 34       		.uleb128 0x34
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 14
+
+
+ 673 007d 00       		.byte	0
+ 674 007e 03       		.uleb128 0x3
+ 675 007f 0E       		.uleb128 0xe
+ 676 0080 3A       		.uleb128 0x3a
+ 677 0081 0B       		.uleb128 0xb
+ 678 0082 3B       		.uleb128 0x3b
+ 679 0083 0B       		.uleb128 0xb
+ 680 0084 49       		.uleb128 0x49
+ 681 0085 13       		.uleb128 0x13
+ 682 0086 02       		.uleb128 0x2
+ 683 0087 18       		.uleb128 0x18
+ 684 0088 00       		.byte	0
+ 685 0089 00       		.byte	0
+ 686 008a 0A       		.uleb128 0xa
+ 687 008b 898201   		.uleb128 0x4109
+ 688 008e 00       		.byte	0
+ 689 008f 11       		.uleb128 0x11
+ 690 0090 01       		.uleb128 0x1
+ 691 0091 31       		.uleb128 0x31
+ 692 0092 13       		.uleb128 0x13
+ 693 0093 00       		.byte	0
+ 694 0094 00       		.byte	0
+ 695 0095 0B       		.uleb128 0xb
+ 696 0096 898201   		.uleb128 0x4109
+ 697 0099 01       		.byte	0x1
+ 698 009a 11       		.uleb128 0x11
+ 699 009b 01       		.uleb128 0x1
+ 700 009c 31       		.uleb128 0x31
+ 701 009d 13       		.uleb128 0x13
+ 702 009e 01       		.uleb128 0x1
+ 703 009f 13       		.uleb128 0x13
+ 704 00a0 00       		.byte	0
+ 705 00a1 00       		.byte	0
+ 706 00a2 0C       		.uleb128 0xc
+ 707 00a3 8A8201   		.uleb128 0x410a
+ 708 00a6 00       		.byte	0
+ 709 00a7 02       		.uleb128 0x2
+ 710 00a8 18       		.uleb128 0x18
+ 711 00a9 9142     		.uleb128 0x2111
+ 712 00ab 18       		.uleb128 0x18
+ 713 00ac 00       		.byte	0
+ 714 00ad 00       		.byte	0
+ 715 00ae 0D       		.uleb128 0xd
+ 716 00af 01       		.uleb128 0x1
+ 717 00b0 01       		.byte	0x1
+ 718 00b1 49       		.uleb128 0x49
+ 719 00b2 13       		.uleb128 0x13
+ 720 00b3 01       		.uleb128 0x1
+ 721 00b4 13       		.uleb128 0x13
+ 722 00b5 00       		.byte	0
+ 723 00b6 00       		.byte	0
+ 724 00b7 0E       		.uleb128 0xe
+ 725 00b8 21       		.uleb128 0x21
+ 726 00b9 00       		.byte	0
+ 727 00ba 49       		.uleb128 0x49
+ 728 00bb 13       		.uleb128 0x13
+ 729 00bc 2F       		.uleb128 0x2f
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 15
+
+
+ 730 00bd 0B       		.uleb128 0xb
+ 731 00be 00       		.byte	0
+ 732 00bf 00       		.byte	0
+ 733 00c0 0F       		.uleb128 0xf
+ 734 00c1 2E       		.uleb128 0x2e
+ 735 00c2 01       		.byte	0x1
+ 736 00c3 3F       		.uleb128 0x3f
+ 737 00c4 19       		.uleb128 0x19
+ 738 00c5 03       		.uleb128 0x3
+ 739 00c6 0E       		.uleb128 0xe
+ 740 00c7 3A       		.uleb128 0x3a
+ 741 00c8 0B       		.uleb128 0xb
+ 742 00c9 3B       		.uleb128 0x3b
+ 743 00ca 0B       		.uleb128 0xb
+ 744 00cb 27       		.uleb128 0x27
+ 745 00cc 19       		.uleb128 0x19
+ 746 00cd 49       		.uleb128 0x49
+ 747 00ce 13       		.uleb128 0x13
+ 748 00cf 11       		.uleb128 0x11
+ 749 00d0 01       		.uleb128 0x1
+ 750 00d1 12       		.uleb128 0x12
+ 751 00d2 06       		.uleb128 0x6
+ 752 00d3 40       		.uleb128 0x40
+ 753 00d4 18       		.uleb128 0x18
+ 754 00d5 9742     		.uleb128 0x2117
+ 755 00d7 19       		.uleb128 0x19
+ 756 00d8 01       		.uleb128 0x1
+ 757 00d9 13       		.uleb128 0x13
+ 758 00da 00       		.byte	0
+ 759 00db 00       		.byte	0
+ 760 00dc 10       		.uleb128 0x10
+ 761 00dd 05       		.uleb128 0x5
+ 762 00de 00       		.byte	0
+ 763 00df 03       		.uleb128 0x3
+ 764 00e0 08       		.uleb128 0x8
+ 765 00e1 3A       		.uleb128 0x3a
+ 766 00e2 0B       		.uleb128 0xb
+ 767 00e3 3B       		.uleb128 0x3b
+ 768 00e4 0B       		.uleb128 0xb
+ 769 00e5 49       		.uleb128 0x49
+ 770 00e6 13       		.uleb128 0x13
+ 771 00e7 02       		.uleb128 0x2
+ 772 00e8 18       		.uleb128 0x18
+ 773 00e9 00       		.byte	0
+ 774 00ea 00       		.byte	0
+ 775 00eb 11       		.uleb128 0x11
+ 776 00ec 34       		.uleb128 0x34
+ 777 00ed 00       		.byte	0
+ 778 00ee 03       		.uleb128 0x3
+ 779 00ef 08       		.uleb128 0x8
+ 780 00f0 3A       		.uleb128 0x3a
+ 781 00f1 0B       		.uleb128 0xb
+ 782 00f2 3B       		.uleb128 0x3b
+ 783 00f3 0B       		.uleb128 0xb
+ 784 00f4 49       		.uleb128 0x49
+ 785 00f5 13       		.uleb128 0x13
+ 786 00f6 02       		.uleb128 0x2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 16
+
+
+ 787 00f7 17       		.uleb128 0x17
+ 788 00f8 00       		.byte	0
+ 789 00f9 00       		.byte	0
+ 790 00fa 12       		.uleb128 0x12
+ 791 00fb 34       		.uleb128 0x34
+ 792 00fc 00       		.byte	0
+ 793 00fd 03       		.uleb128 0x3
+ 794 00fe 0E       		.uleb128 0xe
+ 795 00ff 3A       		.uleb128 0x3a
+ 796 0100 0B       		.uleb128 0xb
+ 797 0101 3B       		.uleb128 0x3b
+ 798 0102 05       		.uleb128 0x5
+ 799 0103 49       		.uleb128 0x49
+ 800 0104 13       		.uleb128 0x13
+ 801 0105 3F       		.uleb128 0x3f
+ 802 0106 19       		.uleb128 0x19
+ 803 0107 3C       		.uleb128 0x3c
+ 804 0108 19       		.uleb128 0x19
+ 805 0109 00       		.byte	0
+ 806 010a 00       		.byte	0
+ 807 010b 13       		.uleb128 0x13
+ 808 010c 35       		.uleb128 0x35
+ 809 010d 00       		.byte	0
+ 810 010e 49       		.uleb128 0x49
+ 811 010f 13       		.uleb128 0x13
+ 812 0110 00       		.byte	0
+ 813 0111 00       		.byte	0
+ 814 0112 14       		.uleb128 0x14
+ 815 0113 2E       		.uleb128 0x2e
+ 816 0114 00       		.byte	0
+ 817 0115 3F       		.uleb128 0x3f
+ 818 0116 19       		.uleb128 0x19
+ 819 0117 3C       		.uleb128 0x3c
+ 820 0118 19       		.uleb128 0x19
+ 821 0119 6E       		.uleb128 0x6e
+ 822 011a 0E       		.uleb128 0xe
+ 823 011b 03       		.uleb128 0x3
+ 824 011c 0E       		.uleb128 0xe
+ 825 011d 3A       		.uleb128 0x3a
+ 826 011e 0B       		.uleb128 0xb
+ 827 011f 3B       		.uleb128 0x3b
+ 828 0120 0B       		.uleb128 0xb
+ 829 0121 00       		.byte	0
+ 830 0122 00       		.byte	0
+ 831 0123 00       		.byte	0
+ 832              		.section	.debug_loc,"",%progbits
+ 833              	.Ldebug_loc0:
+ 834              	.LLST0:
+ 835 0000 00000000 		.4byte	.LVL0
+ 836 0004 11000000 		.4byte	.LVL1-1
+ 837 0008 0100     		.2byte	0x1
+ 838 000a 50       		.byte	0x50
+ 839 000b 11000000 		.4byte	.LVL1-1
+ 840 000f 2C000000 		.4byte	.LFE64
+ 841 0013 0400     		.2byte	0x4
+ 842 0015 F3       		.byte	0xf3
+ 843 0016 01       		.uleb128 0x1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 17
+
+
+ 844 0017 50       		.byte	0x50
+ 845 0018 9F       		.byte	0x9f
+ 846 0019 00000000 		.4byte	0
+ 847 001d 00000000 		.4byte	0
+ 848              	.LLST1:
+ 849 0021 00000000 		.4byte	.LVL0
+ 850 0025 11000000 		.4byte	.LVL1-1
+ 851 0029 0100     		.2byte	0x1
+ 852 002b 51       		.byte	0x51
+ 853 002c 11000000 		.4byte	.LVL1-1
+ 854 0030 2C000000 		.4byte	.LFE64
+ 855 0034 0400     		.2byte	0x4
+ 856 0036 F3       		.byte	0xf3
+ 857 0037 01       		.uleb128 0x1
+ 858 0038 51       		.byte	0x51
+ 859 0039 9F       		.byte	0x9f
+ 860 003a 00000000 		.4byte	0
+ 861 003e 00000000 		.4byte	0
+ 862              	.LLST2:
+ 863 0042 00000000 		.4byte	.LVL0
+ 864 0046 11000000 		.4byte	.LVL1-1
+ 865 004a 0100     		.2byte	0x1
+ 866 004c 52       		.byte	0x52
+ 867 004d 11000000 		.4byte	.LVL1-1
+ 868 0051 2C000000 		.4byte	.LFE64
+ 869 0055 0400     		.2byte	0x4
+ 870 0057 F3       		.byte	0xf3
+ 871 0058 01       		.uleb128 0x1
+ 872 0059 52       		.byte	0x52
+ 873 005a 9F       		.byte	0x9f
+ 874 005b 00000000 		.4byte	0
+ 875 005f 00000000 		.4byte	0
+ 876              	.LLST3:
+ 877 0063 00000000 		.4byte	.LVL4
+ 878 0067 13000000 		.4byte	.LVL5-1
+ 879 006b 0100     		.2byte	0x1
+ 880 006d 50       		.byte	0x50
+ 881 006e 13000000 		.4byte	.LVL5-1
+ 882 0072 58000000 		.4byte	.LFE65
+ 883 0076 0400     		.2byte	0x4
+ 884 0078 F3       		.byte	0xf3
+ 885 0079 01       		.uleb128 0x1
+ 886 007a 50       		.byte	0x50
+ 887 007b 9F       		.byte	0x9f
+ 888 007c 00000000 		.4byte	0
+ 889 0080 00000000 		.4byte	0
+ 890              	.LLST4:
+ 891 0084 00000000 		.4byte	.LVL4
+ 892 0088 13000000 		.4byte	.LVL5-1
+ 893 008c 0100     		.2byte	0x1
+ 894 008e 51       		.byte	0x51
+ 895 008f 13000000 		.4byte	.LVL5-1
+ 896 0093 58000000 		.4byte	.LFE65
+ 897 0097 0400     		.2byte	0x4
+ 898 0099 F3       		.byte	0xf3
+ 899 009a 01       		.uleb128 0x1
+ 900 009b 51       		.byte	0x51
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 18
+
+
+ 901 009c 9F       		.byte	0x9f
+ 902 009d 00000000 		.4byte	0
+ 903 00a1 00000000 		.4byte	0
+ 904              	.LLST5:
+ 905 00a5 00000000 		.4byte	.LVL13
+ 906 00a9 04000000 		.4byte	.LVL14
+ 907 00ad 0100     		.2byte	0x1
+ 908 00af 50       		.byte	0x50
+ 909 00b0 04000000 		.4byte	.LVL14
+ 910 00b4 06000000 		.4byte	.LFE66
+ 911 00b8 0400     		.2byte	0x4
+ 912 00ba F3       		.byte	0xf3
+ 913 00bb 01       		.uleb128 0x1
+ 914 00bc 50       		.byte	0x50
+ 915 00bd 9F       		.byte	0x9f
+ 916 00be 00000000 		.4byte	0
+ 917 00c2 00000000 		.4byte	0
+ 918              	.LLST6:
+ 919 00c6 00000000 		.4byte	.LVL13
+ 920 00ca 04000000 		.4byte	.LVL14
+ 921 00ce 0800     		.2byte	0x8
+ 922 00d0 71       		.byte	0x71
+ 923 00d1 00       		.sleb128 0
+ 924 00d2 38       		.byte	0x38
+ 925 00d3 24       		.byte	0x24
+ 926 00d4 70       		.byte	0x70
+ 927 00d5 00       		.sleb128 0
+ 928 00d6 21       		.byte	0x21
+ 929 00d7 9F       		.byte	0x9f
+ 930 00d8 00000000 		.4byte	0
+ 931 00dc 00000000 		.4byte	0
+ 932              		.section	.debug_aranges,"",%progbits
+ 933 0000 2C000000 		.4byte	0x2c
+ 934 0004 0200     		.2byte	0x2
+ 935 0006 00000000 		.4byte	.Ldebug_info0
+ 936 000a 04       		.byte	0x4
+ 937 000b 00       		.byte	0
+ 938 000c 0000     		.2byte	0
+ 939 000e 0000     		.2byte	0
+ 940 0010 00000000 		.4byte	.LFB64
+ 941 0014 2C000000 		.4byte	.LFE64-.LFB64
+ 942 0018 00000000 		.4byte	.LFB65
+ 943 001c 58000000 		.4byte	.LFE65-.LFB65
+ 944 0020 00000000 		.4byte	.LFB66
+ 945 0024 06000000 		.4byte	.LFE66-.LFB66
+ 946 0028 00000000 		.4byte	0
+ 947 002c 00000000 		.4byte	0
+ 948              		.section	.debug_ranges,"",%progbits
+ 949              	.Ldebug_ranges0:
+ 950 0000 00000000 		.4byte	.LFB64
+ 951 0004 2C000000 		.4byte	.LFE64
+ 952 0008 00000000 		.4byte	.LFB65
+ 953 000c 58000000 		.4byte	.LFE65
+ 954 0010 00000000 		.4byte	.LFB66
+ 955 0014 06000000 		.4byte	.LFE66
+ 956 0018 00000000 		.4byte	0
+ 957 001c 00000000 		.4byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 19
+
+
+ 958              		.section	.debug_line,"",%progbits
+ 959              	.Ldebug_line0:
+ 960 0000 C2010000 		.section	.debug_str,"MS",%progbits,1
+ 960      02007001 
+ 960      00000201 
+ 960      FB0E0D00 
+ 960      01010101 
+ 961              	.LASF19:
+ 962 0000 64657669 		.ascii	"device_addr\000"
+ 962      63655F61 
+ 962      64647200 
+ 963              	.LASF20:
+ 964 000c 76616C75 		.ascii	"value\000"
+ 964      6500
+ 965              	.LASF9:
+ 966 0012 5F5F696E 		.ascii	"__int32_t\000"
+ 966      7433325F 
+ 966      7400
+ 967              	.LASF33:
+ 968 001c 4932435F 		.ascii	"I2C_write\000"
+ 968      77726974 
+ 968      6500
+ 969              	.LASF25:
+ 970 0026 4932435F 		.ascii	"I2C_MasterClearStatus\000"
+ 970      4D617374 
+ 970      6572436C 
+ 970      65617253 
+ 970      74617475 
+ 971              	.LASF29:
+ 972 003c 4932435F 		.ascii	"I2C_MasterReadBuf\000"
+ 972      4D617374 
+ 972      65725265 
+ 972      61644275 
+ 972      6600
+ 973              	.LASF14:
+ 974 004e 666C6F61 		.ascii	"float\000"
+ 974      7400
+ 975              	.LASF24:
+ 976 0054 636F6E76 		.ascii	"convert_raw\000"
+ 976      6572745F 
+ 976      72617700 
+ 977              	.LASF1:
+ 978 0060 756E7369 		.ascii	"unsigned char\000"
+ 978      676E6564 
+ 978      20636861 
+ 978      7200
+ 979              	.LASF26:
+ 980 006e 4932435F 		.ascii	"I2C_MasterWriteBuf\000"
+ 980      4D617374 
+ 980      65725772 
+ 980      69746542 
+ 980      756600
+ 981              	.LASF13:
+ 982 0081 696E7431 		.ascii	"int16\000"
+ 982      3600
+ 983              	.LASF5:
+ 984 0087 6C6F6E67 		.ascii	"long unsigned int\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 20
+
+
+ 984      20756E73 
+ 984      69676E65 
+ 984      6420696E 
+ 984      7400
+ 985              	.LASF3:
+ 986 0099 73686F72 		.ascii	"short unsigned int\000"
+ 986      7420756E 
+ 986      7369676E 
+ 986      65642069 
+ 986      6E7400
+ 987              	.LASF34:
+ 988 00ac 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 988      52784275 
+ 988      66666572 
+ 988      00
+ 989              	.LASF32:
+ 990 00b9 433A5C55 		.ascii	"C:\\Users\\manuelfu\\Documents\\PSoC Creator\\zumo\\"
+ 990      73657273 
+ 990      5C6D616E 
+ 990      75656C66 
+ 990      755C446F 
+ 991 00e7 5A756D6F 		.ascii	"ZumoBot.cydsn\000"
+ 991      426F742E 
+ 991      63796473 
+ 991      6E00
+ 992              	.LASF15:
+ 993 00f5 646F7562 		.ascii	"double\000"
+ 993      6C6500
+ 994              	.LASF2:
+ 995 00fc 73686F72 		.ascii	"short int\000"
+ 995      7420696E 
+ 995      7400
+ 996              	.LASF12:
+ 997 0106 75696E74 		.ascii	"uint16\000"
+ 997      313600
+ 998              	.LASF21:
+ 999 010d 77726974 		.ascii	"write_buf\000"
+ 999      655F6275 
+ 999      6600
+ 1000              	.LASF8:
+ 1001 0117 756E7369 		.ascii	"unsigned int\000"
+ 1001      676E6564 
+ 1001      20696E74 
+ 1001      00
+ 1002              	.LASF7:
+ 1003 0124 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1003      206C6F6E 
+ 1003      6720756E 
+ 1003      7369676E 
+ 1003      65642069 
+ 1004              	.LASF22:
+ 1005 013b 72656164 		.ascii	"read_buf\000"
+ 1005      5F627566 
+ 1005      00
+ 1006              	.LASF30:
+ 1007 0144 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1007      43313120 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 21
+
+
+ 1007      352E342E 
+ 1007      31203230 
+ 1007      31363036 
+ 1008 0177 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1008      20726576 
+ 1008      6973696F 
+ 1008      6E203233 
+ 1008      37373135 
+ 1009 01aa 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1009      66756E63 
+ 1009      74696F6E 
+ 1009      2D736563 
+ 1009      74696F6E 
+ 1010              	.LASF10:
+ 1011 01d2 696E7433 		.ascii	"int32_t\000"
+ 1011      325F7400 
+ 1012              	.LASF18:
+ 1013 01da 73697A65 		.ascii	"sizetype\000"
+ 1013      74797065 
+ 1013      00
+ 1014              	.LASF6:
+ 1015 01e3 6C6F6E67 		.ascii	"long long int\000"
+ 1015      206C6F6E 
+ 1015      6720696E 
+ 1015      7400
+ 1016              	.LASF16:
+ 1017 01f1 63686172 		.ascii	"char\000"
+ 1017      00
+ 1018              	.LASF27:
+ 1019 01f6 4932435F 		.ascii	"I2C_MasterStatus\000"
+ 1019      4D617374 
+ 1019      65725374 
+ 1019      61747573 
+ 1019      00
+ 1020              	.LASF31:
+ 1021 0207 5A756D6F 		.ascii	"ZumoLibrary\\I2C_made.c\000"
+ 1021      4C696272 
+ 1021      6172795C 
+ 1021      4932435F 
+ 1021      6D616465 
+ 1022              	.LASF23:
+ 1023 021e 4932435F 		.ascii	"I2C_read\000"
+ 1023      72656164 
+ 1023      00
+ 1024              	.LASF11:
+ 1025 0227 75696E74 		.ascii	"uint8\000"
+ 1025      3800
+ 1026              	.LASF4:
+ 1027 022d 6C6F6E67 		.ascii	"long int\000"
+ 1027      20696E74 
+ 1027      00
+ 1028              	.LASF17:
+ 1029 0236 6C6F6E67 		.ascii	"long double\000"
+ 1029      20646F75 
+ 1029      626C6500 
+ 1030              	.LASF0:
+ 1031 0242 7369676E 		.ascii	"signed char\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccsmBgB1.s 			page 22
+
+
+ 1031      65642063 
+ 1031      68617200 
+ 1032              	.LASF28:
+ 1033 024e 43794465 		.ascii	"CyDelay\000"
+ 1033      6C617900 
+ 1034              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

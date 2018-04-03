@@ -1,0 +1,142 @@
+dont_use_io iocell 1 0
+dont_use_io iocell 1 1
+dont_use_io iocell 1 3
+dont_use_io iocell 15 2
+dont_use_io iocell 15 3
+set_location "\Timer_R2:TimerUDB:rstSts:stsreg\" statusicell 0 2 4 
+set_location "\UART_1:BUART:sRX:RxBitCounter\" count7cell 1 0 7 
+set_location "\Buzzer_PWM:PWMUDB:sP8:pwmdp:u0\" datapathcell 3 2 2 
+set_location "\Timer:TimerUDB:status_tc\" macrocell 1 5 0 1
+set_location "\Timer_IR:TimerUDB:status_tc\" macrocell 2 2 0 3
+set_location "MODIN10_0" macrocell 2 2 1 0
+set_location "Net_3169" macrocell 3 1 1 3
+set_location "\UART_1:BUART:tx_state_0\" macrocell 1 3 0 0
+set_location "\Timer_IR:TimerUDB:sT24:timerdp:u2\" datapathcell 0 2 2 
+set_location "\Timer:TimerUDB:capture_last\" macrocell 0 5 1 2
+set_location "\Timer_L2:TimerUDB:timer_enable\" macrocell 0 4 0 0
+set_location "\UART_1:BUART:rx_state_3\" macrocell 1 0 1 2
+set_location "\Timer_R2:TimerUDB:capt_fifo_load\" macrocell 0 4 1 1
+set_location "\UART_1:BUART:tx_ctrl_mark_last\" macrocell 0 2 0 2
+set_location "\PWM:PWMUDB:status_2\" macrocell 2 1 0 3
+set_location "\UART_1:BUART:rx_state_stop1_reg\" macrocell 1 2 0 3
+set_location "\Timer_L2:TimerUDB:rstSts:stsreg\" statusicell 1 4 4 
+set_location "\PWM:PWMUDB:prevCompare2\" macrocell 2 1 1 2
+set_location "Net_4018" macrocell 1 3 0 3
+set_location "\UART_1:BUART:sRX:RxSts\" statusicell 1 1 4 
+set_location "\UART_1:BUART:txn\" macrocell 1 1 0 1
+set_location "\Timer_R2:TimerUDB:sT16:timerdp:u0\" datapathcell 1 4 2 
+set_location "\UART_1:BUART:rx_counter_load\" macrocell 1 1 1 1
+set_location "\UART_1:BUART:tx_state_1\" macrocell 1 2 0 0
+set_location "\UART_1:BUART:pollcount_1\" macrocell 0 0 1 0
+set_location "\UART_1:BUART:counter_load_not\" macrocell 1 1 1 2
+set_location "\PWM:PWMUDB:runmode_enable\" macrocell 2 1 1 3
+set_location "\UART_1:BUART:rx_state_2\" macrocell 0 1 1 1
+set_location "\Timer_L2:TimerUDB:sT16:timerdp:u1\" datapathcell 1 3 2 
+set_location "\Timer_IR:TimerUDB:sT24:timerdp:u0\" datapathcell 2 2 2 
+set_location "\UART_1:BUART:sTX:TxShifter:u0\" datapathcell 1 1 2 
+set_location "\UART_1:BUART:tx_bitclk\" macrocell 0 3 0 3
+set_location "\UART_1:BUART:tx_status_2\" macrocell 1 2 1 2
+set_location "\Timer_IR:TimerUDB:rstSts:stsreg\" statusicell 2 2 4 
+set_location "\Timer_L2:TimerUDB:capt_fifo_load\" macrocell 1 4 1 0
+set_location "\Buzzer_PWM:PWMUDB:runmode_enable\" macrocell 3 2 0 1
+set_location "\Timer_IR:TimerUDB:capt_fifo_load\" macrocell 2 1 1 0
+set_location "\UART_1:BUART:sTX:sCLOCK:TxBitClkGen\" datapathcell 1 0 2 
+set_location "\PWM:PWMUDB:sP8:pwmdp:u0\" datapathcell 2 1 2 
+set_location "\Timer_R2:TimerUDB:capture_last\" macrocell 0 4 0 1
+set_location "\UART_1:BUART:rx_load_fifo\" macrocell 0 0 0 2
+set_location "\Timer:TimerUDB:sT16:timerdp:u0\" datapathcell 0 5 2 
+set_location "\Timer_L2:TimerUDB:trig_disable\" macrocell 0 3 1 2
+set_location "\PWM:PWMUDB:status_0\" macrocell 2 1 1 1
+set_location "\Timer_IR:TimerUDB:capture_last\" macrocell 2 1 0 0
+set_location "\UART_1:BUART:rx_last\" macrocell 0 0 1 3
+set_location "\UART_1:BUART:tx_state_2\" macrocell 1 3 1 1
+set_location "\Timer:TimerUDB:rstSts:stsreg\" statusicell 1 5 4 
+set_location "\UART_1:BUART:tx_status_0\" macrocell 1 2 1 3
+set_location "\Timer_L2:TimerUDB:status_tc\" macrocell 1 4 0 1
+set_location "\Timer_R2:TimerUDB:status_tc\" macrocell 0 4 0 2
+set_location "\UART_1:BUART:rx_status_4\" macrocell 0 0 0 0
+set_location "Net_3160" macrocell 0 3 0 2
+set_location "\Timer_IR:TimerUDB:capt_int_temp\" macrocell 2 2 0 2
+set_location "Net_310" macrocell 1 0 0 1
+set_location "Net_142" macrocell 3 1 0 0
+set_location "\Timer:TimerUDB:capt_fifo_load\" macrocell 0 5 1 3
+set_location "MODIN10_1" macrocell 3 2 1 3
+set_location "\Timer:TimerUDB:capt_int_temp\" macrocell 1 5 1 0
+set_location "\UART_1:BUART:rx_state_0\" macrocell 0 1 1 0
+set_location "__ONE__" macrocell 2 2 0 1
+set_location "\UART_1:BUART:pollcount_0\" macrocell 0 0 1 2
+set_location "\Timer_L2:TimerUDB:run_mode\" macrocell 0 4 1 2
+set_location "\Timer:TimerUDB:sT16:timerdp:u1\" datapathcell 1 5 2 
+set_location "\Timer_L2:TimerUDB:sT16:timerdp:u0\" datapathcell 0 3 2 
+set_location "\Timer_L2:TimerUDB:capture_last\" macrocell 1 4 0 0
+set_location "\UART_1:BUART:rx_status_5\" macrocell 1 1 1 0
+set_location "\Timer_R2:TimerUDB:sT16:timerdp:u1\" datapathcell 0 4 2 
+set_location "\UART_1:BUART:rx_bitclk_enable\" macrocell 1 1 0 2
+set_location "\UART_1:BUART:sTX:TxSts\" statusicell 1 2 4 
+set_location "\UART_1:BUART:sRX:RxShifter:u0\" datapathcell 0 0 2 
+set_location "Net_2789" macrocell 0 3 0 1
+set_location "Net_2267" macrocell 0 5 1 1
+set_location "\UART_1:BUART:rx_postpoll\" macrocell 0 0 1 1
+set_location "Net_167" macrocell 3 1 1 1
+set_location "MODIN6_1" macrocell 0 5 0 0
+set_location "\PWM:PWMUDB:prevCompare1\" macrocell 3 1 1 2
+set_location "\UART_1:BUART:rx_status_3\" macrocell 0 2 0 1
+set_location "MODIN6_0" macrocell 1 5 0 3
+set_location "\Timer_IR:TimerUDB:sT24:timerdp:u1\" datapathcell 1 2 2 
+set_location "Net_3494" macrocell 3 2 0 0
+set_location "\PWM:PWMUDB:genblk8:stsreg\" statusicell 2 1 4 
+set_location "\PWM:PWMUDB:status_1\" macrocell 3 1 0 2
+set_location "\I2C:I2C_FF\" i2ccell -1 -1 0
+set_io "MotorPwmRight(0)" iocell 3 6
+set_location "\Timer_IR:TimerUDB:sCTRLReg:SyncCtl:ctrlreg\" controlcell 2 2 6 
+# Note: port 12 is the logical name for port 7
+set_io "Rx_1(0)" iocell 12 6
+set_location "ClockBlock" clockblockcell -1 -1 0
+set_location "\Timer_R1:TimerHW\" timercell -1 -1 2
+set_location "\Timer_R3:TimerHW\" timercell -1 -1 3
+set_location "\Timer:TimerUDB:sCTRLReg:SyncCtl:ctrlreg\" controlcell 1 5 6 
+set_io "Echo(0)" iocell 2 0
+# Note: port 12 is the logical name for port 7
+set_io "SCL_1(0)" iocell 12 0
+# Note: port 15 is the logical name for port 8
+set_io "R3(0)" iocell 15 4
+# Note: port 15 is the logical name for port 8
+set_io "L3(0)" iocell 15 5
+set_location "\Control_Reg_1:Sync:ctrl_reg\" controlcell 1 3 6 
+set_location "\ADC_Battery:IRQ\" interrupt -1 -1 1
+set_io "L2(0)" iocell 2 6
+set_location "PM" pmcell -1 -1 0
+set_location "sensor_isr" interrupt -1 -1 3
+set_location "\Buzzer_PWM:PWMUDB:genblk1:ctrlreg\" controlcell 3 2 6 
+# Note: port 12 is the logical name for port 7
+set_io "SDA_1(0)" iocell 12 1
+set_location "\RTC:isr\" interrupt -1 -1 2
+set_io "IR_receiver(0)" iocell 1 7
+# Note: port 15 is the logical name for port 8
+set_io "Buzzer(0)" iocell 15 1
+set_io "MotorPwmLeft(0)" iocell 3 5
+set_location "\ADC_Battery:ADC_SAR\" sarcell -1 -1 1
+set_location "\Timer_L3:TimerHW\" timercell -1 -1 1
+set_io "SW1(0)" iocell 2 2
+set_io "R2(0)" iocell 2 7
+# Note: port 12 is the logical name for port 7
+set_io "Tx_1(0)" iocell 12 7
+set_io "L1(0)" iocell 3 4
+set_location "\Timer_L1:TimerHW\" timercell -1 -1 0
+set_location "\I2C:I2C_IRQ\" interrupt -1 -1 15
+set_location "ultra_isr" interrupt -1 -1 4
+set_location "IR_isr" interrupt -1 -1 0
+# Note: port 12 is the logical name for port 7
+set_io "R1(0)" iocell 12 4
+set_location "\PWM:PWMUDB:genblk1:ctrlreg\" controlcell 0 1 6 
+set_io "MotorDirLeft(0)" iocell 3 7
+# Note: port 15 is the logical name for port 8
+set_io "MotorDirRight(0)" iocell 15 0
+set_io "IR_led(0)" iocell 0 1
+set_io "Battery_pin(0)" iocell 2 5
+set_io "\ADC_Battery:Bypass(0)\" iocell 0 2
+set_io "BatteryLed(0)" iocell 2 1
+set_io "Trig(0)" iocell 0 7
+set_io "ShieldLed(0)" iocell 2 3
+set_location "\Timer_R2:TimerUDB:sCTRLReg:SyncCtl:ctrlreg\" controlcell 1 4 6 
+set_location "\Timer_L2:TimerUDB:sCTRLReg:SyncCtl:ctrlreg\" controlcell 0 4 6 

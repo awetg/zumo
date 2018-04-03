@@ -1,0 +1,3845 @@
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"ADC_Battery.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.ADC_Battery_CalcGain,"ax",%progbits
+  20              		.align	2
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	ADC_Battery_CalcGain, %function
+  24              	ADC_Battery_CalcGain:
+  25              	.LFB12:
+  26              		.file 1 "Generated_Source\\PSoC5\\ADC_Battery.c"
+   1:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/ADC_Battery.c **** * File Name: ADC_Battery.c
+   3:Generated_Source\PSoC5/ADC_Battery.c **** * Version 3.10
+   4:Generated_Source\PSoC5/ADC_Battery.c **** *
+   5:Generated_Source\PSoC5/ADC_Battery.c **** * Description:
+   6:Generated_Source\PSoC5/ADC_Battery.c **** *  This file provides the source code to the API for the Successive
+   7:Generated_Source\PSoC5/ADC_Battery.c **** *  approximation ADC Component.
+   8:Generated_Source\PSoC5/ADC_Battery.c **** *
+   9:Generated_Source\PSoC5/ADC_Battery.c **** * Note:
+  10:Generated_Source\PSoC5/ADC_Battery.c **** *
+  11:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/ADC_Battery.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/ADC_Battery.c **** * You may use this file only in accordance with the license, terms, conditions,
+  14:Generated_Source\PSoC5/ADC_Battery.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  15:Generated_Source\PSoC5/ADC_Battery.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/ADC_Battery.c **** 
+  18:Generated_Source\PSoC5/ADC_Battery.c **** #include "CyLib.h"
+  19:Generated_Source\PSoC5/ADC_Battery.c **** #include "ADC_Battery.h"
+  20:Generated_Source\PSoC5/ADC_Battery.c **** 
+  21:Generated_Source\PSoC5/ADC_Battery.c **** #if(ADC_Battery_DEFAULT_INTERNAL_CLK)
+  22:Generated_Source\PSoC5/ADC_Battery.c ****     #include "ADC_Battery_theACLK.h"
+  23:Generated_Source\PSoC5/ADC_Battery.c **** #endif /* End ADC_Battery_DEFAULT_INTERNAL_CLK */
+  24:Generated_Source\PSoC5/ADC_Battery.c **** 
+  25:Generated_Source\PSoC5/ADC_Battery.c **** 
+  26:Generated_Source\PSoC5/ADC_Battery.c **** /***************************************
+  27:Generated_Source\PSoC5/ADC_Battery.c **** * Forward function references
+  28:Generated_Source\PSoC5/ADC_Battery.c **** ***************************************/
+  29:Generated_Source\PSoC5/ADC_Battery.c **** static void ADC_Battery_CalcGain(uint8 resolution);
+  30:Generated_Source\PSoC5/ADC_Battery.c **** 
+  31:Generated_Source\PSoC5/ADC_Battery.c **** 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 2
+
+
+  32:Generated_Source\PSoC5/ADC_Battery.c **** /***************************************
+  33:Generated_Source\PSoC5/ADC_Battery.c **** * Global data allocation
+  34:Generated_Source\PSoC5/ADC_Battery.c **** ***************************************/
+  35:Generated_Source\PSoC5/ADC_Battery.c **** uint8 ADC_Battery_initVar = 0u;
+  36:Generated_Source\PSoC5/ADC_Battery.c **** volatile int16 ADC_Battery_offset;
+  37:Generated_Source\PSoC5/ADC_Battery.c **** volatile int16 ADC_Battery_countsPerVolt;     /* Obsolete Gain compensation */
+  38:Generated_Source\PSoC5/ADC_Battery.c **** volatile int32 ADC_Battery_countsPer10Volt;   /* Gain compensation */
+  39:Generated_Source\PSoC5/ADC_Battery.c **** volatile int16 ADC_Battery_shift;
+  40:Generated_Source\PSoC5/ADC_Battery.c **** 
+  41:Generated_Source\PSoC5/ADC_Battery.c **** 
+  42:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+  43:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_Start
+  44:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+  45:Generated_Source\PSoC5/ADC_Battery.c **** *
+  46:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+  47:Generated_Source\PSoC5/ADC_Battery.c **** *  This is the preferred method to begin component operation.
+  48:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Start() sets the initVar variable, calls the
+  49:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Init() function, and then calls the
+  50:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Enable() function.
+  51:Generated_Source\PSoC5/ADC_Battery.c **** *
+  52:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+  53:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+  54:Generated_Source\PSoC5/ADC_Battery.c **** *
+  55:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+  56:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+  57:Generated_Source\PSoC5/ADC_Battery.c **** *
+  58:Generated_Source\PSoC5/ADC_Battery.c **** * Global variables:
+  59:Generated_Source\PSoC5/ADC_Battery.c **** *  The ADC_Battery_initVar variable is used to indicate when/if initial
+  60:Generated_Source\PSoC5/ADC_Battery.c **** *  configuration of this component has happened. The variable is initialized to
+  61:Generated_Source\PSoC5/ADC_Battery.c **** *  zero and set to 1 the first time ADC_Start() is called. This allows for
+  62:Generated_Source\PSoC5/ADC_Battery.c **** *  component Re-Start without re-initialization in all subsequent calls to the
+  63:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Start() routine.
+  64:Generated_Source\PSoC5/ADC_Battery.c **** *  If re-initialization of the component is required the variable should be set
+  65:Generated_Source\PSoC5/ADC_Battery.c **** *  to zero before call of ADC_Battery_Start() routine, or the user may call
+  66:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Init() and ADC_Battery_Enable() as done in the
+  67:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Start() routine.
+  68:Generated_Source\PSoC5/ADC_Battery.c **** *
+  69:Generated_Source\PSoC5/ADC_Battery.c **** * Side Effect:
+  70:Generated_Source\PSoC5/ADC_Battery.c **** *  If the initVar variable is already set, this function only calls the
+  71:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Enable() function.
+  72:Generated_Source\PSoC5/ADC_Battery.c **** *
+  73:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+  74:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_Start(void)
+  75:Generated_Source\PSoC5/ADC_Battery.c **** {
+  76:Generated_Source\PSoC5/ADC_Battery.c **** 
+  77:Generated_Source\PSoC5/ADC_Battery.c ****     /* If not Initialized then initialize all required hardware and software */
+  78:Generated_Source\PSoC5/ADC_Battery.c ****     if(ADC_Battery_initVar == 0u)
+  79:Generated_Source\PSoC5/ADC_Battery.c ****     {
+  80:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_Init();
+  81:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_initVar = 1u;
+  82:Generated_Source\PSoC5/ADC_Battery.c ****     }
+  83:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_Enable();
+  84:Generated_Source\PSoC5/ADC_Battery.c **** }
+  85:Generated_Source\PSoC5/ADC_Battery.c **** 
+  86:Generated_Source\PSoC5/ADC_Battery.c **** 
+  87:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+  88:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_Init
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 3
+
+
+  89:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+  90:Generated_Source\PSoC5/ADC_Battery.c **** *
+  91:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+  92:Generated_Source\PSoC5/ADC_Battery.c **** *  Initialize component's parameters to the parameters set by user in the
+  93:Generated_Source\PSoC5/ADC_Battery.c **** *  customizer of the component placed onto schematic. Usually called in
+  94:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_Start().
+  95:Generated_Source\PSoC5/ADC_Battery.c **** *
+  96:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+  97:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+  98:Generated_Source\PSoC5/ADC_Battery.c **** *
+  99:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 100:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 101:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 102:Generated_Source\PSoC5/ADC_Battery.c **** * Global variables:
+ 103:Generated_Source\PSoC5/ADC_Battery.c **** *  The ADC_Battery_offset variable is initialized to 0.
+ 104:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 105:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 106:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_Init(void)
+ 107:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 108:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 109:Generated_Source\PSoC5/ADC_Battery.c ****     /* This is only valid if there is an internal clock */
+ 110:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_DEFAULT_INTERNAL_CLK)
+ 111:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_theACLK_SetMode(CYCLK_DUTY);
+ 112:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_INTERNAL_CLK */
+ 113:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 114:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_IRQ_REMOVE == 0u)
+ 115:Generated_Source\PSoC5/ADC_Battery.c ****         /* Start and set interrupt vector */
+ 116:Generated_Source\PSoC5/ADC_Battery.c ****         CyIntSetPriority(ADC_Battery_INTC_NUMBER, ADC_Battery_INTC_PRIOR_NUMBER);
+ 117:Generated_Source\PSoC5/ADC_Battery.c ****         (void)CyIntSetVector(ADC_Battery_INTC_NUMBER, &ADC_Battery_ISR);
+ 118:Generated_Source\PSoC5/ADC_Battery.c ****     #endif   /* End ADC_Battery_IRQ_REMOVE */
+ 119:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 120:Generated_Source\PSoC5/ADC_Battery.c ****     /* Enable IRQ mode*/
+ 121:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CSR1_REG |= ADC_Battery_SAR_IRQ_MASK_EN | ADC_Battery_SAR_IRQ_MODE_EDGE;
+ 122:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 123:Generated_Source\PSoC5/ADC_Battery.c ****     /*Set SAR ADC resolution ADC */
+ 124:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SetResolution(ADC_Battery_DEFAULT_RESOLUTION);
+ 125:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_offset = 0;
+ 126:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 127:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 128:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 129:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 130:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_Enable
+ 131:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 132:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 133:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 134:Generated_Source\PSoC5/ADC_Battery.c **** *  Enables the reference, clock and power for SAR ADC.
+ 135:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 136:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 137:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 138:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 139:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 140:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 141:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 142:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 143:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_Enable(void)
+ 144:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 145:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 tmpReg;
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 4
+
+
+ 146:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 enableInterrupts;
+ 147:Generated_Source\PSoC5/ADC_Battery.c ****     enableInterrupts = CyEnterCriticalSection();
+ 148:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 149:Generated_Source\PSoC5/ADC_Battery.c ****     /* Enable the SAR ADC block in Active Power Mode */
+ 150:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_PWRMGR_SAR_REG |= ADC_Battery_ACT_PWR_SAR_EN;
+ 151:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 152:Generated_Source\PSoC5/ADC_Battery.c ****      /* Enable the SAR ADC in Standby Power Mode*/
+ 153:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_STBY_PWRMGR_SAR_REG |= ADC_Battery_STBY_PWR_SAR_EN;
+ 154:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 155:Generated_Source\PSoC5/ADC_Battery.c ****     /* This is only valid if there is an internal clock */
+ 156:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_DEFAULT_INTERNAL_CLK)
+ 157:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_PWRMGR_CLK_REG |= ADC_Battery_ACT_PWR_CLK_EN;
+ 158:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_STBY_PWRMGR_CLK_REG |= ADC_Battery_STBY_PWR_CLK_EN;
+ 159:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_INTERNAL_CLK */
+ 160:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 161:Generated_Source\PSoC5/ADC_Battery.c ****     /* Enable VCM buffer and Enable Int Ref Amp */
+ 162:Generated_Source\PSoC5/ADC_Battery.c ****     tmpReg = ADC_Battery_SAR_CSR3_REG;
+ 163:Generated_Source\PSoC5/ADC_Battery.c ****     tmpReg |= ADC_Battery_SAR_EN_BUF_VCM_EN;
+ 164:Generated_Source\PSoC5/ADC_Battery.c ****     /* PD_BUF_VREF is OFF in External reference or Vdda reference mode */
+ 165:Generated_Source\PSoC5/ADC_Battery.c ****     #if((ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__EXT_REF) || \
+ 166:Generated_Source\PSoC5/ADC_Battery.c ****         (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VNEG_VDDA_DIFF))
+ 167:Generated_Source\PSoC5/ADC_Battery.c ****         tmpReg &= (uint8)~ADC_Battery_SAR_EN_BUF_VREF_EN;
+ 168:Generated_Source\PSoC5/ADC_Battery.c ****     #else /* In INTREF or INTREF Bypassed this buffer is ON */
+ 169:Generated_Source\PSoC5/ADC_Battery.c ****         tmpReg |= ADC_Battery_SAR_EN_BUF_VREF_EN;
+ 170:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__EXT_REF */
+ 171:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CSR3_REG = tmpReg;
+ 172:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 173:Generated_Source\PSoC5/ADC_Battery.c ****     /* Set reference for ADC */
+ 174:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_DEFAULT_RANGE == ADC_Battery__VNEG_VDDA_DIFF)
+ 175:Generated_Source\PSoC5/ADC_Battery.c ****         #if(ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__EXT_REF)
+ 176:Generated_Source\PSoC5/ADC_Battery.c ****             ADC_Battery_SAR_CSR6_REG = ADC_Battery_INT_BYPASS_EXT_VREF; /* S2 */
+ 177:Generated_Source\PSoC5/ADC_Battery.c ****         #else /* Internal Vdda reference or obsolete bypass mode */
+ 178:Generated_Source\PSoC5/ADC_Battery.c ****             ADC_Battery_SAR_CSR6_REG = ADC_Battery_VDDA_VREF;           /* S7 */
+ 179:Generated_Source\PSoC5/ADC_Battery.c ****         #endif /* ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__EXT_REF */
+ 180:Generated_Source\PSoC5/ADC_Battery.c ****     #else  /* Reference goes through internal buffer */
+ 181:Generated_Source\PSoC5/ADC_Battery.c ****         #if(ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__INT_REF_NOT_BYPASSED)
+ 182:Generated_Source\PSoC5/ADC_Battery.c ****             ADC_Battery_SAR_CSR6_REG = ADC_Battery_INT_VREF;            /* S3 + S4 */
+ 183:Generated_Source\PSoC5/ADC_Battery.c ****         #else /* INTREF Bypassed of External */
+ 184:Generated_Source\PSoC5/ADC_Battery.c ****             ADC_Battery_SAR_CSR6_REG = ADC_Battery_INT_BYPASS_EXT_VREF; /* S2 */
+ 185:Generated_Source\PSoC5/ADC_Battery.c ****         #endif /* ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__INT_REF_NOT_BYPASSED */
+ 186:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* VNEG_VDDA_DIFF */
+ 187:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 188:Generated_Source\PSoC5/ADC_Battery.c ****     /* Low non-overlap delay for sampling clock signals (for 1MSPS) */
+ 189:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_HIGH_POWER_PULSE == 0u) /* MinPulseWidth <= 50 ns */
+ 190:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_SAR_CSR5_REG &= (uint8)~ADC_Battery_SAR_DLY_INC;
+ 191:Generated_Source\PSoC5/ADC_Battery.c ****     #else /* Set High non-overlap delay for sampling clock signals (for <500KSPS)*/
+ 192:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_SAR_CSR5_REG |= ADC_Battery_SAR_DLY_INC;
+ 193:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* ADC_Battery_HIGH_POWER_PULSE == 0u */
+ 194:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 195:Generated_Source\PSoC5/ADC_Battery.c ****     /* Increase comparator latch enable delay by 20%, 
+ 196:Generated_Source\PSoC5/ADC_Battery.c ****     *  Increase comparator bias current by 30% without impacting delaysDelay 
+ 197:Generated_Source\PSoC5/ADC_Battery.c ****     *  Default for 1MSPS) 
+ 198:Generated_Source\PSoC5/ADC_Battery.c ****     */
+ 199:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_HIGH_POWER_PULSE == 0u)    /* MinPulseWidth <= 50 ns */
+ 200:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_SAR_CSR5_REG |= ADC_Battery_SAR_SEL_CSEL_DFT_CHAR;
+ 201:Generated_Source\PSoC5/ADC_Battery.c ****     #else /* for <500ksps */
+ 202:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_SAR_CSR5_REG &= (uint8)~ADC_Battery_SAR_SEL_CSEL_DFT_CHAR;
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 5
+
+
+ 203:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* ADC_Battery_HIGH_POWER_PULSE == 0u */
+ 204:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 205:Generated_Source\PSoC5/ADC_Battery.c ****     /* Set default power and other configurations for control register 0 in multiple lines */
+ 206:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CSR0_REG = (uint8)((uint8)ADC_Battery_DEFAULT_POWER << ADC_Battery_SAR_POWER_SH
+ 207:Generated_Source\PSoC5/ADC_Battery.c ****     /* SAR_HIZ_CLEAR:   Should not be used for LP */
+ 208:Generated_Source\PSoC5/ADC_Battery.c ****     #if ((CY_PSOC5LP) || (ADC_Battery_DEFAULT_REFERENCE != ADC_Battery__EXT_REF))
+ 209:Generated_Source\PSoC5/ADC_Battery.c ****         | ADC_Battery_SAR_HIZ_CLEAR
+ 210:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* SAR_HIZ_CLEAR */
+ 211:Generated_Source\PSoC5/ADC_Battery.c ****     /*Set Convertion mode */
+ 212:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_DEFAULT_CONV_MODE != ADC_Battery__FREE_RUNNING)      /* If triggered mode */
+ 213:Generated_Source\PSoC5/ADC_Battery.c ****         | ADC_Battery_SAR_MX_SOF_UDB           /* source: UDB */
+ 214:Generated_Source\PSoC5/ADC_Battery.c ****         | ADC_Battery_SAR_SOF_MODE_EDGE        /* Set edge-sensitive sof source */
+ 215:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* ADC_Battery_DEFAULT_CONV_MODE */
+ 216:Generated_Source\PSoC5/ADC_Battery.c ****     ; /* end of multiple line initialization */
+ 217:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 218:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_TR0_REG = ADC_Battery_SAR_CAP_TRIM_2;
+ 219:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 220:Generated_Source\PSoC5/ADC_Battery.c ****     /* Enable clock for SAR ADC*/
+ 221:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CLK_REG |= ADC_Battery_SAR_MX_CLK_EN;
+ 222:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 223:Generated_Source\PSoC5/ADC_Battery.c ****     CyDelayUs(10u); /* The block is ready to use 10 us after the enable signal is set high. */
+ 224:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 225:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_IRQ_REMOVE == 0u)
+ 226:Generated_Source\PSoC5/ADC_Battery.c ****         /* Clear a pending interrupt */
+ 227:Generated_Source\PSoC5/ADC_Battery.c ****         CyIntClearPending(ADC_Battery_INTC_NUMBER);
+ 228:Generated_Source\PSoC5/ADC_Battery.c ****     #endif   /* End ADC_Battery_IRQ_REMOVE */
+ 229:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 230:Generated_Source\PSoC5/ADC_Battery.c ****     CyExitCriticalSection(enableInterrupts);
+ 231:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 232:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 233:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 234:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 235:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_Stop
+ 236:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 237:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 238:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 239:Generated_Source\PSoC5/ADC_Battery.c **** *  Stops ADC conversions and puts the ADC into its lowest power mode.
+ 240:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 241:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 242:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 243:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 244:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 245:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 246:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 247:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 248:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_Stop(void)
+ 249:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 250:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 enableInterrupts;
+ 251:Generated_Source\PSoC5/ADC_Battery.c ****     enableInterrupts = CyEnterCriticalSection();
+ 252:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 253:Generated_Source\PSoC5/ADC_Battery.c ****     /* Stop all conversions */
+ 254:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CSR0_REG &= (uint8)~ADC_Battery_SAR_SOF_START_CONV;
+ 255:Generated_Source\PSoC5/ADC_Battery.c ****     /* Disable the SAR ADC block in Active Power Mode */
+ 256:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_PWRMGR_SAR_REG &= (uint8)~ADC_Battery_ACT_PWR_SAR_EN;
+ 257:Generated_Source\PSoC5/ADC_Battery.c ****     /* Disable the SAR ADC in Standby Power Mode */
+ 258:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_STBY_PWRMGR_SAR_REG &= (uint8)~ADC_Battery_STBY_PWR_SAR_EN;
+ 259:Generated_Source\PSoC5/ADC_Battery.c **** 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 6
+
+
+ 260:Generated_Source\PSoC5/ADC_Battery.c ****     /* This is only valid if there is an internal clock */
+ 261:Generated_Source\PSoC5/ADC_Battery.c ****     #if(ADC_Battery_DEFAULT_INTERNAL_CLK)
+ 262:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_PWRMGR_CLK_REG &= (uint8)~ADC_Battery_ACT_PWR_CLK_EN;
+ 263:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_STBY_PWRMGR_CLK_REG &= (uint8)~ADC_Battery_STBY_PWR_CLK_EN;
+ 264:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_INTERNAL_CLK */
+ 265:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 266:Generated_Source\PSoC5/ADC_Battery.c ****     CyExitCriticalSection(enableInterrupts);
+ 267:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 268:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 269:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 270:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 271:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 272:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_SetPower
+ 273:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 274:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 275:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 276:Generated_Source\PSoC5/ADC_Battery.c **** *  Sets the operational power of the ADC. You should use the higher power
+ 277:Generated_Source\PSoC5/ADC_Battery.c **** *  settings with faster clock speeds.
+ 278:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 279:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 280:Generated_Source\PSoC5/ADC_Battery.c **** *  power:  Power setting for ADC
+ 281:Generated_Source\PSoC5/ADC_Battery.c **** *  0 ->    Normal
+ 282:Generated_Source\PSoC5/ADC_Battery.c **** *  1 ->    Medium power
+ 283:Generated_Source\PSoC5/ADC_Battery.c **** *  2 ->    1.25 power
+ 284:Generated_Source\PSoC5/ADC_Battery.c **** *  3 ->    Minimum power.
+ 285:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 286:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 287:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 288:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 289:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 290:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_SetPower(uint8 power)
+ 291:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 292:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 tmpReg;
+ 293:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 294:Generated_Source\PSoC5/ADC_Battery.c ****     /* mask off invalid power settings */
+ 295:Generated_Source\PSoC5/ADC_Battery.c ****     power &= ADC_Battery_SAR_API_POWER_MASK;
+ 296:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 297:Generated_Source\PSoC5/ADC_Battery.c ****     /* Set Power parameter  */
+ 298:Generated_Source\PSoC5/ADC_Battery.c ****     tmpReg = ADC_Battery_SAR_CSR0_REG & (uint8)~ADC_Battery_SAR_POWER_MASK;
+ 299:Generated_Source\PSoC5/ADC_Battery.c ****     tmpReg |= (uint8)(power << ADC_Battery_SAR_POWER_SHIFT);
+ 300:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CSR0_REG = tmpReg;
+ 301:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 302:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 303:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 304:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 305:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_SetResolution
+ 306:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 307:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 308:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 309:Generated_Source\PSoC5/ADC_Battery.c **** *  Sets the Relution of the SAR.
+ 310:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 311:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 312:Generated_Source\PSoC5/ADC_Battery.c **** *  resolution:
+ 313:Generated_Source\PSoC5/ADC_Battery.c **** *  12 ->    RES12
+ 314:Generated_Source\PSoC5/ADC_Battery.c **** *  10 ->    RES10
+ 315:Generated_Source\PSoC5/ADC_Battery.c **** *  8  ->    RES8
+ 316:Generated_Source\PSoC5/ADC_Battery.c **** *
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 7
+
+
+ 317:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 318:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 319:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 320:Generated_Source\PSoC5/ADC_Battery.c **** * Side Effects:
+ 321:Generated_Source\PSoC5/ADC_Battery.c **** *  The ADC resolution cannot be changed during a conversion cycle. The
+ 322:Generated_Source\PSoC5/ADC_Battery.c **** *  recommended best practice is to stop conversions with
+ 323:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_StopConvert(), change the resolution, then restart the
+ 324:Generated_Source\PSoC5/ADC_Battery.c **** *  conversions with ADC_StartConvert().
+ 325:Generated_Source\PSoC5/ADC_Battery.c **** *  If you decide not to stop conversions before calling this API, you
+ 326:Generated_Source\PSoC5/ADC_Battery.c **** *  should use ADC_IsEndConversion() to wait until conversion is complete
+ 327:Generated_Source\PSoC5/ADC_Battery.c **** *  before changing the resolution.
+ 328:Generated_Source\PSoC5/ADC_Battery.c **** *  If you call ADC_SetResolution() during a conversion, the resolution will
+ 329:Generated_Source\PSoC5/ADC_Battery.c **** *  not be changed until the current conversion is complete. Data will not be
+ 330:Generated_Source\PSoC5/ADC_Battery.c **** *  available in the new resolution for another 6 + "New Resolution(in bits)"
+ 331:Generated_Source\PSoC5/ADC_Battery.c **** *  clock cycles.
+ 332:Generated_Source\PSoC5/ADC_Battery.c **** *  You may need add a delay of this number of clock cycles after
+ 333:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_SetResolution() is called before data is valid again.
+ 334:Generated_Source\PSoC5/ADC_Battery.c **** *  Affects ADC_CountsTo_Volts(), ADC_CountsTo_mVolts(), and
+ 335:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_CountsTo_uVolts() by calculating the correct conversion between ADC
+ 336:Generated_Source\PSoC5/ADC_Battery.c **** *  counts and the applied input voltage. Calculation depends on resolution,
+ 337:Generated_Source\PSoC5/ADC_Battery.c **** *  input range, and voltage reference.
+ 338:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 339:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 340:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_SetResolution(uint8 resolution)
+ 341:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 342:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 tmpReg;
+ 343:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 344:Generated_Source\PSoC5/ADC_Battery.c ****     /* Set SAR ADC resolution and sample width: 18 conversion cycles at 12bits + 1 gap */
+ 345:Generated_Source\PSoC5/ADC_Battery.c ****     switch (resolution)
+ 346:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 347:Generated_Source\PSoC5/ADC_Battery.c ****         case (uint8)ADC_Battery__BITS_12:
+ 348:Generated_Source\PSoC5/ADC_Battery.c ****             tmpReg = ADC_Battery_SAR_RESOLUTION_12BIT | ADC_Battery_SAR_SAMPLE_WIDTH;
+ 349:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 350:Generated_Source\PSoC5/ADC_Battery.c ****         case (uint8)ADC_Battery__BITS_10:
+ 351:Generated_Source\PSoC5/ADC_Battery.c ****             tmpReg = ADC_Battery_SAR_RESOLUTION_10BIT | ADC_Battery_SAR_SAMPLE_WIDTH;
+ 352:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 353:Generated_Source\PSoC5/ADC_Battery.c ****         case (uint8)ADC_Battery__BITS_8:
+ 354:Generated_Source\PSoC5/ADC_Battery.c ****             tmpReg = ADC_Battery_SAR_RESOLUTION_8BIT | ADC_Battery_SAR_SAMPLE_WIDTH;
+ 355:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 356:Generated_Source\PSoC5/ADC_Battery.c ****         default:
+ 357:Generated_Source\PSoC5/ADC_Battery.c ****             tmpReg = ADC_Battery_SAR_RESOLUTION_12BIT | ADC_Battery_SAR_SAMPLE_WIDTH;
+ 358:Generated_Source\PSoC5/ADC_Battery.c ****             /* Halt CPU in debug mode if resolution is out of valid range */
+ 359:Generated_Source\PSoC5/ADC_Battery.c ****             CYASSERT(0u != 0u);
+ 360:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 361:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 362:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CSR2_REG = tmpReg;
+ 363:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 364:Generated_Source\PSoC5/ADC_Battery.c ****      /* Calculate gain for convert counts to volts */
+ 365:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_CalcGain(resolution);
+ 366:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 367:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 368:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 369:Generated_Source\PSoC5/ADC_Battery.c **** #if(ADC_Battery_DEFAULT_CONV_MODE != ADC_Battery__HARDWARE_TRIGGER)
+ 370:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 371:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 372:Generated_Source\PSoC5/ADC_Battery.c ****     /*******************************************************************************
+ 373:Generated_Source\PSoC5/ADC_Battery.c ****     * Function Name: ADC_Battery_StartConvert
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 8
+
+
+ 374:Generated_Source\PSoC5/ADC_Battery.c ****     ********************************************************************************
+ 375:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 376:Generated_Source\PSoC5/ADC_Battery.c ****     * Summary:
+ 377:Generated_Source\PSoC5/ADC_Battery.c ****     *  Forces the ADC to initiate a conversion. In free-running mode, the ADC runs
+ 378:Generated_Source\PSoC5/ADC_Battery.c ****     *  continuously. In software trigger mode, the function also acts as a software
+ 379:Generated_Source\PSoC5/ADC_Battery.c ****     *  version of the SOC and every conversion must be triggered by
+ 380:Generated_Source\PSoC5/ADC_Battery.c ****     *  ADC_Battery_StartConvert(). This function is not available when the
+ 381:Generated_Source\PSoC5/ADC_Battery.c ****     *  Hardware Trigger sample mode is selected.
+ 382:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 383:Generated_Source\PSoC5/ADC_Battery.c ****     * Parameters:
+ 384:Generated_Source\PSoC5/ADC_Battery.c ****     *  None.
+ 385:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 386:Generated_Source\PSoC5/ADC_Battery.c ****     * Return:
+ 387:Generated_Source\PSoC5/ADC_Battery.c ****     *  None.
+ 388:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 389:Generated_Source\PSoC5/ADC_Battery.c ****     * Theory:
+ 390:Generated_Source\PSoC5/ADC_Battery.c ****     *  Forces the ADC to initiate a conversion. In Free Running mode, the ADC will
+ 391:Generated_Source\PSoC5/ADC_Battery.c ****     *  run continuously. In a software trigger mode the function also acts as a
+ 392:Generated_Source\PSoC5/ADC_Battery.c ****     *  software version of the SOC. Here every conversion has to be triggered by
+ 393:Generated_Source\PSoC5/ADC_Battery.c ****     *  the routine. This writes into the SOC bit in SAR_CTRL reg.
+ 394:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 395:Generated_Source\PSoC5/ADC_Battery.c ****     * Side Effects:
+ 396:Generated_Source\PSoC5/ADC_Battery.c ****     *  In a software trigger mode the function switches source for SOF from the
+ 397:Generated_Source\PSoC5/ADC_Battery.c ****     *  external pin to the internal SOF generation. Application should not call
+ 398:Generated_Source\PSoC5/ADC_Battery.c ****     *  StartConvert if external source used for SOF.
+ 399:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 400:Generated_Source\PSoC5/ADC_Battery.c ****     *******************************************************************************/
+ 401:Generated_Source\PSoC5/ADC_Battery.c ****     void ADC_Battery_StartConvert(void)
+ 402:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 403:Generated_Source\PSoC5/ADC_Battery.c ****         #if(ADC_Battery_DEFAULT_CONV_MODE != ADC_Battery__FREE_RUNNING)  /* If software triggered m
+ 404:Generated_Source\PSoC5/ADC_Battery.c ****             ADC_Battery_SAR_CSR0_REG &= (uint8)~ADC_Battery_SAR_MX_SOF_UDB;   /* source: SOF bit */
+ 405:Generated_Source\PSoC5/ADC_Battery.c ****         #endif /* End ADC_Battery_DEFAULT_CONV_MODE */
+ 406:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 407:Generated_Source\PSoC5/ADC_Battery.c ****         /* Start the conversion */
+ 408:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_SAR_CSR0_REG |= ADC_Battery_SAR_SOF_START_CONV;
+ 409:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 410:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 411:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 412:Generated_Source\PSoC5/ADC_Battery.c ****     /*******************************************************************************
+ 413:Generated_Source\PSoC5/ADC_Battery.c ****     * Function Name: ADC_Battery_StopConvert
+ 414:Generated_Source\PSoC5/ADC_Battery.c ****     ********************************************************************************
+ 415:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 416:Generated_Source\PSoC5/ADC_Battery.c ****     * Summary:
+ 417:Generated_Source\PSoC5/ADC_Battery.c ****     *  Forces the ADC to stop conversions. If a conversion is currently executing,
+ 418:Generated_Source\PSoC5/ADC_Battery.c ****     *  that conversion will complete, but no further conversions will occur. This
+ 419:Generated_Source\PSoC5/ADC_Battery.c ****     *  function is not available when the Hardware Trigger sample mode is selected.
+ 420:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 421:Generated_Source\PSoC5/ADC_Battery.c ****     * Parameters:
+ 422:Generated_Source\PSoC5/ADC_Battery.c ****     *  None.
+ 423:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 424:Generated_Source\PSoC5/ADC_Battery.c ****     * Return:
+ 425:Generated_Source\PSoC5/ADC_Battery.c ****     *  None.
+ 426:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 427:Generated_Source\PSoC5/ADC_Battery.c ****     * Theory:
+ 428:Generated_Source\PSoC5/ADC_Battery.c ****     *  Stops ADC conversion in Free Running mode.
+ 429:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 430:Generated_Source\PSoC5/ADC_Battery.c ****     * Side Effects:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 9
+
+
+ 431:Generated_Source\PSoC5/ADC_Battery.c ****     *  In Software Trigger sample mode, this function sets a software version of the
+ 432:Generated_Source\PSoC5/ADC_Battery.c ****     *  SOC to low level and switches the SOC source to hardware SOC input.
+ 433:Generated_Source\PSoC5/ADC_Battery.c ****     *
+ 434:Generated_Source\PSoC5/ADC_Battery.c ****     *******************************************************************************/
+ 435:Generated_Source\PSoC5/ADC_Battery.c ****     void ADC_Battery_StopConvert(void)
+ 436:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 437:Generated_Source\PSoC5/ADC_Battery.c ****         /* Stop all conversions */
+ 438:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_SAR_CSR0_REG &= (uint8)~ADC_Battery_SAR_SOF_START_CONV;
+ 439:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 440:Generated_Source\PSoC5/ADC_Battery.c ****         #if(ADC_Battery_DEFAULT_CONV_MODE != ADC_Battery__FREE_RUNNING)  /* If software triggered m
+ 441:Generated_Source\PSoC5/ADC_Battery.c ****             /* Return source to UDB for hardware SOF signal */
+ 442:Generated_Source\PSoC5/ADC_Battery.c ****             ADC_Battery_SAR_CSR0_REG |= ADC_Battery_SAR_MX_SOF_UDB;    /* source: UDB */
+ 443:Generated_Source\PSoC5/ADC_Battery.c ****         #endif /* End ADC_Battery_DEFAULT_CONV_MODE */
+ 444:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 445:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 446:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 447:Generated_Source\PSoC5/ADC_Battery.c **** #endif /* End ADC_Battery_DEFAULT_CONV_MODE != ADC_Battery__HARDWARE_TRIGGER */
+ 448:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 449:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 450:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 451:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_IsEndConversion
+ 452:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 453:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 454:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 455:Generated_Source\PSoC5/ADC_Battery.c **** *  Immediately returns the status of the conversion or does not return
+ 456:Generated_Source\PSoC5/ADC_Battery.c **** *  (blocking) until the conversion completes, depending on the retMode
+ 457:Generated_Source\PSoC5/ADC_Battery.c **** *  parameter.
+ 458:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 459:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 460:Generated_Source\PSoC5/ADC_Battery.c **** *  retMode:  Check conversion return mode.
+ 461:Generated_Source\PSoC5/ADC_Battery.c **** *   ADC_Battery_RETURN_STATUS: Immediately returns the status. If the
+ 462:Generated_Source\PSoC5/ADC_Battery.c **** *     value returned is zero, the conversion is not complete, and this function
+ 463:Generated_Source\PSoC5/ADC_Battery.c **** *     should be retried until a nonzero result is returned.
+ 464:Generated_Source\PSoC5/ADC_Battery.c **** *   ADC_Battery_WAIT_FOR_RESULT: Does not return a result until the ADC
+ 465:Generated_Source\PSoC5/ADC_Battery.c **** *     conversion is complete.
+ 466:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 467:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 468:Generated_Source\PSoC5/ADC_Battery.c **** *  (uint8)  0 =>  The ADC is still calculating the last result.
+ 469:Generated_Source\PSoC5/ADC_Battery.c **** *           1 =>  The last conversion is complete.
+ 470:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 471:Generated_Source\PSoC5/ADC_Battery.c **** * Side Effects:
+ 472:Generated_Source\PSoC5/ADC_Battery.c **** *  This function reads the end of conversion status, which is cleared on read.
+ 473:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 474:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 475:Generated_Source\PSoC5/ADC_Battery.c **** uint8 ADC_Battery_IsEndConversion(uint8 retMode)
+ 476:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 477:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 status;
+ 478:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 479:Generated_Source\PSoC5/ADC_Battery.c ****     do
+ 480:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 481:Generated_Source\PSoC5/ADC_Battery.c ****         status = ADC_Battery_SAR_CSR1_REG & ADC_Battery_SAR_EOF_1;
+ 482:Generated_Source\PSoC5/ADC_Battery.c ****     } while ((status != ADC_Battery_SAR_EOF_1) && (retMode == ADC_Battery_WAIT_FOR_RESULT));
+ 483:Generated_Source\PSoC5/ADC_Battery.c ****     /* If convertion complete, wait until EOF bit released */
+ 484:Generated_Source\PSoC5/ADC_Battery.c ****     if(status == ADC_Battery_SAR_EOF_1)
+ 485:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 486:Generated_Source\PSoC5/ADC_Battery.c ****         /* wait one ADC clock to let the EOC status bit release */
+ 487:Generated_Source\PSoC5/ADC_Battery.c ****         CyDelayUs(1u);
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 10
+
+
+ 488:Generated_Source\PSoC5/ADC_Battery.c ****         /* Do the unconditional read operation of the CSR1 register to make sure the EOC bit has be
+ 489:Generated_Source\PSoC5/ADC_Battery.c ****         CY_GET_REG8(ADC_Battery_SAR_CSR1_PTR);
+ 490:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 491:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 492:Generated_Source\PSoC5/ADC_Battery.c ****     return(status);
+ 493:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 494:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 495:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 496:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 497:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_GetResult8
+ 498:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 499:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 500:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 501:Generated_Source\PSoC5/ADC_Battery.c **** *  Returns the result of an 8-bit conversion. If the resolution is set greater
+ 502:Generated_Source\PSoC5/ADC_Battery.c **** *  than 8 bits, the function returns the LSB of the result.
+ 503:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_IsEndConversion() should be called to verify that the data
+ 504:Generated_Source\PSoC5/ADC_Battery.c **** *   sample is ready.
+ 505:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 506:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 507:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 508:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 509:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 510:Generated_Source\PSoC5/ADC_Battery.c **** *  The LSB of the last ADC conversion.
+ 511:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 512:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 513:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_shift - used to convert the ADC counts to the 2s
+ 514:Generated_Source\PSoC5/ADC_Battery.c **** *  compliment form.
+ 515:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 516:Generated_Source\PSoC5/ADC_Battery.c **** * Side Effects:
+ 517:Generated_Source\PSoC5/ADC_Battery.c **** *  Converts the ADC counts to the 2s complement form.
+ 518:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 519:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 520:Generated_Source\PSoC5/ADC_Battery.c **** int8 ADC_Battery_GetResult8( void )
+ 521:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 522:Generated_Source\PSoC5/ADC_Battery.c ****     return( (int8)ADC_Battery_SAR_WRK0_REG - (int8)ADC_Battery_shift);
+ 523:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 524:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 525:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 526:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 527:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_GetResult16
+ 528:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 529:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 530:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 531:Generated_Source\PSoC5/ADC_Battery.c **** *  Returns a 16-bit result for a conversion with a result that has a resolution
+ 532:Generated_Source\PSoC5/ADC_Battery.c **** *  of 8 to 12 bits.
+ 533:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_IsEndConversion() should be called to verify that the data
+ 534:Generated_Source\PSoC5/ADC_Battery.c **** *   sample is ready
+ 535:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 536:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 537:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 538:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 539:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 540:Generated_Source\PSoC5/ADC_Battery.c **** *  The 16-bit result of the last ADC conversion
+ 541:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 542:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 543:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_shift - used to convert the ADC counts to the 2s
+ 544:Generated_Source\PSoC5/ADC_Battery.c **** *  compliment form.
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 11
+
+
+ 545:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 546:Generated_Source\PSoC5/ADC_Battery.c **** * Side Effects:
+ 547:Generated_Source\PSoC5/ADC_Battery.c **** *  Converts the ADC counts to the 2s complement form.
+ 548:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 549:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 550:Generated_Source\PSoC5/ADC_Battery.c **** int16 ADC_Battery_GetResult16( void )
+ 551:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 552:Generated_Source\PSoC5/ADC_Battery.c ****     uint16 res;
+ 553:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 554:Generated_Source\PSoC5/ADC_Battery.c ****     res = CY_GET_REG16(ADC_Battery_SAR_WRK_PTR);
+ 555:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 556:Generated_Source\PSoC5/ADC_Battery.c ****     return( (int16)res - ADC_Battery_shift );
+ 557:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 558:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 559:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 560:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 561:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_SetOffset
+ 562:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 563:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 564:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 565:Generated_Source\PSoC5/ADC_Battery.c **** *  Sets the ADC offset, which is used by ADC_Battery_CountsTo_Volts(),
+ 566:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_CountsTo_mVolts(), and ADC_Battery_CountsTo_uVolts()
+ 567:Generated_Source\PSoC5/ADC_Battery.c **** *  to subtract the offset from the given reading before calculating the voltage
+ 568:Generated_Source\PSoC5/ADC_Battery.c **** *  conversion.
+ 569:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 570:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 571:Generated_Source\PSoC5/ADC_Battery.c **** *  int16: This value is measured when the inputs are shorted or connected to
+ 572:Generated_Source\PSoC5/ADC_Battery.c ****    the same input voltage.
+ 573:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 574:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 575:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 576:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 577:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 578:Generated_Source\PSoC5/ADC_Battery.c **** *  The ADC_Battery_offset variable modified. This variable is used for
+ 579:Generated_Source\PSoC5/ADC_Battery.c **** *  offset calibration purpose.
+ 580:Generated_Source\PSoC5/ADC_Battery.c **** *  Affects the ADC_Battery_CountsTo_Volts,
+ 581:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_CountsTo_mVolts, ADC_Battery_CountsTo_uVolts functions
+ 582:Generated_Source\PSoC5/ADC_Battery.c **** *  by subtracting the given offset.
+ 583:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 584:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 585:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_SetOffset(int16 offset)
+ 586:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 587:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_offset = offset;
+ 588:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 589:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 590:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 591:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 592:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_CalcGain
+ 593:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 594:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 595:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 596:Generated_Source\PSoC5/ADC_Battery.c **** *  This function calculates the ADC gain in counts per 10 volt.
+ 597:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 598:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 599:Generated_Source\PSoC5/ADC_Battery.c **** *  uint8: resolution
+ 600:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 601:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 12
+
+
+ 602:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 603:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 604:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 605:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_shift variable initialized. This variable is used to
+ 606:Generated_Source\PSoC5/ADC_Battery.c **** *  convert the ADC counts to the 2s compliment form.
+ 607:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_countsPer10Volt variable initialized. This variable is used
+ 608:Generated_Source\PSoC5/ADC_Battery.c **** *  for gain calibration purpose.
+ 609:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 610:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 611:Generated_Source\PSoC5/ADC_Battery.c **** static void ADC_Battery_CalcGain( uint8 resolution )
+ 612:Generated_Source\PSoC5/ADC_Battery.c **** {
+  27              		.loc 1 612 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+ 613:Generated_Source\PSoC5/ADC_Battery.c ****     int32 counts;
+ 614:Generated_Source\PSoC5/ADC_Battery.c ****     #if(!((ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+ 615:Generated_Source\PSoC5/ADC_Battery.c ****          (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDDA) || \
+ 616:Generated_Source\PSoC5/ADC_Battery.c ****          (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDAC)) )
+ 617:Generated_Source\PSoC5/ADC_Battery.c ****         uint16 diff_zero;
+ 618:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_RANGE */
+ 619:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 620:Generated_Source\PSoC5/ADC_Battery.c ****     switch (resolution)
+  36              		.loc 1 620 0
+  37 0002 0A28     		cmp	r0, #10
+  38 0004 0FD0     		beq	.L6
+  39 0006 0C28     		cmp	r0, #12
+  40 0008 02D0     		beq	.L4
+  41 000a 0828     		cmp	r0, #8
+  42 000c 06D1     		bne	.L7
+  43 000e 02E0     		b	.L5
+  44              	.L4:
+ 621:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 622:Generated_Source\PSoC5/ADC_Battery.c ****         case (uint8)ADC_Battery__BITS_12:
+ 623:Generated_Source\PSoC5/ADC_Battery.c ****             counts = (int32)ADC_Battery_SAR_WRK_MAX_12BIT;
+  45              		.loc 1 623 0
+  46 0010 4FF48052 		mov	r2, #4096
+  47 0014 09E0     		b	.L3
+  48              	.L5:
+  49              	.LVL1:
+ 624:Generated_Source\PSoC5/ADC_Battery.c ****             #if(!((ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+ 625:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDDA) || \
+ 626:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDAC)) )
+ 627:Generated_Source\PSoC5/ADC_Battery.c ****                 diff_zero = ADC_Battery_SAR_DIFF_SHIFT;
+ 628:Generated_Source\PSoC5/ADC_Battery.c ****             #endif /* End ADC_Battery_DEFAULT_RANGE */
+ 629:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 630:Generated_Source\PSoC5/ADC_Battery.c ****         case (uint8)ADC_Battery__BITS_10:
+ 631:Generated_Source\PSoC5/ADC_Battery.c ****             counts = (int32)ADC_Battery_SAR_WRK_MAX_10BIT;
+ 632:Generated_Source\PSoC5/ADC_Battery.c ****             #if(!((ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+ 633:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDDA) || \
+ 634:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDAC)) )
+ 635:Generated_Source\PSoC5/ADC_Battery.c ****                 diff_zero = ADC_Battery_SAR_DIFF_SHIFT >> 2u;
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 13
+
+
+ 636:Generated_Source\PSoC5/ADC_Battery.c ****             #endif /* End ADC_Battery_DEFAULT_RANGE */
+ 637:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 638:Generated_Source\PSoC5/ADC_Battery.c ****         case (uint8)ADC_Battery__BITS_8:
+ 639:Generated_Source\PSoC5/ADC_Battery.c ****             counts = (int32)ADC_Battery_SAR_WRK_MAX_8BIT;
+  50              		.loc 1 639 0
+  51 0016 4FF48072 		mov	r2, #256
+ 640:Generated_Source\PSoC5/ADC_Battery.c ****             #if(!((ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+ 641:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDDA) || \
+ 642:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDAC)) )
+ 643:Generated_Source\PSoC5/ADC_Battery.c ****                 diff_zero = ADC_Battery_SAR_DIFF_SHIFT >> 4u;
+ 644:Generated_Source\PSoC5/ADC_Battery.c ****             #endif /* End ADC_Battery_DEFAULT_RANGE */
+ 645:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+  52              		.loc 1 645 0
+  53 001a 06E0     		b	.L3
+  54              	.LVL2:
+  55              	.L7:
+ 646:Generated_Source\PSoC5/ADC_Battery.c ****         default: /* Halt CPU in debug mode if resolution is out of valid range */
+ 647:Generated_Source\PSoC5/ADC_Battery.c ****             counts = 0;
+ 648:Generated_Source\PSoC5/ADC_Battery.c ****             #if(!((ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+ 649:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDDA) || \
+ 650:Generated_Source\PSoC5/ADC_Battery.c ****                  (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDAC)) )
+ 651:Generated_Source\PSoC5/ADC_Battery.c ****                 diff_zero = 0u;
+ 652:Generated_Source\PSoC5/ADC_Battery.c ****             #endif /* End ADC_Battery_DEFAULT_RANGE */
+ 653:Generated_Source\PSoC5/ADC_Battery.c ****             CYASSERT(0u != 0u);
+  56              		.loc 1 653 0
+  57 001c 0020     		movs	r0, #0
+  58              	.LVL3:
+  59 001e FFF7FEFF 		bl	CyHalt
+  60              	.LVL4:
+ 647:Generated_Source\PSoC5/ADC_Battery.c ****             #if(!((ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+  61              		.loc 1 647 0
+  62 0022 0022     		movs	r2, #0
+  63 0024 01E0     		b	.L3
+  64              	.LVL5:
+  65              	.L6:
+ 631:Generated_Source\PSoC5/ADC_Battery.c ****             #if(!((ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+  66              		.loc 1 631 0
+  67 0026 4FF48062 		mov	r2, #1024
+  68              	.LVL6:
+  69              	.L3:
+ 654:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 655:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 656:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_countsPerVolt = 0; /* Clear obsolete variable */
+  70              		.loc 1 656 0
+  71 002a 0021     		movs	r1, #0
+  72 002c 094B     		ldr	r3, .L9
+  73 002e 1980     		strh	r1, [r3]	@ movhi
+ 657:Generated_Source\PSoC5/ADC_Battery.c ****     /* Calculate gain in counts per 10 volts with rounding */
+ 658:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_countsPer10Volt = (((counts * ADC_Battery_10MV_COUNTS) +
+  74              		.loc 1 658 0
+  75 0030 42F21073 		movw	r3, #10000
+  76 0034 03FB02F3 		mul	r3, r3, r2
+  77 0038 03F6C413 		addw	r3, r3, #2500
+ 659:Generated_Source\PSoC5/ADC_Battery.c ****                         ADC_Battery_DEFAULT_REF_VOLTAGE_MV) / (ADC_Battery_DEFAULT_REF_VOLTAGE_MV *
+  78              		.loc 1 659 0
+  79 003c 064A     		ldr	r2, .L9+4
+  80              	.LVL7:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 14
+
+
+  81 003e 82FB0302 		smull	r0, r2, r2, r3
+  82 0042 DB17     		asrs	r3, r3, #31
+  83 0044 C3EBE223 		rsb	r3, r3, r2, asr #11
+ 658:Generated_Source\PSoC5/ADC_Battery.c ****                         ADC_Battery_DEFAULT_REF_VOLTAGE_MV) / (ADC_Battery_DEFAULT_REF_VOLTAGE_MV *
+  84              		.loc 1 658 0
+  85 0048 044A     		ldr	r2, .L9+8
+  86 004a 1360     		str	r3, [r2]
+ 660:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 661:Generated_Source\PSoC5/ADC_Battery.c ****     #if( (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSS_TO_VREF) || \
+ 662:Generated_Source\PSoC5/ADC_Battery.c ****          (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDDA) || \
+ 663:Generated_Source\PSoC5/ADC_Battery.c ****          (ADC_Battery_DEFAULT_RANGE == ADC_Battery__VSSA_TO_VDAC) )
+ 664:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_shift = 0;
+  87              		.loc 1 664 0
+  88 004c 044B     		ldr	r3, .L9+12
+  89 004e 1980     		strh	r1, [r3]	@ movhi
+  90 0050 08BD     		pop	{r3, pc}
+  91              	.L10:
+  92 0052 00BF     		.align	2
+  93              	.L9:
+  94 0054 00000000 		.word	ADC_Battery_countsPerVolt
+  95 0058 AD8BDB68 		.word	1759218605
+  96 005c 00000000 		.word	ADC_Battery_countsPer10Volt
+  97 0060 00000000 		.word	ADC_Battery_shift
+  98              		.cfi_endproc
+  99              	.LFE12:
+ 100              		.size	ADC_Battery_CalcGain, .-ADC_Battery_CalcGain
+ 101              		.section	.text.ADC_Battery_Enable,"ax",%progbits
+ 102              		.align	2
+ 103              		.global	ADC_Battery_Enable
+ 104              		.thumb
+ 105              		.thumb_func
+ 106              		.type	ADC_Battery_Enable, %function
+ 107              	ADC_Battery_Enable:
+ 108              	.LFB2:
+ 144:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 tmpReg;
+ 109              		.loc 1 144 0
+ 110              		.cfi_startproc
+ 111              		@ args = 0, pretend = 0, frame = 0
+ 112              		@ frame_needed = 0, uses_anonymous_args = 0
+ 113 0000 38B5     		push	{r3, r4, r5, lr}
+ 114              		.cfi_def_cfa_offset 16
+ 115              		.cfi_offset 3, -16
+ 116              		.cfi_offset 4, -12
+ 117              		.cfi_offset 5, -8
+ 118              		.cfi_offset 14, -4
+ 147:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 119              		.loc 1 147 0
+ 120 0002 FFF7FEFF 		bl	CyEnterCriticalSection
+ 121              	.LVL8:
+ 122 0006 0446     		mov	r4, r0
+ 123              	.LVL9:
+ 150:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 124              		.loc 1 150 0
+ 125 0008 1E4A     		ldr	r2, .L13
+ 126 000a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 127 000c 43F00203 		orr	r3, r3, #2
+ 128 0010 1370     		strb	r3, [r2]
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 15
+
+
+ 153:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 129              		.loc 1 153 0
+ 130 0012 1032     		adds	r2, r2, #16
+ 131 0014 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 132 0016 43F00203 		orr	r3, r3, #2
+ 133 001a 1370     		strb	r3, [r2]
+ 157:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_STBY_PWRMGR_CLK_REG |= ADC_Battery_STBY_PWR_CLK_EN;
+ 134              		.loc 1 157 0
+ 135 001c 1A3A     		subs	r2, r2, #26
+ 136 001e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 137 0020 43F00103 		orr	r3, r3, #1
+ 138 0024 1370     		strb	r3, [r2]
+ 158:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_INTERNAL_CLK */
+ 139              		.loc 1 158 0
+ 140 0026 1032     		adds	r2, r2, #16
+ 141 0028 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 142 002a 43F00103 		orr	r3, r3, #1
+ 143 002e 1370     		strb	r3, [r2]
+ 162:Generated_Source\PSoC5/ADC_Battery.c ****     tmpReg |= ADC_Battery_SAR_EN_BUF_VCM_EN;
+ 144              		.loc 1 162 0
+ 145 0030 02F5AA52 		add	r2, r2, #5440
+ 146 0034 1A32     		adds	r2, r2, #26
+ 147 0036 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 148              	.LVL10:
+ 169:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__EXT_REF */
+ 149              		.loc 1 169 0
+ 150 0038 43F00303 		orr	r3, r3, #3
+ 151              	.LVL11:
+ 171:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 152              		.loc 1 171 0
+ 153 003c 1370     		strb	r3, [r2]
+ 184:Generated_Source\PSoC5/ADC_Battery.c ****         #endif /* ADC_Battery_DEFAULT_REFERENCE == ADC_Battery__INT_REF_NOT_BYPASSED */
+ 154              		.loc 1 184 0
+ 155 003e 0422     		movs	r2, #4
+ 156 0040 114B     		ldr	r3, .L13+4
+ 157              	.LVL12:
+ 158 0042 1A70     		strb	r2, [r3]
+ 159              	.LVL13:
+ 190:Generated_Source\PSoC5/ADC_Battery.c ****     #else /* Set High non-overlap delay for sampling clock signals (for <500KSPS)*/
+ 160              		.loc 1 190 0
+ 161 0044 013B     		subs	r3, r3, #1
+ 162 0046 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 163 0048 02F0BF02 		and	r2, r2, #191
+ 164 004c 1A70     		strb	r2, [r3]
+ 200:Generated_Source\PSoC5/ADC_Battery.c ****     #else /* for <500ksps */
+ 165              		.loc 1 200 0
+ 166 004e 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 167 0050 42F00302 		orr	r2, r2, #3
+ 168 0054 1A70     		strb	r2, [r3]
+ 206:Generated_Source\PSoC5/ADC_Battery.c ****     /* SAR_HIZ_CLEAR:   Should not be used for LP */
+ 169              		.loc 1 206 0
+ 170 0056 0822     		movs	r2, #8
+ 171 0058 053B     		subs	r3, r3, #5
+ 172 005a 1A70     		strb	r2, [r3]
+ 218:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 173              		.loc 1 218 0
+ 174 005c 0225     		movs	r5, #2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 16
+
+
+ 175 005e A3F59753 		sub	r3, r3, #4832
+ 176 0062 123B     		subs	r3, r3, #18
+ 177 0064 1D70     		strb	r5, [r3]
+ 221:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 178              		.loc 1 221 0
+ 179 0066 094A     		ldr	r2, .L13+8
+ 180 0068 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 181 006a 43F00803 		orr	r3, r3, #8
+ 182 006e 1370     		strb	r3, [r2]
+ 223:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 183              		.loc 1 223 0
+ 184 0070 0A20     		movs	r0, #10
+ 185 0072 FFF7FEFF 		bl	CyDelayUs
+ 186              	.LVL14:
+ 227:Generated_Source\PSoC5/ADC_Battery.c ****     #endif   /* End ADC_Battery_IRQ_REMOVE */
+ 187              		.loc 1 227 0
+ 188 0076 064B     		ldr	r3, .L13+12
+ 189 0078 1D60     		str	r5, [r3]
+ 230:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 190              		.loc 1 230 0
+ 191 007a 2046     		mov	r0, r4
+ 192 007c FFF7FEFF 		bl	CyExitCriticalSection
+ 193              	.LVL15:
+ 194 0080 38BD     		pop	{r3, r4, r5, pc}
+ 195              	.LVL16:
+ 196              	.L14:
+ 197 0082 00BF     		.align	2
+ 198              	.L13:
+ 199 0084 AB430040 		.word	1073759147
+ 200 0088 0E590040 		.word	1073764622
+ 201 008c 2F5B0040 		.word	1073765167
+ 202 0090 80E200E0 		.word	-536812928
+ 203              		.cfi_endproc
+ 204              	.LFE2:
+ 205              		.size	ADC_Battery_Enable, .-ADC_Battery_Enable
+ 206              		.section	.text.ADC_Battery_Stop,"ax",%progbits
+ 207              		.align	2
+ 208              		.global	ADC_Battery_Stop
+ 209              		.thumb
+ 210              		.thumb_func
+ 211              		.type	ADC_Battery_Stop, %function
+ 212              	ADC_Battery_Stop:
+ 213              	.LFB3:
+ 249:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 enableInterrupts;
+ 214              		.loc 1 249 0
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 0
+ 217              		@ frame_needed = 0, uses_anonymous_args = 0
+ 218 0000 08B5     		push	{r3, lr}
+ 219              		.cfi_def_cfa_offset 8
+ 220              		.cfi_offset 3, -8
+ 221              		.cfi_offset 14, -4
+ 251:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 222              		.loc 1 251 0
+ 223 0002 FFF7FEFF 		bl	CyEnterCriticalSection
+ 224              	.LVL17:
+ 254:Generated_Source\PSoC5/ADC_Battery.c ****     /* Disable the SAR ADC block in Active Power Mode */
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 17
+
+
+ 225              		.loc 1 254 0
+ 226 0006 0F4A     		ldr	r2, .L17
+ 227 0008 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 228 000a 03F0FE03 		and	r3, r3, #254
+ 229 000e 1370     		strb	r3, [r2]
+ 256:Generated_Source\PSoC5/ADC_Battery.c ****     /* Disable the SAR ADC in Standby Power Mode */
+ 230              		.loc 1 256 0
+ 231 0010 A2F5AA52 		sub	r2, r2, #5440
+ 232 0014 1D3A     		subs	r2, r2, #29
+ 233 0016 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 234 0018 03F0FD03 		and	r3, r3, #253
+ 235 001c 1370     		strb	r3, [r2]
+ 258:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 236              		.loc 1 258 0
+ 237 001e 1032     		adds	r2, r2, #16
+ 238 0020 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 239 0022 03F0FD03 		and	r3, r3, #253
+ 240 0026 1370     		strb	r3, [r2]
+ 262:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_STBY_PWRMGR_CLK_REG &= (uint8)~ADC_Battery_STBY_PWR_CLK_EN;
+ 241              		.loc 1 262 0
+ 242 0028 1A3A     		subs	r2, r2, #26
+ 243 002a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 244 002c 03F0FE03 		and	r3, r3, #254
+ 245 0030 1370     		strb	r3, [r2]
+ 263:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_INTERNAL_CLK */
+ 246              		.loc 1 263 0
+ 247 0032 1032     		adds	r2, r2, #16
+ 248 0034 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 249 0036 03F0FE03 		and	r3, r3, #254
+ 250 003a 1370     		strb	r3, [r2]
+ 266:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 251              		.loc 1 266 0
+ 252 003c FFF7FEFF 		bl	CyExitCriticalSection
+ 253              	.LVL18:
+ 254 0040 08BD     		pop	{r3, pc}
+ 255              	.L18:
+ 256 0042 00BF     		.align	2
+ 257              	.L17:
+ 258 0044 08590040 		.word	1073764616
+ 259              		.cfi_endproc
+ 260              	.LFE3:
+ 261              		.size	ADC_Battery_Stop, .-ADC_Battery_Stop
+ 262              		.section	.text.ADC_Battery_SetPower,"ax",%progbits
+ 263              		.align	2
+ 264              		.global	ADC_Battery_SetPower
+ 265              		.thumb
+ 266              		.thumb_func
+ 267              		.type	ADC_Battery_SetPower, %function
+ 268              	ADC_Battery_SetPower:
+ 269              	.LFB4:
+ 291:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 tmpReg;
+ 270              		.loc 1 291 0
+ 271              		.cfi_startproc
+ 272              		@ args = 0, pretend = 0, frame = 0
+ 273              		@ frame_needed = 0, uses_anonymous_args = 0
+ 274              		@ link register save eliminated.
+ 275              	.LVL19:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 18
+
+
+ 298:Generated_Source\PSoC5/ADC_Battery.c ****     tmpReg |= (uint8)(power << ADC_Battery_SAR_POWER_SHIFT);
+ 276              		.loc 1 298 0
+ 277 0000 044A     		ldr	r2, .L20
+ 278 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 279 0004 03F03F03 		and	r3, r3, #63
+ 280              	.LVL20:
+ 299:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_SAR_CSR0_REG = tmpReg;
+ 281              		.loc 1 299 0
+ 282 0008 43EA8010 		orr	r0, r3, r0, lsl #6
+ 283              	.LVL21:
+ 284 000c C0B2     		uxtb	r0, r0
+ 285              	.LVL22:
+ 300:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 286              		.loc 1 300 0
+ 287 000e 1070     		strb	r0, [r2]
+ 288 0010 7047     		bx	lr
+ 289              	.L21:
+ 290 0012 00BF     		.align	2
+ 291              	.L20:
+ 292 0014 08590040 		.word	1073764616
+ 293              		.cfi_endproc
+ 294              	.LFE4:
+ 295              		.size	ADC_Battery_SetPower, .-ADC_Battery_SetPower
+ 296              		.section	.text.ADC_Battery_SetResolution,"ax",%progbits
+ 297              		.align	2
+ 298              		.global	ADC_Battery_SetResolution
+ 299              		.thumb
+ 300              		.thumb_func
+ 301              		.type	ADC_Battery_SetResolution, %function
+ 302              	ADC_Battery_SetResolution:
+ 303              	.LFB5:
+ 341:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 tmpReg;
+ 304              		.loc 1 341 0
+ 305              		.cfi_startproc
+ 306              		@ args = 0, pretend = 0, frame = 0
+ 307              		@ frame_needed = 0, uses_anonymous_args = 0
+ 308              	.LVL23:
+ 309 0000 10B5     		push	{r4, lr}
+ 310              		.cfi_def_cfa_offset 8
+ 311              		.cfi_offset 4, -8
+ 312              		.cfi_offset 14, -4
+ 313 0002 0446     		mov	r4, r0
+ 345:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 314              		.loc 1 345 0
+ 315 0004 0A28     		cmp	r0, #10
+ 316 0006 0DD0     		beq	.L27
+ 317 0008 0C28     		cmp	r0, #12
+ 318 000a 02D0     		beq	.L25
+ 319 000c 0828     		cmp	r0, #8
+ 320 000e 04D1     		bne	.L28
+ 321 0010 01E0     		b	.L26
+ 322              	.L25:
+ 348:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 323              		.loc 1 348 0
+ 324 0012 C422     		movs	r2, #196
+ 325 0014 07E0     		b	.L24
+ 326              	.L26:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 19
+
+
+ 327              	.LVL24:
+ 354:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 328              		.loc 1 354 0
+ 329 0016 4422     		movs	r2, #68
+ 355:Generated_Source\PSoC5/ADC_Battery.c ****         default:
+ 330              		.loc 1 355 0
+ 331 0018 05E0     		b	.L24
+ 332              	.LVL25:
+ 333              	.L28:
+ 359:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 334              		.loc 1 359 0
+ 335 001a 0020     		movs	r0, #0
+ 336              	.LVL26:
+ 337 001c FFF7FEFF 		bl	CyHalt
+ 338              	.LVL27:
+ 357:Generated_Source\PSoC5/ADC_Battery.c ****             /* Halt CPU in debug mode if resolution is out of valid range */
+ 339              		.loc 1 357 0
+ 340 0020 C422     		movs	r2, #196
+ 341 0022 00E0     		b	.L24
+ 342              	.LVL28:
+ 343              	.L27:
+ 351:Generated_Source\PSoC5/ADC_Battery.c ****             break;
+ 344              		.loc 1 351 0
+ 345 0024 8422     		movs	r2, #132
+ 346              	.LVL29:
+ 347              	.L24:
+ 362:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 348              		.loc 1 362 0
+ 349 0026 034B     		ldr	r3, .L30
+ 350 0028 1A70     		strb	r2, [r3]
+ 365:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 351              		.loc 1 365 0
+ 352 002a 2046     		mov	r0, r4
+ 353 002c FFF7FEFF 		bl	ADC_Battery_CalcGain
+ 354              	.LVL30:
+ 355 0030 10BD     		pop	{r4, pc}
+ 356              	.L31:
+ 357 0032 00BF     		.align	2
+ 358              	.L30:
+ 359 0034 0A590040 		.word	1073764618
+ 360              		.cfi_endproc
+ 361              	.LFE5:
+ 362              		.size	ADC_Battery_SetResolution, .-ADC_Battery_SetResolution
+ 363              		.section	.text.ADC_Battery_Init,"ax",%progbits
+ 364              		.align	2
+ 365              		.global	ADC_Battery_Init
+ 366              		.thumb
+ 367              		.thumb_func
+ 368              		.type	ADC_Battery_Init, %function
+ 369              	ADC_Battery_Init:
+ 370              	.LFB1:
+ 107:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 371              		.loc 1 107 0
+ 372              		.cfi_startproc
+ 373              		@ args = 0, pretend = 0, frame = 0
+ 374              		@ frame_needed = 0, uses_anonymous_args = 0
+ 375 0000 08B5     		push	{r3, lr}
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 20
+
+
+ 376              		.cfi_def_cfa_offset 8
+ 377              		.cfi_offset 3, -8
+ 378              		.cfi_offset 14, -4
+ 111:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_INTERNAL_CLK */
+ 379              		.loc 1 111 0
+ 380 0002 1020     		movs	r0, #16
+ 381 0004 FFF7FEFF 		bl	ADC_Battery_theACLK_SetModeRegister
+ 382              	.LVL31:
+ 116:Generated_Source\PSoC5/ADC_Battery.c ****         (void)CyIntSetVector(ADC_Battery_INTC_NUMBER, &ADC_Battery_ISR);
+ 383              		.loc 1 116 0
+ 384 0008 0721     		movs	r1, #7
+ 385 000a 0120     		movs	r0, #1
+ 386 000c FFF7FEFF 		bl	CyIntSetPriority
+ 387              	.LVL32:
+ 117:Generated_Source\PSoC5/ADC_Battery.c ****     #endif   /* End ADC_Battery_IRQ_REMOVE */
+ 388              		.loc 1 117 0
+ 389 0010 0749     		ldr	r1, .L34
+ 390 0012 0120     		movs	r0, #1
+ 391 0014 FFF7FEFF 		bl	CyIntSetVector
+ 392              	.LVL33:
+ 121:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 393              		.loc 1 121 0
+ 394 0018 064A     		ldr	r2, .L34+4
+ 395 001a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 396 001c 43F00603 		orr	r3, r3, #6
+ 397 0020 1370     		strb	r3, [r2]
+ 124:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_offset = 0;
+ 398              		.loc 1 124 0
+ 399 0022 0C20     		movs	r0, #12
+ 400 0024 FFF7FEFF 		bl	ADC_Battery_SetResolution
+ 401              	.LVL34:
+ 125:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 402              		.loc 1 125 0
+ 403 0028 0022     		movs	r2, #0
+ 404 002a 034B     		ldr	r3, .L34+8
+ 405 002c 1A80     		strh	r2, [r3]	@ movhi
+ 406 002e 08BD     		pop	{r3, pc}
+ 407              	.L35:
+ 408              		.align	2
+ 409              	.L34:
+ 410 0030 00000000 		.word	ADC_Battery_ISR
+ 411 0034 09590040 		.word	1073764617
+ 412 0038 00000000 		.word	ADC_Battery_offset
+ 413              		.cfi_endproc
+ 414              	.LFE1:
+ 415              		.size	ADC_Battery_Init, .-ADC_Battery_Init
+ 416              		.section	.text.ADC_Battery_Start,"ax",%progbits
+ 417              		.align	2
+ 418              		.global	ADC_Battery_Start
+ 419              		.thumb
+ 420              		.thumb_func
+ 421              		.type	ADC_Battery_Start, %function
+ 422              	ADC_Battery_Start:
+ 423              	.LFB0:
+  75:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 424              		.loc 1 75 0
+ 425              		.cfi_startproc
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 21
+
+
+ 426              		@ args = 0, pretend = 0, frame = 0
+ 427              		@ frame_needed = 0, uses_anonymous_args = 0
+ 428 0000 08B5     		push	{r3, lr}
+ 429              		.cfi_def_cfa_offset 8
+ 430              		.cfi_offset 3, -8
+ 431              		.cfi_offset 14, -4
+  78:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 432              		.loc 1 78 0
+ 433 0002 054B     		ldr	r3, .L39
+ 434 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 435 0006 23B9     		cbnz	r3, .L37
+  80:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_initVar = 1u;
+ 436              		.loc 1 80 0
+ 437 0008 FFF7FEFF 		bl	ADC_Battery_Init
+ 438              	.LVL35:
+  81:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 439              		.loc 1 81 0
+ 440 000c 0122     		movs	r2, #1
+ 441 000e 024B     		ldr	r3, .L39
+ 442 0010 1A70     		strb	r2, [r3]
+ 443              	.L37:
+  83:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 444              		.loc 1 83 0
+ 445 0012 FFF7FEFF 		bl	ADC_Battery_Enable
+ 446              	.LVL36:
+ 447 0016 08BD     		pop	{r3, pc}
+ 448              	.L40:
+ 449              		.align	2
+ 450              	.L39:
+ 451 0018 00000000 		.word	.LANCHOR0
+ 452              		.cfi_endproc
+ 453              	.LFE0:
+ 454              		.size	ADC_Battery_Start, .-ADC_Battery_Start
+ 455              		.section	.text.ADC_Battery_StartConvert,"ax",%progbits
+ 456              		.align	2
+ 457              		.global	ADC_Battery_StartConvert
+ 458              		.thumb
+ 459              		.thumb_func
+ 460              		.type	ADC_Battery_StartConvert, %function
+ 461              	ADC_Battery_StartConvert:
+ 462              	.LFB6:
+ 402:Generated_Source\PSoC5/ADC_Battery.c ****         #if(ADC_Battery_DEFAULT_CONV_MODE != ADC_Battery__FREE_RUNNING)  /* If software triggered m
+ 463              		.loc 1 402 0
+ 464              		.cfi_startproc
+ 465              		@ args = 0, pretend = 0, frame = 0
+ 466              		@ frame_needed = 0, uses_anonymous_args = 0
+ 467              		@ link register save eliminated.
+ 408:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 468              		.loc 1 408 0
+ 469 0000 024A     		ldr	r2, .L42
+ 470 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 471 0004 43F00103 		orr	r3, r3, #1
+ 472 0008 1370     		strb	r3, [r2]
+ 473 000a 7047     		bx	lr
+ 474              	.L43:
+ 475              		.align	2
+ 476              	.L42:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 22
+
+
+ 477 000c 08590040 		.word	1073764616
+ 478              		.cfi_endproc
+ 479              	.LFE6:
+ 480              		.size	ADC_Battery_StartConvert, .-ADC_Battery_StartConvert
+ 481              		.section	.text.ADC_Battery_StopConvert,"ax",%progbits
+ 482              		.align	2
+ 483              		.global	ADC_Battery_StopConvert
+ 484              		.thumb
+ 485              		.thumb_func
+ 486              		.type	ADC_Battery_StopConvert, %function
+ 487              	ADC_Battery_StopConvert:
+ 488              	.LFB7:
+ 436:Generated_Source\PSoC5/ADC_Battery.c ****         /* Stop all conversions */
+ 489              		.loc 1 436 0
+ 490              		.cfi_startproc
+ 491              		@ args = 0, pretend = 0, frame = 0
+ 492              		@ frame_needed = 0, uses_anonymous_args = 0
+ 493              		@ link register save eliminated.
+ 438:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 494              		.loc 1 438 0
+ 495 0000 024A     		ldr	r2, .L45
+ 496 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 497 0004 03F0FE03 		and	r3, r3, #254
+ 498 0008 1370     		strb	r3, [r2]
+ 499 000a 7047     		bx	lr
+ 500              	.L46:
+ 501              		.align	2
+ 502              	.L45:
+ 503 000c 08590040 		.word	1073764616
+ 504              		.cfi_endproc
+ 505              	.LFE7:
+ 506              		.size	ADC_Battery_StopConvert, .-ADC_Battery_StopConvert
+ 507              		.section	.text.ADC_Battery_IsEndConversion,"ax",%progbits
+ 508              		.align	2
+ 509              		.global	ADC_Battery_IsEndConversion
+ 510              		.thumb
+ 511              		.thumb_func
+ 512              		.type	ADC_Battery_IsEndConversion, %function
+ 513              	ADC_Battery_IsEndConversion:
+ 514              	.LFB8:
+ 476:Generated_Source\PSoC5/ADC_Battery.c ****     uint8 status;
+ 515              		.loc 1 476 0
+ 516              		.cfi_startproc
+ 517              		@ args = 0, pretend = 0, frame = 0
+ 518              		@ frame_needed = 0, uses_anonymous_args = 0
+ 519              	.LVL37:
+ 520 0000 10B5     		push	{r4, lr}
+ 521              		.cfi_def_cfa_offset 8
+ 522              		.cfi_offset 4, -8
+ 523              		.cfi_offset 14, -4
+ 524              	.L49:
+ 481:Generated_Source\PSoC5/ADC_Battery.c ****     } while ((status != ADC_Battery_SAR_EOF_1) && (retMode == ADC_Battery_WAIT_FOR_RESULT));
+ 525              		.loc 1 481 0 discriminator 2
+ 526 0002 074B     		ldr	r3, .L52
+ 527 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 528              	.LVL38:
+ 482:Generated_Source\PSoC5/ADC_Battery.c ****     /* If convertion complete, wait until EOF bit released */
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 23
+
+
+ 529              		.loc 1 482 0 discriminator 2
+ 530 0006 13F00104 		ands	r4, r3, #1
+ 531 000a 01D1     		bne	.L48
+ 482:Generated_Source\PSoC5/ADC_Battery.c ****     /* If convertion complete, wait until EOF bit released */
+ 532              		.loc 1 482 0 is_stmt 0 discriminator 1
+ 533 000c 0028     		cmp	r0, #0
+ 534 000e F8D0     		beq	.L49
+ 535              	.L48:
+ 484:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 536              		.loc 1 484 0 is_stmt 1
+ 537 0010 24B1     		cbz	r4, .L50
+ 487:Generated_Source\PSoC5/ADC_Battery.c ****         /* Do the unconditional read operation of the CSR1 register to make sure the EOC bit has be
+ 538              		.loc 1 487 0
+ 539 0012 0120     		movs	r0, #1
+ 540              	.LVL39:
+ 541 0014 FFF7FEFF 		bl	CyDelayUs
+ 542              	.LVL40:
+ 489:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 543              		.loc 1 489 0
+ 544 0018 014B     		ldr	r3, .L52
+ 545 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 546              	.L50:
+ 493:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 547              		.loc 1 493 0
+ 548 001c 2046     		mov	r0, r4
+ 549 001e 10BD     		pop	{r4, pc}
+ 550              	.L53:
+ 551              		.align	2
+ 552              	.L52:
+ 553 0020 09590040 		.word	1073764617
+ 554              		.cfi_endproc
+ 555              	.LFE8:
+ 556              		.size	ADC_Battery_IsEndConversion, .-ADC_Battery_IsEndConversion
+ 557              		.section	.text.ADC_Battery_GetResult8,"ax",%progbits
+ 558              		.align	2
+ 559              		.global	ADC_Battery_GetResult8
+ 560              		.thumb
+ 561              		.thumb_func
+ 562              		.type	ADC_Battery_GetResult8, %function
+ 563              	ADC_Battery_GetResult8:
+ 564              	.LFB9:
+ 521:Generated_Source\PSoC5/ADC_Battery.c ****     return( (int8)ADC_Battery_SAR_WRK0_REG - (int8)ADC_Battery_shift);
+ 565              		.loc 1 521 0
+ 566              		.cfi_startproc
+ 567              		@ args = 0, pretend = 0, frame = 0
+ 568              		@ frame_needed = 0, uses_anonymous_args = 0
+ 569              		@ link register save eliminated.
+ 522:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 570              		.loc 1 522 0
+ 571 0000 034B     		ldr	r3, .L55
+ 572 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 573 0004 034A     		ldr	r2, .L55+4
+ 574 0006 1088     		ldrh	r0, [r2]
+ 575 0008 00B2     		sxth	r0, r0
+ 576 000a 181A     		subs	r0, r3, r0
+ 523:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 577              		.loc 1 523 0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 24
+
+
+ 578 000c 40B2     		sxtb	r0, r0
+ 579 000e 7047     		bx	lr
+ 580              	.L56:
+ 581              		.align	2
+ 582              	.L55:
+ 583 0010 A25B0040 		.word	1073765282
+ 584 0014 00000000 		.word	ADC_Battery_shift
+ 585              		.cfi_endproc
+ 586              	.LFE9:
+ 587              		.size	ADC_Battery_GetResult8, .-ADC_Battery_GetResult8
+ 588              		.section	.text.ADC_Battery_GetResult16,"ax",%progbits
+ 589              		.align	2
+ 590              		.global	ADC_Battery_GetResult16
+ 591              		.thumb
+ 592              		.thumb_func
+ 593              		.type	ADC_Battery_GetResult16, %function
+ 594              	ADC_Battery_GetResult16:
+ 595              	.LFB10:
+ 551:Generated_Source\PSoC5/ADC_Battery.c ****     uint16 res;
+ 596              		.loc 1 551 0
+ 597              		.cfi_startproc
+ 598              		@ args = 0, pretend = 0, frame = 0
+ 599              		@ frame_needed = 0, uses_anonymous_args = 0
+ 600              		@ link register save eliminated.
+ 554:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 601              		.loc 1 554 0
+ 602 0000 034B     		ldr	r3, .L58
+ 603 0002 1888     		ldrh	r0, [r3]
+ 604 0004 80B2     		uxth	r0, r0
+ 605              	.LVL41:
+ 556:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 606              		.loc 1 556 0
+ 607 0006 034B     		ldr	r3, .L58+4
+ 608 0008 1B88     		ldrh	r3, [r3]
+ 609 000a C01A     		subs	r0, r0, r3
+ 610              	.LVL42:
+ 557:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 611              		.loc 1 557 0
+ 612 000c 00B2     		sxth	r0, r0
+ 613 000e 7047     		bx	lr
+ 614              	.L59:
+ 615              		.align	2
+ 616              	.L58:
+ 617 0010 A25B0040 		.word	1073765282
+ 618 0014 00000000 		.word	ADC_Battery_shift
+ 619              		.cfi_endproc
+ 620              	.LFE10:
+ 621              		.size	ADC_Battery_GetResult16, .-ADC_Battery_GetResult16
+ 622              		.section	.text.ADC_Battery_SetOffset,"ax",%progbits
+ 623              		.align	2
+ 624              		.global	ADC_Battery_SetOffset
+ 625              		.thumb
+ 626              		.thumb_func
+ 627              		.type	ADC_Battery_SetOffset, %function
+ 628              	ADC_Battery_SetOffset:
+ 629              	.LFB11:
+ 586:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_offset = offset;
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 25
+
+
+ 630              		.loc 1 586 0
+ 631              		.cfi_startproc
+ 632              		@ args = 0, pretend = 0, frame = 0
+ 633              		@ frame_needed = 0, uses_anonymous_args = 0
+ 634              		@ link register save eliminated.
+ 635              	.LVL43:
+ 587:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 636              		.loc 1 587 0
+ 637 0000 014B     		ldr	r3, .L61
+ 638 0002 1880     		strh	r0, [r3]	@ movhi
+ 639 0004 7047     		bx	lr
+ 640              	.L62:
+ 641 0006 00BF     		.align	2
+ 642              	.L61:
+ 643 0008 00000000 		.word	ADC_Battery_offset
+ 644              		.cfi_endproc
+ 645              	.LFE11:
+ 646              		.size	ADC_Battery_SetOffset, .-ADC_Battery_SetOffset
+ 647              		.section	.text.ADC_Battery_SetGain,"ax",%progbits
+ 648              		.align	2
+ 649              		.global	ADC_Battery_SetGain
+ 650              		.thumb
+ 651              		.thumb_func
+ 652              		.type	ADC_Battery_SetGain, %function
+ 653              	ADC_Battery_SetGain:
+ 654              	.LFB13:
+ 665:Generated_Source\PSoC5/ADC_Battery.c ****     #else
+ 666:Generated_Source\PSoC5/ADC_Battery.c ****         ADC_Battery_shift = diff_zero;
+ 667:Generated_Source\PSoC5/ADC_Battery.c ****     #endif /* End ADC_Battery_DEFAULT_RANGE */
+ 668:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 669:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 670:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 671:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 672:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_SetGain
+ 673:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 674:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 675:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 676:Generated_Source\PSoC5/ADC_Battery.c **** *  Sets the ADC gain in counts per volt for the voltage conversion functions
+ 677:Generated_Source\PSoC5/ADC_Battery.c **** *  that follow. This value is set by default by the reference and input range
+ 678:Generated_Source\PSoC5/ADC_Battery.c **** *  settings. It should only be used to further calibrate the ADC with a known
+ 679:Generated_Source\PSoC5/ADC_Battery.c **** *  input or if the ADC is using an external reference.
+ 680:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 681:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 682:Generated_Source\PSoC5/ADC_Battery.c **** *  int16 adcGain counts per volt
+ 683:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 684:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 685:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 686:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 687:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 688:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_countsPer10Volt variable modified. This variable is used
+ 689:Generated_Source\PSoC5/ADC_Battery.c **** *  for gain calibration purpose.
+ 690:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 691:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 692:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_SetGain(int16 adcGain)
+ 693:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 655              		.loc 1 693 0
+ 656              		.cfi_startproc
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 26
+
+
+ 657              		@ args = 0, pretend = 0, frame = 0
+ 658              		@ frame_needed = 0, uses_anonymous_args = 0
+ 659              		@ link register save eliminated.
+ 660              	.LVL44:
+ 694:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_countsPer10Volt = (int32)adcGain * 10;
+ 661              		.loc 1 694 0
+ 662 0000 00EB8000 		add	r0, r0, r0, lsl #2
+ 663              	.LVL45:
+ 664 0004 4300     		lsls	r3, r0, #1
+ 665 0006 014A     		ldr	r2, .L64
+ 666 0008 1360     		str	r3, [r2]
+ 667 000a 7047     		bx	lr
+ 668              	.L65:
+ 669              		.align	2
+ 670              	.L64:
+ 671 000c 00000000 		.word	ADC_Battery_countsPer10Volt
+ 672              		.cfi_endproc
+ 673              	.LFE13:
+ 674              		.size	ADC_Battery_SetGain, .-ADC_Battery_SetGain
+ 675              		.section	.text.ADC_Battery_SetScaledGain,"ax",%progbits
+ 676              		.align	2
+ 677              		.global	ADC_Battery_SetScaledGain
+ 678              		.thumb
+ 679              		.thumb_func
+ 680              		.type	ADC_Battery_SetScaledGain, %function
+ 681              	ADC_Battery_SetScaledGain:
+ 682              	.LFB14:
+ 695:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 696:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 697:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 698:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 699:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_SetScaledGain
+ 700:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 701:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 702:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 703:Generated_Source\PSoC5/ADC_Battery.c **** *  Sets the ADC gain in counts per 10 volt for the voltage conversion functions
+ 704:Generated_Source\PSoC5/ADC_Battery.c **** *  that follow. This value is set by default by the reference and input range
+ 705:Generated_Source\PSoC5/ADC_Battery.c **** *  settings. It should only be used to further calibrate the ADC with a known
+ 706:Generated_Source\PSoC5/ADC_Battery.c **** *  input or if the ADC is using an external reference.
+ 707:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 708:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 709:Generated_Source\PSoC5/ADC_Battery.c **** *  int32 adcGain  counts per 10 volt
+ 710:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 711:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 712:Generated_Source\PSoC5/ADC_Battery.c **** *  None.
+ 713:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 714:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 715:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_countsPer10Volt variable modified. This variable is used
+ 716:Generated_Source\PSoC5/ADC_Battery.c **** *  for gain calibration purpose.
+ 717:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 718:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 719:Generated_Source\PSoC5/ADC_Battery.c **** void ADC_Battery_SetScaledGain(int32 adcGain)
+ 720:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 683              		.loc 1 720 0
+ 684              		.cfi_startproc
+ 685              		@ args = 0, pretend = 0, frame = 0
+ 686              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 27
+
+
+ 687              		@ link register save eliminated.
+ 688              	.LVL46:
+ 721:Generated_Source\PSoC5/ADC_Battery.c ****     ADC_Battery_countsPer10Volt = adcGain;
+ 689              		.loc 1 721 0
+ 690 0000 014B     		ldr	r3, .L67
+ 691 0002 1860     		str	r0, [r3]
+ 692 0004 7047     		bx	lr
+ 693              	.L68:
+ 694 0006 00BF     		.align	2
+ 695              	.L67:
+ 696 0008 00000000 		.word	ADC_Battery_countsPer10Volt
+ 697              		.cfi_endproc
+ 698              	.LFE14:
+ 699              		.size	ADC_Battery_SetScaledGain, .-ADC_Battery_SetScaledGain
+ 700              		.section	.text.ADC_Battery_CountsTo_mVolts,"ax",%progbits
+ 701              		.align	2
+ 702              		.global	ADC_Battery_CountsTo_mVolts
+ 703              		.thumb
+ 704              		.thumb_func
+ 705              		.type	ADC_Battery_CountsTo_mVolts, %function
+ 706              	ADC_Battery_CountsTo_mVolts:
+ 707              	.LFB15:
+ 722:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 723:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 724:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 725:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 726:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_CountsTo_mVolts
+ 727:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 728:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 729:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 730:Generated_Source\PSoC5/ADC_Battery.c **** *  Converts the ADC output to millivolts as a 16-bit integer.
+ 731:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 732:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 733:Generated_Source\PSoC5/ADC_Battery.c **** *  int16 adcCounts:  Result from the ADC conversion
+ 734:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 735:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 736:Generated_Source\PSoC5/ADC_Battery.c **** *  int16 Result in mVolts
+ 737:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 738:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 739:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_offset variable used.
+ 740:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_countsPer10Volt variable used.
+ 741:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 742:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 743:Generated_Source\PSoC5/ADC_Battery.c **** int16 ADC_Battery_CountsTo_mVolts(int16 adcCounts)
+ 744:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 708              		.loc 1 744 0
+ 709              		.cfi_startproc
+ 710              		@ args = 0, pretend = 0, frame = 0
+ 711              		@ frame_needed = 0, uses_anonymous_args = 0
+ 712              		@ link register save eliminated.
+ 713              	.LVL47:
+ 714 0000 10B4     		push	{r4}
+ 715              		.cfi_def_cfa_offset 4
+ 716              		.cfi_offset 4, -4
+ 745:Generated_Source\PSoC5/ADC_Battery.c ****     int16 mVolts;
+ 746:Generated_Source\PSoC5/ADC_Battery.c ****     int32 countsPer10Volt;
+ 747:Generated_Source\PSoC5/ADC_Battery.c **** 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 28
+
+
+ 748:Generated_Source\PSoC5/ADC_Battery.c ****     if(ADC_Battery_countsPerVolt != 0)
+ 717              		.loc 1 748 0
+ 718 0002 124B     		ldr	r3, .L75
+ 719 0004 1B88     		ldrh	r3, [r3]
+ 720 0006 1BB2     		sxth	r3, r3
+ 721 0008 33B1     		cbz	r3, .L70
+ 749:Generated_Source\PSoC5/ADC_Battery.c ****     {   /* Support obsolete method */
+ 750:Generated_Source\PSoC5/ADC_Battery.c ****         countsPer10Volt = (int32)ADC_Battery_countsPerVolt * 10;
+ 722              		.loc 1 750 0
+ 723 000a 104B     		ldr	r3, .L75
+ 724 000c 1B88     		ldrh	r3, [r3]
+ 725 000e 1BB2     		sxth	r3, r3
+ 726 0010 03EB8303 		add	r3, r3, r3, lsl #2
+ 727 0014 5C00     		lsls	r4, r3, #1
+ 728              	.LVL48:
+ 729 0016 01E0     		b	.L71
+ 730              	.LVL49:
+ 731              	.L70:
+ 751:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 752:Generated_Source\PSoC5/ADC_Battery.c ****     else
+ 753:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 754:Generated_Source\PSoC5/ADC_Battery.c ****         countsPer10Volt = ADC_Battery_countsPer10Volt;
+ 732              		.loc 1 754 0
+ 733 0018 0D4B     		ldr	r3, .L75+4
+ 734 001a 1C68     		ldr	r4, [r3]
+ 735              	.LVL50:
+ 736              	.L71:
+ 755:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 756:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 757:Generated_Source\PSoC5/ADC_Battery.c ****     /* Subtract ADC offset */
+ 758:Generated_Source\PSoC5/ADC_Battery.c ****     adcCounts -= ADC_Battery_offset;
+ 737              		.loc 1 758 0
+ 738 001c 0D4B     		ldr	r3, .L75+8
+ 739 001e 1988     		ldrh	r1, [r3]
+ 740 0020 411A     		subs	r1, r0, r1
+ 741 0022 09B2     		sxth	r1, r1
+ 742              	.LVL51:
+ 759:Generated_Source\PSoC5/ADC_Battery.c ****     /* Convert to millivolts with rounding */
+ 760:Generated_Source\PSoC5/ADC_Battery.c ****     mVolts = (int16)( (( (int32)adcCounts * ADC_Battery_10MV_COUNTS ) + ( (adcCounts > 0) ?
+ 743              		.loc 1 760 0
+ 744 0024 42F21073 		movw	r3, #10000
+ 745 0028 03FB01F2 		mul	r2, r3, r1
+ 761:Generated_Source\PSoC5/ADC_Battery.c ****                        (countsPer10Volt / 2) : (-(countsPer10Volt / 2)) )) / countsPer10Volt);
+ 746              		.loc 1 761 0
+ 747 002c 0029     		cmp	r1, #0
+ 748 002e 03DD     		ble	.L72
+ 749              		.loc 1 761 0 is_stmt 0 discriminator 1
+ 750 0030 04EBD470 		add	r0, r4, r4, lsr #31
+ 751 0034 4010     		asrs	r0, r0, #1
+ 752 0036 03E0     		b	.L73
+ 753              	.L72:
+ 754              		.loc 1 761 0 discriminator 2
+ 755 0038 04EBD470 		add	r0, r4, r4, lsr #31
+ 756 003c 4010     		asrs	r0, r0, #1
+ 757 003e 4042     		negs	r0, r0
+ 758              	.L73:
+ 760:Generated_Source\PSoC5/ADC_Battery.c ****                        (countsPer10Volt / 2) : (-(countsPer10Volt / 2)) )) / countsPer10Volt);
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 29
+
+
+ 759              		.loc 1 760 0 is_stmt 1
+ 760 0040 8318     		adds	r3, r0, r2
+ 761              		.loc 1 761 0
+ 762 0042 93FBF4F0 		sdiv	r0, r3, r4
+ 763              	.LVL52:
+ 762:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 763:Generated_Source\PSoC5/ADC_Battery.c ****     return( mVolts );
+ 764:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 764              		.loc 1 764 0
+ 765 0046 00B2     		sxth	r0, r0
+ 766 0048 10BC     		pop	{r4}
+ 767              		.cfi_restore 4
+ 768              		.cfi_def_cfa_offset 0
+ 769              	.LVL53:
+ 770 004a 7047     		bx	lr
+ 771              	.L76:
+ 772              		.align	2
+ 773              	.L75:
+ 774 004c 00000000 		.word	ADC_Battery_countsPerVolt
+ 775 0050 00000000 		.word	ADC_Battery_countsPer10Volt
+ 776 0054 00000000 		.word	ADC_Battery_offset
+ 777              		.cfi_endproc
+ 778              	.LFE15:
+ 779              		.size	ADC_Battery_CountsTo_mVolts, .-ADC_Battery_CountsTo_mVolts
+ 780              		.global	__aeabi_ldivmod
+ 781              		.section	.text.ADC_Battery_CountsTo_uVolts,"ax",%progbits
+ 782              		.align	2
+ 783              		.global	ADC_Battery_CountsTo_uVolts
+ 784              		.thumb
+ 785              		.thumb_func
+ 786              		.type	ADC_Battery_CountsTo_uVolts, %function
+ 787              	ADC_Battery_CountsTo_uVolts:
+ 788              	.LFB16:
+ 765:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 766:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 767:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 768:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_CountsTo_uVolts
+ 769:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 770:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 771:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 772:Generated_Source\PSoC5/ADC_Battery.c **** *  Converts the ADC output to microvolts as a 32-bit integer.
+ 773:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 774:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 775:Generated_Source\PSoC5/ADC_Battery.c **** *  int16 adcCounts: Result from the ADC conversion
+ 776:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 777:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 778:Generated_Source\PSoC5/ADC_Battery.c **** *  int32 Result in micro Volts
+ 779:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 780:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 781:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_offset variable used.
+ 782:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_countsPer10Volt used to convert ADC counts to uVolts.
+ 783:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 784:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 785:Generated_Source\PSoC5/ADC_Battery.c **** int32 ADC_Battery_CountsTo_uVolts(int16 adcCounts)
+ 786:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 789              		.loc 1 786 0
+ 790              		.cfi_startproc
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 30
+
+
+ 791              		@ args = 0, pretend = 0, frame = 0
+ 792              		@ frame_needed = 0, uses_anonymous_args = 0
+ 793              	.LVL54:
+ 794 0000 38B5     		push	{r3, r4, r5, lr}
+ 795              		.cfi_def_cfa_offset 16
+ 796              		.cfi_offset 3, -16
+ 797              		.cfi_offset 4, -12
+ 798              		.cfi_offset 5, -8
+ 799              		.cfi_offset 14, -4
+ 787:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 788:Generated_Source\PSoC5/ADC_Battery.c ****     int64 uVolts;
+ 789:Generated_Source\PSoC5/ADC_Battery.c ****     int32 countsPer10Volt;
+ 790:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 791:Generated_Source\PSoC5/ADC_Battery.c ****     if(ADC_Battery_countsPerVolt != 0)
+ 800              		.loc 1 791 0
+ 801 0002 0D4B     		ldr	r3, .L81
+ 802 0004 1B88     		ldrh	r3, [r3]
+ 803 0006 1BB2     		sxth	r3, r3
+ 804 0008 33B1     		cbz	r3, .L78
+ 792:Generated_Source\PSoC5/ADC_Battery.c ****     {   /* Support obsolete method */
+ 793:Generated_Source\PSoC5/ADC_Battery.c ****         countsPer10Volt = (int32)ADC_Battery_countsPerVolt * 10;
+ 805              		.loc 1 793 0
+ 806 000a 0B4B     		ldr	r3, .L81
+ 807 000c 1B88     		ldrh	r3, [r3]
+ 808 000e 1BB2     		sxth	r3, r3
+ 809 0010 03EB8303 		add	r3, r3, r3, lsl #2
+ 810 0014 5A00     		lsls	r2, r3, #1
+ 811              	.LVL55:
+ 812 0016 01E0     		b	.L79
+ 813              	.LVL56:
+ 814              	.L78:
+ 794:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 795:Generated_Source\PSoC5/ADC_Battery.c ****     else
+ 796:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 797:Generated_Source\PSoC5/ADC_Battery.c ****         countsPer10Volt = ADC_Battery_countsPer10Volt;
+ 815              		.loc 1 797 0
+ 816 0018 084B     		ldr	r3, .L81+4
+ 817 001a 1A68     		ldr	r2, [r3]
+ 818              	.LVL57:
+ 819              	.L79:
+ 798:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 799:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 800:Generated_Source\PSoC5/ADC_Battery.c ****     /* Subtract ADC offset */
+ 801:Generated_Source\PSoC5/ADC_Battery.c ****     adcCounts -= ADC_Battery_offset;
+ 820              		.loc 1 801 0
+ 821 001c 084B     		ldr	r3, .L81+8
+ 822 001e 1C88     		ldrh	r4, [r3]
+ 823 0020 041B     		subs	r4, r0, r4
+ 824              	.LVL58:
+ 802:Generated_Source\PSoC5/ADC_Battery.c ****     /* To convert adcCounts to microVolts it is required to be multiplied
+ 803:Generated_Source\PSoC5/ADC_Battery.c ****     *  on 10 million and later divide on gain in counts per 10V.
+ 804:Generated_Source\PSoC5/ADC_Battery.c ****     */
+ 805:Generated_Source\PSoC5/ADC_Battery.c ****     uVolts = (( (int64)adcCounts * ADC_Battery_10UV_COUNTS ) / countsPer10Volt);
+ 825              		.loc 1 805 0
+ 826 0022 24B2     		sxth	r4, r4
+ 827 0024 E517     		asrs	r5, r4, #31
+ 828 0026 074B     		ldr	r3, .L81+12
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 31
+
+
+ 829 0028 A4FB0301 		umull	r0, r1, r4, r3
+ 830 002c 03FB0511 		mla	r1, r3, r5, r1
+ 831 0030 D317     		asrs	r3, r2, #31
+ 832 0032 FFF7FEFF 		bl	__aeabi_ldivmod
+ 833              	.LVL59:
+ 806:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 807:Generated_Source\PSoC5/ADC_Battery.c ****     return((int32) uVolts );
+ 808:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 834              		.loc 1 808 0
+ 835 0036 38BD     		pop	{r3, r4, r5, pc}
+ 836              	.LVL60:
+ 837              	.L82:
+ 838              		.align	2
+ 839              	.L81:
+ 840 0038 00000000 		.word	ADC_Battery_countsPerVolt
+ 841 003c 00000000 		.word	ADC_Battery_countsPer10Volt
+ 842 0040 00000000 		.word	ADC_Battery_offset
+ 843 0044 80969800 		.word	10000000
+ 844              		.cfi_endproc
+ 845              	.LFE16:
+ 846              		.size	ADC_Battery_CountsTo_uVolts, .-ADC_Battery_CountsTo_uVolts
+ 847              		.global	__aeabi_i2f
+ 848              		.global	__aeabi_fmul
+ 849              		.global	__aeabi_fdiv
+ 850              		.section	.text.ADC_Battery_CountsTo_Volts,"ax",%progbits
+ 851              		.align	2
+ 852              		.global	ADC_Battery_CountsTo_Volts
+ 853              		.thumb
+ 854              		.thumb_func
+ 855              		.type	ADC_Battery_CountsTo_Volts, %function
+ 856              	ADC_Battery_CountsTo_Volts:
+ 857              	.LFB17:
+ 809:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 810:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 811:Generated_Source\PSoC5/ADC_Battery.c **** /*******************************************************************************
+ 812:Generated_Source\PSoC5/ADC_Battery.c **** * Function Name: ADC_Battery_CountsTo_Volts
+ 813:Generated_Source\PSoC5/ADC_Battery.c **** ********************************************************************************
+ 814:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 815:Generated_Source\PSoC5/ADC_Battery.c **** * Summary:
+ 816:Generated_Source\PSoC5/ADC_Battery.c **** *  Converts the ADC output to volts as a floating-point number.
+ 817:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 818:Generated_Source\PSoC5/ADC_Battery.c **** * Parameters:
+ 819:Generated_Source\PSoC5/ADC_Battery.c **** *  int16 adcCounts: Result from the ADC conversion
+ 820:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 821:Generated_Source\PSoC5/ADC_Battery.c **** * Return:
+ 822:Generated_Source\PSoC5/ADC_Battery.c **** *  float Result in Volts
+ 823:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 824:Generated_Source\PSoC5/ADC_Battery.c **** * Global Variables:
+ 825:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_offset variable used.
+ 826:Generated_Source\PSoC5/ADC_Battery.c **** *  ADC_Battery_countsPer10Volt used to convert ADC counts to Volts.
+ 827:Generated_Source\PSoC5/ADC_Battery.c **** *
+ 828:Generated_Source\PSoC5/ADC_Battery.c **** *******************************************************************************/
+ 829:Generated_Source\PSoC5/ADC_Battery.c **** float32 ADC_Battery_CountsTo_Volts(int16 adcCounts)
+ 830:Generated_Source\PSoC5/ADC_Battery.c **** {
+ 858              		.loc 1 830 0
+ 859              		.cfi_startproc
+ 860              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 32
+
+
+ 861              		@ frame_needed = 0, uses_anonymous_args = 0
+ 862              	.LVL61:
+ 863 0000 38B5     		push	{r3, r4, r5, lr}
+ 864              		.cfi_def_cfa_offset 16
+ 865              		.cfi_offset 3, -16
+ 866              		.cfi_offset 4, -12
+ 867              		.cfi_offset 5, -8
+ 868              		.cfi_offset 14, -4
+ 831:Generated_Source\PSoC5/ADC_Battery.c ****     float32 volts;
+ 832:Generated_Source\PSoC5/ADC_Battery.c ****     int32 countsPer10Volt;
+ 833:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 834:Generated_Source\PSoC5/ADC_Battery.c ****     if(ADC_Battery_countsPerVolt != 0)
+ 869              		.loc 1 834 0
+ 870 0002 0F4B     		ldr	r3, .L87
+ 871 0004 1B88     		ldrh	r3, [r3]
+ 872 0006 1BB2     		sxth	r3, r3
+ 873 0008 33B1     		cbz	r3, .L84
+ 835:Generated_Source\PSoC5/ADC_Battery.c ****     {   /* Support obsolete method */
+ 836:Generated_Source\PSoC5/ADC_Battery.c ****         countsPer10Volt = (int32)ADC_Battery_countsPerVolt * 10;
+ 874              		.loc 1 836 0
+ 875 000a 0D4B     		ldr	r3, .L87
+ 876 000c 1B88     		ldrh	r3, [r3]
+ 877 000e 1BB2     		sxth	r3, r3
+ 878 0010 03EB8303 		add	r3, r3, r3, lsl #2
+ 879 0014 5C00     		lsls	r4, r3, #1
+ 880              	.LVL62:
+ 881 0016 01E0     		b	.L85
+ 882              	.LVL63:
+ 883              	.L84:
+ 837:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 838:Generated_Source\PSoC5/ADC_Battery.c ****     else
+ 839:Generated_Source\PSoC5/ADC_Battery.c ****     {
+ 840:Generated_Source\PSoC5/ADC_Battery.c ****         countsPer10Volt = ADC_Battery_countsPer10Volt;
+ 884              		.loc 1 840 0
+ 885 0018 0A4B     		ldr	r3, .L87+4
+ 886 001a 1C68     		ldr	r4, [r3]
+ 887              	.LVL64:
+ 888              	.L85:
+ 841:Generated_Source\PSoC5/ADC_Battery.c ****     }
+ 842:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 843:Generated_Source\PSoC5/ADC_Battery.c ****     /* Subtract ADC offset */
+ 844:Generated_Source\PSoC5/ADC_Battery.c ****     adcCounts -= ADC_Battery_offset;
+ 889              		.loc 1 844 0
+ 890 001c 0A4B     		ldr	r3, .L87+8
+ 891 001e 1B88     		ldrh	r3, [r3]
+ 892 0020 C01A     		subs	r0, r0, r3
+ 893              	.LVL65:
+ 845:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 846:Generated_Source\PSoC5/ADC_Battery.c ****     volts = ((float32)adcCounts * ADC_Battery_10V_COUNTS) / (float32)countsPer10Volt;
+ 894              		.loc 1 846 0
+ 895 0022 00B2     		sxth	r0, r0
+ 896 0024 FFF7FEFF 		bl	__aeabi_i2f
+ 897              	.LVL66:
+ 898 0028 0849     		ldr	r1, .L87+12
+ 899 002a FFF7FEFF 		bl	__aeabi_fmul
+ 900              	.LVL67:
+ 901 002e 0546     		mov	r5, r0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 33
+
+
+ 902 0030 2046     		mov	r0, r4
+ 903 0032 FFF7FEFF 		bl	__aeabi_i2f
+ 904              	.LVL68:
+ 905 0036 0146     		mov	r1, r0
+ 906 0038 2846     		mov	r0, r5
+ 907 003a FFF7FEFF 		bl	__aeabi_fdiv
+ 908              	.LVL69:
+ 847:Generated_Source\PSoC5/ADC_Battery.c **** 
+ 848:Generated_Source\PSoC5/ADC_Battery.c ****     return( volts );
+ 849:Generated_Source\PSoC5/ADC_Battery.c **** }
+ 909              		.loc 1 849 0
+ 910 003e 38BD     		pop	{r3, r4, r5, pc}
+ 911              	.LVL70:
+ 912              	.L88:
+ 913              		.align	2
+ 914              	.L87:
+ 915 0040 00000000 		.word	ADC_Battery_countsPerVolt
+ 916 0044 00000000 		.word	ADC_Battery_countsPer10Volt
+ 917 0048 00000000 		.word	ADC_Battery_offset
+ 918 004c 00002041 		.word	1092616192
+ 919              		.cfi_endproc
+ 920              	.LFE17:
+ 921              		.size	ADC_Battery_CountsTo_Volts, .-ADC_Battery_CountsTo_Volts
+ 922              		.comm	ADC_Battery_shift,2,2
+ 923              		.comm	ADC_Battery_countsPer10Volt,4,4
+ 924              		.comm	ADC_Battery_countsPerVolt,2,2
+ 925              		.comm	ADC_Battery_offset,2,2
+ 926              		.global	ADC_Battery_initVar
+ 927              		.bss
+ 928              		.set	.LANCHOR0,. + 0
+ 929              		.type	ADC_Battery_initVar, %object
+ 930              		.size	ADC_Battery_initVar, 1
+ 931              	ADC_Battery_initVar:
+ 932 0000 00       		.space	1
+ 933              		.text
+ 934              	.Letext0:
+ 935              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 936              		.file 3 "Generated_Source\\PSoC5\\CyLib.h"
+ 937              		.file 4 "Generated_Source\\PSoC5\\ADC_Battery_theACLK.h"
+ 938              		.section	.debug_info,"",%progbits
+ 939              	.Ldebug_info0:
+ 940 0000 BC050000 		.4byte	0x5bc
+ 941 0004 0400     		.2byte	0x4
+ 942 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 943 000a 04       		.byte	0x4
+ 944 000b 01       		.uleb128 0x1
+ 945 000c AA020000 		.4byte	.LASF66
+ 946 0010 0C       		.byte	0xc
+ 947 0011 6A030000 		.4byte	.LASF67
+ 948 0015 AD040000 		.4byte	.LASF68
+ 949 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 950 001d 00000000 		.4byte	0
+ 951 0021 00000000 		.4byte	.Ldebug_line0
+ 952 0025 02       		.uleb128 0x2
+ 953 0026 04       		.byte	0x4
+ 954 0027 05       		.byte	0x5
+ 955 0028 696E7400 		.ascii	"int\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 34
+
+
+ 956 002c 03       		.uleb128 0x3
+ 957 002d 04       		.byte	0x4
+ 958 002e 07       		.byte	0x7
+ 959 002f 76010000 		.4byte	.LASF0
+ 960 0033 03       		.uleb128 0x3
+ 961 0034 08       		.byte	0x8
+ 962 0035 05       		.byte	0x5
+ 963 0036 B8000000 		.4byte	.LASF1
+ 964 003a 03       		.uleb128 0x3
+ 965 003b 08       		.byte	0x8
+ 966 003c 04       		.byte	0x4
+ 967 003d 2E020000 		.4byte	.LASF2
+ 968 0041 03       		.uleb128 0x3
+ 969 0042 01       		.byte	0x1
+ 970 0043 06       		.byte	0x6
+ 971 0044 C6000000 		.4byte	.LASF3
+ 972 0048 03       		.uleb128 0x3
+ 973 0049 01       		.byte	0x1
+ 974 004a 08       		.byte	0x8
+ 975 004b 92020000 		.4byte	.LASF4
+ 976 004f 03       		.uleb128 0x3
+ 977 0050 02       		.byte	0x2
+ 978 0051 05       		.byte	0x5
+ 979 0052 A0020000 		.4byte	.LASF5
+ 980 0056 03       		.uleb128 0x3
+ 981 0057 02       		.byte	0x2
+ 982 0058 07       		.byte	0x7
+ 983 0059 D3010000 		.4byte	.LASF6
+ 984 005d 03       		.uleb128 0x3
+ 985 005e 04       		.byte	0x4
+ 986 005f 05       		.byte	0x5
+ 987 0060 EA000000 		.4byte	.LASF7
+ 988 0064 03       		.uleb128 0x3
+ 989 0065 04       		.byte	0x4
+ 990 0066 07       		.byte	0x7
+ 991 0067 8A010000 		.4byte	.LASF8
+ 992 006b 03       		.uleb128 0x3
+ 993 006c 08       		.byte	0x8
+ 994 006d 07       		.byte	0x7
+ 995 006e 88000000 		.4byte	.LASF9
+ 996 0072 03       		.uleb128 0x3
+ 997 0073 04       		.byte	0x4
+ 998 0074 07       		.byte	0x7
+ 999 0075 25020000 		.4byte	.LASF10
+ 1000 0079 03       		.uleb128 0x3
+ 1001 007a 01       		.byte	0x1
+ 1002 007b 08       		.byte	0x8
+ 1003 007c BC030000 		.4byte	.LASF11
+ 1004 0080 04       		.uleb128 0x4
+ 1005 0081 F9000000 		.4byte	.LASF12
+ 1006 0085 02       		.byte	0x2
+ 1007 0086 E401     		.2byte	0x1e4
+ 1008 0088 48000000 		.4byte	0x48
+ 1009 008c 04       		.uleb128 0x4
+ 1010 008d 00000000 		.4byte	.LASF13
+ 1011 0091 02       		.byte	0x2
+ 1012 0092 E501     		.2byte	0x1e5
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 35
+
+
+ 1013 0094 56000000 		.4byte	0x56
+ 1014 0098 04       		.uleb128 0x4
+ 1015 0099 10010000 		.4byte	.LASF14
+ 1016 009d 02       		.byte	0x2
+ 1017 009e E601     		.2byte	0x1e6
+ 1018 00a0 64000000 		.4byte	0x64
+ 1019 00a4 04       		.uleb128 0x4
+ 1020 00a5 E6010000 		.4byte	.LASF15
+ 1021 00a9 02       		.byte	0x2
+ 1022 00aa E701     		.2byte	0x1e7
+ 1023 00ac 41000000 		.4byte	0x41
+ 1024 00b0 04       		.uleb128 0x4
+ 1025 00b1 4B040000 		.4byte	.LASF16
+ 1026 00b5 02       		.byte	0x2
+ 1027 00b6 E801     		.2byte	0x1e8
+ 1028 00b8 4F000000 		.4byte	0x4f
+ 1029 00bc 04       		.uleb128 0x4
+ 1030 00bd E4000000 		.4byte	.LASF17
+ 1031 00c1 02       		.byte	0x2
+ 1032 00c2 E901     		.2byte	0x1e9
+ 1033 00c4 5D000000 		.4byte	0x5d
+ 1034 00c8 04       		.uleb128 0x4
+ 1035 00c9 1D020000 		.4byte	.LASF18
+ 1036 00cd 02       		.byte	0x2
+ 1037 00ce EA01     		.2byte	0x1ea
+ 1038 00d0 D4000000 		.4byte	0xd4
+ 1039 00d4 03       		.uleb128 0x3
+ 1040 00d5 04       		.byte	0x4
+ 1041 00d6 04       		.byte	0x4
+ 1042 00d7 64020000 		.4byte	.LASF19
+ 1043 00db 03       		.uleb128 0x3
+ 1044 00dc 08       		.byte	0x8
+ 1045 00dd 04       		.byte	0x4
+ 1046 00de 09010000 		.4byte	.LASF20
+ 1047 00e2 04       		.uleb128 0x4
+ 1048 00e3 3A020000 		.4byte	.LASF21
+ 1049 00e7 02       		.byte	0x2
+ 1050 00e8 EF01     		.2byte	0x1ef
+ 1051 00ea 33000000 		.4byte	0x33
+ 1052 00ee 04       		.uleb128 0x4
+ 1053 00ef 86020000 		.4byte	.LASF22
+ 1054 00f3 02       		.byte	0x2
+ 1055 00f4 8E02     		.2byte	0x28e
+ 1056 00f6 FA000000 		.4byte	0xfa
+ 1057 00fa 05       		.uleb128 0x5
+ 1058 00fb 80000000 		.4byte	0x80
+ 1059 00ff 04       		.uleb128 0x4
+ 1060 0100 F3000000 		.4byte	.LASF23
+ 1061 0104 02       		.byte	0x2
+ 1062 0105 8F02     		.2byte	0x28f
+ 1063 0107 0B010000 		.4byte	0x10b
+ 1064 010b 05       		.uleb128 0x5
+ 1065 010c 8C000000 		.4byte	0x8c
+ 1066 0110 04       		.uleb128 0x4
+ 1067 0111 03020000 		.4byte	.LASF24
+ 1068 0115 02       		.byte	0x2
+ 1069 0116 9002     		.2byte	0x290
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 36
+
+
+ 1070 0118 1C010000 		.4byte	0x11c
+ 1071 011c 05       		.uleb128 0x5
+ 1072 011d 98000000 		.4byte	0x98
+ 1073 0121 06       		.uleb128 0x6
+ 1074 0122 91040000 		.4byte	.LASF69
+ 1075 0126 01       		.byte	0x1
+ 1076 0127 6302     		.2byte	0x263
+ 1077 0129 00000000 		.4byte	.LFB12
+ 1078 012d 64000000 		.4byte	.LFE12-.LFB12
+ 1079 0131 01       		.uleb128 0x1
+ 1080 0132 9C       		.byte	0x9c
+ 1081 0133 67010000 		.4byte	0x167
+ 1082 0137 07       		.uleb128 0x7
+ 1083 0138 E8030000 		.4byte	.LASF31
+ 1084 013c 01       		.byte	0x1
+ 1085 013d 6302     		.2byte	0x263
+ 1086 013f 80000000 		.4byte	0x80
+ 1087 0143 00000000 		.4byte	.LLST0
+ 1088 0147 08       		.uleb128 0x8
+ 1089 0148 52000000 		.4byte	.LASF25
+ 1090 014c 01       		.byte	0x1
+ 1091 014d 6502     		.2byte	0x265
+ 1092 014f BC000000 		.4byte	0xbc
+ 1093 0153 3A000000 		.4byte	.LLST1
+ 1094 0157 09       		.uleb128 0x9
+ 1095 0158 22000000 		.4byte	.LVL4
+ 1096 015c 72050000 		.4byte	0x572
+ 1097 0160 0A       		.uleb128 0xa
+ 1098 0161 01       		.uleb128 0x1
+ 1099 0162 50       		.byte	0x50
+ 1100 0163 01       		.uleb128 0x1
+ 1101 0164 30       		.byte	0x30
+ 1102 0165 00       		.byte	0
+ 1103 0166 00       		.byte	0
+ 1104 0167 0B       		.uleb128 0xb
+ 1105 0168 D5030000 		.4byte	.LASF28
+ 1106 016c 01       		.byte	0x1
+ 1107 016d 8F       		.byte	0x8f
+ 1108 016e 00000000 		.4byte	.LFB2
+ 1109 0172 94000000 		.4byte	.LFE2-.LFB2
+ 1110 0176 01       		.uleb128 0x1
+ 1111 0177 9C       		.byte	0x9c
+ 1112 0178 C7010000 		.4byte	0x1c7
+ 1113 017c 0C       		.uleb128 0xc
+ 1114 017d A6040000 		.4byte	.LASF26
+ 1115 0181 01       		.byte	0x1
+ 1116 0182 91       		.byte	0x91
+ 1117 0183 80000000 		.4byte	0x80
+ 1118 0187 67000000 		.4byte	.LLST2
+ 1119 018b 0C       		.uleb128 0xc
+ 1120 018c 19040000 		.4byte	.LASF27
+ 1121 0190 01       		.byte	0x1
+ 1122 0191 92       		.byte	0x92
+ 1123 0192 80000000 		.4byte	0x80
+ 1124 0196 98000000 		.4byte	.LLST3
+ 1125 019a 0D       		.uleb128 0xd
+ 1126 019b 06000000 		.4byte	.LVL8
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 37
+
+
+ 1127 019f 7D050000 		.4byte	0x57d
+ 1128 01a3 0E       		.uleb128 0xe
+ 1129 01a4 76000000 		.4byte	.LVL14
+ 1130 01a8 88050000 		.4byte	0x588
+ 1131 01ac B6010000 		.4byte	0x1b6
+ 1132 01b0 0A       		.uleb128 0xa
+ 1133 01b1 01       		.uleb128 0x1
+ 1134 01b2 50       		.byte	0x50
+ 1135 01b3 01       		.uleb128 0x1
+ 1136 01b4 3A       		.byte	0x3a
+ 1137 01b5 00       		.byte	0
+ 1138 01b6 09       		.uleb128 0x9
+ 1139 01b7 80000000 		.4byte	.LVL15
+ 1140 01bb 93050000 		.4byte	0x593
+ 1141 01bf 0A       		.uleb128 0xa
+ 1142 01c0 01       		.uleb128 0x1
+ 1143 01c1 50       		.byte	0x50
+ 1144 01c2 02       		.uleb128 0x2
+ 1145 01c3 74       		.byte	0x74
+ 1146 01c4 00       		.sleb128 0
+ 1147 01c5 00       		.byte	0
+ 1148 01c6 00       		.byte	0
+ 1149 01c7 0B       		.uleb128 0xb
+ 1150 01c8 41000000 		.4byte	.LASF29
+ 1151 01cc 01       		.byte	0x1
+ 1152 01cd F8       		.byte	0xf8
+ 1153 01ce 00000000 		.4byte	.LFB3
+ 1154 01d2 48000000 		.4byte	.LFE3-.LFB3
+ 1155 01d6 01       		.uleb128 0x1
+ 1156 01d7 9C       		.byte	0x9c
+ 1157 01d8 FE010000 		.4byte	0x1fe
+ 1158 01dc 0C       		.uleb128 0xc
+ 1159 01dd 19040000 		.4byte	.LASF27
+ 1160 01e1 01       		.byte	0x1
+ 1161 01e2 FA       		.byte	0xfa
+ 1162 01e3 80000000 		.4byte	0x80
+ 1163 01e7 AB000000 		.4byte	.LLST4
+ 1164 01eb 0D       		.uleb128 0xd
+ 1165 01ec 06000000 		.4byte	.LVL17
+ 1166 01f0 7D050000 		.4byte	0x57d
+ 1167 01f4 0D       		.uleb128 0xd
+ 1168 01f5 40000000 		.4byte	.LVL18
+ 1169 01f9 93050000 		.4byte	0x593
+ 1170 01fd 00       		.byte	0
+ 1171 01fe 0F       		.uleb128 0xf
+ 1172 01ff F3030000 		.4byte	.LASF30
+ 1173 0203 01       		.byte	0x1
+ 1174 0204 2201     		.2byte	0x122
+ 1175 0206 00000000 		.4byte	.LFB4
+ 1176 020a 18000000 		.4byte	.LFE4-.LFB4
+ 1177 020e 01       		.uleb128 0x1
+ 1178 020f 9C       		.byte	0x9c
+ 1179 0210 35020000 		.4byte	0x235
+ 1180 0214 07       		.uleb128 0x7
+ 1181 0215 80020000 		.4byte	.LASF32
+ 1182 0219 01       		.byte	0x1
+ 1183 021a 2201     		.2byte	0x122
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 38
+
+
+ 1184 021c 80000000 		.4byte	0x80
+ 1185 0220 BE000000 		.4byte	.LLST5
+ 1186 0224 08       		.uleb128 0x8
+ 1187 0225 A6040000 		.4byte	.LASF26
+ 1188 0229 01       		.byte	0x1
+ 1189 022a 2401     		.2byte	0x124
+ 1190 022c 80000000 		.4byte	0x80
+ 1191 0230 F0000000 		.4byte	.LLST6
+ 1192 0234 00       		.byte	0
+ 1193 0235 0F       		.uleb128 0xf
+ 1194 0236 38030000 		.4byte	.LASF33
+ 1195 023a 01       		.byte	0x1
+ 1196 023b 5401     		.2byte	0x154
+ 1197 023d 00000000 		.4byte	.LFB5
+ 1198 0241 38000000 		.4byte	.LFE5-.LFB5
+ 1199 0245 01       		.uleb128 0x1
+ 1200 0246 9C       		.byte	0x9c
+ 1201 0247 8F020000 		.4byte	0x28f
+ 1202 024b 07       		.uleb128 0x7
+ 1203 024c E8030000 		.4byte	.LASF31
+ 1204 0250 01       		.byte	0x1
+ 1205 0251 5401     		.2byte	0x154
+ 1206 0253 80000000 		.4byte	0x80
+ 1207 0257 0E010000 		.4byte	.LLST7
+ 1208 025b 08       		.uleb128 0x8
+ 1209 025c A6040000 		.4byte	.LASF26
+ 1210 0260 01       		.byte	0x1
+ 1211 0261 5601     		.2byte	0x156
+ 1212 0263 80000000 		.4byte	0x80
+ 1213 0267 48010000 		.4byte	.LLST8
+ 1214 026b 0E       		.uleb128 0xe
+ 1215 026c 20000000 		.4byte	.LVL27
+ 1216 0270 72050000 		.4byte	0x572
+ 1217 0274 7E020000 		.4byte	0x27e
+ 1218 0278 0A       		.uleb128 0xa
+ 1219 0279 01       		.uleb128 0x1
+ 1220 027a 50       		.byte	0x50
+ 1221 027b 01       		.uleb128 0x1
+ 1222 027c 30       		.byte	0x30
+ 1223 027d 00       		.byte	0
+ 1224 027e 09       		.uleb128 0x9
+ 1225 027f 30000000 		.4byte	.LVL30
+ 1226 0283 21010000 		.4byte	0x121
+ 1227 0287 0A       		.uleb128 0xa
+ 1228 0288 01       		.uleb128 0x1
+ 1229 0289 50       		.byte	0x50
+ 1230 028a 02       		.uleb128 0x2
+ 1231 028b 74       		.byte	0x74
+ 1232 028c 00       		.sleb128 0
+ 1233 028d 00       		.byte	0
+ 1234 028e 00       		.byte	0
+ 1235 028f 0B       		.uleb128 0xb
+ 1236 0290 EB010000 		.4byte	.LASF34
+ 1237 0294 01       		.byte	0x1
+ 1238 0295 6A       		.byte	0x6a
+ 1239 0296 00000000 		.4byte	.LFB1
+ 1240 029a 3C000000 		.4byte	.LFE1-.LFB1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 39
+
+
+ 1241 029e 01       		.uleb128 0x1
+ 1242 029f 9C       		.byte	0x9c
+ 1243 02a0 F2020000 		.4byte	0x2f2
+ 1244 02a4 0E       		.uleb128 0xe
+ 1245 02a5 08000000 		.4byte	.LVL31
+ 1246 02a9 9E050000 		.4byte	0x59e
+ 1247 02ad B7020000 		.4byte	0x2b7
+ 1248 02b1 0A       		.uleb128 0xa
+ 1249 02b2 01       		.uleb128 0x1
+ 1250 02b3 50       		.byte	0x50
+ 1251 02b4 01       		.uleb128 0x1
+ 1252 02b5 40       		.byte	0x40
+ 1253 02b6 00       		.byte	0
+ 1254 02b7 0E       		.uleb128 0xe
+ 1255 02b8 10000000 		.4byte	.LVL32
+ 1256 02bc A9050000 		.4byte	0x5a9
+ 1257 02c0 CF020000 		.4byte	0x2cf
+ 1258 02c4 0A       		.uleb128 0xa
+ 1259 02c5 01       		.uleb128 0x1
+ 1260 02c6 50       		.byte	0x50
+ 1261 02c7 01       		.uleb128 0x1
+ 1262 02c8 31       		.byte	0x31
+ 1263 02c9 0A       		.uleb128 0xa
+ 1264 02ca 01       		.uleb128 0x1
+ 1265 02cb 51       		.byte	0x51
+ 1266 02cc 01       		.uleb128 0x1
+ 1267 02cd 37       		.byte	0x37
+ 1268 02ce 00       		.byte	0
+ 1269 02cf 0E       		.uleb128 0xe
+ 1270 02d0 18000000 		.4byte	.LVL33
+ 1271 02d4 B4050000 		.4byte	0x5b4
+ 1272 02d8 E2020000 		.4byte	0x2e2
+ 1273 02dc 0A       		.uleb128 0xa
+ 1274 02dd 01       		.uleb128 0x1
+ 1275 02de 50       		.byte	0x50
+ 1276 02df 01       		.uleb128 0x1
+ 1277 02e0 31       		.byte	0x31
+ 1278 02e1 00       		.byte	0
+ 1279 02e2 09       		.uleb128 0x9
+ 1280 02e3 28000000 		.4byte	.LVL34
+ 1281 02e7 35020000 		.4byte	0x235
+ 1282 02eb 0A       		.uleb128 0xa
+ 1283 02ec 01       		.uleb128 0x1
+ 1284 02ed 50       		.byte	0x50
+ 1285 02ee 01       		.uleb128 0x1
+ 1286 02ef 3C       		.byte	0x3c
+ 1287 02f0 00       		.byte	0
+ 1288 02f1 00       		.byte	0
+ 1289 02f2 0B       		.uleb128 0xb
+ 1290 02f3 AA030000 		.4byte	.LASF35
+ 1291 02f7 01       		.byte	0x1
+ 1292 02f8 4A       		.byte	0x4a
+ 1293 02f9 00000000 		.4byte	.LFB0
+ 1294 02fd 1C000000 		.4byte	.LFE0-.LFB0
+ 1295 0301 01       		.uleb128 0x1
+ 1296 0302 9C       		.byte	0x9c
+ 1297 0303 1A030000 		.4byte	0x31a
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 40
+
+
+ 1298 0307 0D       		.uleb128 0xd
+ 1299 0308 0C000000 		.4byte	.LVL35
+ 1300 030c 8F020000 		.4byte	0x28f
+ 1301 0310 0D       		.uleb128 0xd
+ 1302 0311 16000000 		.4byte	.LVL36
+ 1303 0315 67010000 		.4byte	0x167
+ 1304 0319 00       		.byte	0
+ 1305 031a 10       		.uleb128 0x10
+ 1306 031b 9F000000 		.4byte	.LASF36
+ 1307 031f 01       		.byte	0x1
+ 1308 0320 9101     		.2byte	0x191
+ 1309 0322 00000000 		.4byte	.LFB6
+ 1310 0326 10000000 		.4byte	.LFE6-.LFB6
+ 1311 032a 01       		.uleb128 0x1
+ 1312 032b 9C       		.byte	0x9c
+ 1313 032c 10       		.uleb128 0x10
+ 1314 032d 70000000 		.4byte	.LASF37
+ 1315 0331 01       		.byte	0x1
+ 1316 0332 B301     		.2byte	0x1b3
+ 1317 0334 00000000 		.4byte	.LFB7
+ 1318 0338 10000000 		.4byte	.LFE7-.LFB7
+ 1319 033c 01       		.uleb128 0x1
+ 1320 033d 9C       		.byte	0x9c
+ 1321 033e 11       		.uleb128 0x11
+ 1322 033f 36010000 		.4byte	.LASF40
+ 1323 0343 01       		.byte	0x1
+ 1324 0344 DB01     		.2byte	0x1db
+ 1325 0346 80000000 		.4byte	0x80
+ 1326 034a 00000000 		.4byte	.LFB8
+ 1327 034e 24000000 		.4byte	.LFE8-.LFB8
+ 1328 0352 01       		.uleb128 0x1
+ 1329 0353 9C       		.byte	0x9c
+ 1330 0354 88030000 		.4byte	0x388
+ 1331 0358 07       		.uleb128 0x7
+ 1332 0359 6E010000 		.4byte	.LASF38
+ 1333 035d 01       		.byte	0x1
+ 1334 035e DB01     		.2byte	0x1db
+ 1335 0360 80000000 		.4byte	0x80
+ 1336 0364 75010000 		.4byte	.LLST9
+ 1337 0368 08       		.uleb128 0x8
+ 1338 0369 44040000 		.4byte	.LASF39
+ 1339 036d 01       		.byte	0x1
+ 1340 036e DD01     		.2byte	0x1dd
+ 1341 0370 80000000 		.4byte	0x80
+ 1342 0374 96010000 		.4byte	.LLST10
+ 1343 0378 09       		.uleb128 0x9
+ 1344 0379 18000000 		.4byte	.LVL40
+ 1345 037d 88050000 		.4byte	0x588
+ 1346 0381 0A       		.uleb128 0xa
+ 1347 0382 01       		.uleb128 0x1
+ 1348 0383 50       		.byte	0x50
+ 1349 0384 01       		.uleb128 0x1
+ 1350 0385 31       		.byte	0x31
+ 1351 0386 00       		.byte	0
+ 1352 0387 00       		.byte	0
+ 1353 0388 12       		.uleb128 0x12
+ 1354 0389 59000000 		.4byte	.LASF70
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 41
+
+
+ 1355 038d 01       		.byte	0x1
+ 1356 038e 0802     		.2byte	0x208
+ 1357 0390 A4000000 		.4byte	0xa4
+ 1358 0394 00000000 		.4byte	.LFB9
+ 1359 0398 18000000 		.4byte	.LFE9-.LFB9
+ 1360 039c 01       		.uleb128 0x1
+ 1361 039d 9C       		.byte	0x9c
+ 1362 039e 11       		.uleb128 0x11
+ 1363 039f 52030000 		.4byte	.LASF41
+ 1364 03a3 01       		.byte	0x1
+ 1365 03a4 2602     		.2byte	0x226
+ 1366 03a6 B0000000 		.4byte	0xb0
+ 1367 03aa 00000000 		.4byte	.LFB10
+ 1368 03ae 18000000 		.4byte	.LFE10-.LFB10
+ 1369 03b2 01       		.uleb128 0x1
+ 1370 03b3 9C       		.byte	0x9c
+ 1371 03b4 C9030000 		.4byte	0x3c9
+ 1372 03b8 13       		.uleb128 0x13
+ 1373 03b9 72657300 		.ascii	"res\000"
+ 1374 03bd 01       		.byte	0x1
+ 1375 03be 2802     		.2byte	0x228
+ 1376 03c0 8C000000 		.4byte	0x8c
+ 1377 03c4 AD010000 		.4byte	.LLST11
+ 1378 03c8 00       		.byte	0
+ 1379 03c9 0F       		.uleb128 0xf
+ 1380 03ca 6A020000 		.4byte	.LASF42
+ 1381 03ce 01       		.byte	0x1
+ 1382 03cf 4902     		.2byte	0x249
+ 1383 03d1 00000000 		.4byte	.LFB11
+ 1384 03d5 0C000000 		.4byte	.LFE11-.LFB11
+ 1385 03d9 01       		.uleb128 0x1
+ 1386 03da 9C       		.byte	0x9c
+ 1387 03db EE030000 		.4byte	0x3ee
+ 1388 03df 14       		.uleb128 0x14
+ 1389 03e0 08040000 		.4byte	.LASF43
+ 1390 03e4 01       		.byte	0x1
+ 1391 03e5 4902     		.2byte	0x249
+ 1392 03e7 B0000000 		.4byte	0xb0
+ 1393 03eb 01       		.uleb128 0x1
+ 1394 03ec 50       		.byte	0x50
+ 1395 03ed 00       		.byte	0
+ 1396 03ee 0F       		.uleb128 0xf
+ 1397 03ef C1030000 		.4byte	.LASF44
+ 1398 03f3 01       		.byte	0x1
+ 1399 03f4 B402     		.2byte	0x2b4
+ 1400 03f6 00000000 		.4byte	.LFB13
+ 1401 03fa 10000000 		.4byte	.LFE13-.LFB13
+ 1402 03fe 01       		.uleb128 0x1
+ 1403 03ff 9C       		.byte	0x9c
+ 1404 0400 15040000 		.4byte	0x415
+ 1405 0404 07       		.uleb128 0x7
+ 1406 0405 23000000 		.4byte	.LASF45
+ 1407 0409 01       		.byte	0x1
+ 1408 040a B402     		.2byte	0x2b4
+ 1409 040c B0000000 		.4byte	0xb0
+ 1410 0410 C0010000 		.4byte	.LLST12
+ 1411 0414 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 42
+
+
+ 1412 0415 0F       		.uleb128 0xf
+ 1413 0416 2A040000 		.4byte	.LASF46
+ 1414 041a 01       		.byte	0x1
+ 1415 041b CF02     		.2byte	0x2cf
+ 1416 041d 00000000 		.4byte	.LFB14
+ 1417 0421 0C000000 		.4byte	.LFE14-.LFB14
+ 1418 0425 01       		.uleb128 0x1
+ 1419 0426 9C       		.byte	0x9c
+ 1420 0427 3A040000 		.4byte	0x43a
+ 1421 042b 14       		.uleb128 0x14
+ 1422 042c 23000000 		.4byte	.LASF45
+ 1423 0430 01       		.byte	0x1
+ 1424 0431 CF02     		.2byte	0x2cf
+ 1425 0433 BC000000 		.4byte	0xbc
+ 1426 0437 01       		.uleb128 0x1
+ 1427 0438 50       		.byte	0x50
+ 1428 0439 00       		.byte	0
+ 1429 043a 11       		.uleb128 0x11
+ 1430 043b 07000000 		.4byte	.LASF47
+ 1431 043f 01       		.byte	0x1
+ 1432 0440 E702     		.2byte	0x2e7
+ 1433 0442 B0000000 		.4byte	0xb0
+ 1434 0446 00000000 		.4byte	.LFB15
+ 1435 044a 58000000 		.4byte	.LFE15-.LFB15
+ 1436 044e 01       		.uleb128 0x1
+ 1437 044f 9C       		.byte	0x9c
+ 1438 0450 83040000 		.4byte	0x483
+ 1439 0454 07       		.uleb128 0x7
+ 1440 0455 0F040000 		.4byte	.LASF48
+ 1441 0459 01       		.byte	0x1
+ 1442 045a E702     		.2byte	0x2e7
+ 1443 045c B0000000 		.4byte	0xb0
+ 1444 0460 E1010000 		.4byte	.LLST13
+ 1445 0464 15       		.uleb128 0x15
+ 1446 0465 FC010000 		.4byte	.LASF49
+ 1447 0469 01       		.byte	0x1
+ 1448 046a E902     		.2byte	0x2e9
+ 1449 046c B0000000 		.4byte	0xb0
+ 1450 0470 01       		.uleb128 0x1
+ 1451 0471 50       		.byte	0x50
+ 1452 0472 08       		.uleb128 0x8
+ 1453 0473 17010000 		.4byte	.LASF50
+ 1454 0477 01       		.byte	0x1
+ 1455 0478 EA02     		.2byte	0x2ea
+ 1456 047a BC000000 		.4byte	0xbc
+ 1457 047e FF010000 		.4byte	.LLST14
+ 1458 0482 00       		.byte	0
+ 1459 0483 16       		.uleb128 0x16
+ 1460 0484 51040000 		.4byte	.LASF51
+ 1461 0488 01       		.byte	0x1
+ 1462 0489 1103     		.2byte	0x311
+ 1463 048b BC000000 		.4byte	0xbc
+ 1464 048f 00000000 		.4byte	.LFB16
+ 1465 0493 48000000 		.4byte	.LFE16-.LFB16
+ 1466 0497 01       		.uleb128 0x1
+ 1467 0498 9C       		.byte	0x9c
+ 1468 0499 CA040000 		.4byte	0x4ca
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 43
+
+
+ 1469 049d 07       		.uleb128 0x7
+ 1470 049e 0F040000 		.4byte	.LASF48
+ 1471 04a2 01       		.byte	0x1
+ 1472 04a3 1103     		.2byte	0x311
+ 1473 04a5 B0000000 		.4byte	0xb0
+ 1474 04a9 1D020000 		.4byte	.LLST15
+ 1475 04ad 17       		.uleb128 0x17
+ 1476 04ae 83010000 		.4byte	.LASF71
+ 1477 04b2 01       		.byte	0x1
+ 1478 04b3 1403     		.2byte	0x314
+ 1479 04b5 E2000000 		.4byte	0xe2
+ 1480 04b9 08       		.uleb128 0x8
+ 1481 04ba 17010000 		.4byte	.LASF50
+ 1482 04be 01       		.byte	0x1
+ 1483 04bf 1503     		.2byte	0x315
+ 1484 04c1 BC000000 		.4byte	0xbc
+ 1485 04c5 3B020000 		.4byte	.LLST16
+ 1486 04c9 00       		.byte	0
+ 1487 04ca 16       		.uleb128 0x16
+ 1488 04cb 8F030000 		.4byte	.LASF52
+ 1489 04cf 01       		.byte	0x1
+ 1490 04d0 3D03     		.2byte	0x33d
+ 1491 04d2 C8000000 		.4byte	0xc8
+ 1492 04d6 00000000 		.4byte	.LFB17
+ 1493 04da 50000000 		.4byte	.LFE17-.LFB17
+ 1494 04de 01       		.uleb128 0x1
+ 1495 04df 9C       		.byte	0x9c
+ 1496 04e0 13050000 		.4byte	0x513
+ 1497 04e4 07       		.uleb128 0x7
+ 1498 04e5 0F040000 		.4byte	.LASF48
+ 1499 04e9 01       		.byte	0x1
+ 1500 04ea 3D03     		.2byte	0x33d
+ 1501 04ec B0000000 		.4byte	0xb0
+ 1502 04f0 59020000 		.4byte	.LLST17
+ 1503 04f4 15       		.uleb128 0x15
+ 1504 04f5 B6010000 		.4byte	.LASF53
+ 1505 04f9 01       		.byte	0x1
+ 1506 04fa 3F03     		.2byte	0x33f
+ 1507 04fc C8000000 		.4byte	0xc8
+ 1508 0500 01       		.uleb128 0x1
+ 1509 0501 50       		.byte	0x50
+ 1510 0502 08       		.uleb128 0x8
+ 1511 0503 17010000 		.4byte	.LASF50
+ 1512 0507 01       		.byte	0x1
+ 1513 0508 4003     		.2byte	0x340
+ 1514 050a BC000000 		.4byte	0xbc
+ 1515 050e 77020000 		.4byte	.LLST18
+ 1516 0512 00       		.byte	0
+ 1517 0513 18       		.uleb128 0x18
+ 1518 0514 09020000 		.4byte	.LASF54
+ 1519 0518 01       		.byte	0x1
+ 1520 0519 23       		.byte	0x23
+ 1521 051a 80000000 		.4byte	0x80
+ 1522 051e 05       		.uleb128 0x5
+ 1523 051f 03       		.byte	0x3
+ 1524 0520 00000000 		.4byte	ADC_Battery_initVar
+ 1525 0524 18       		.uleb128 0x18
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 44
+
+
+ 1526 0525 51020000 		.4byte	.LASF55
+ 1527 0529 01       		.byte	0x1
+ 1528 052a 24       		.byte	0x24
+ 1529 052b 35050000 		.4byte	0x535
+ 1530 052f 05       		.uleb128 0x5
+ 1531 0530 03       		.byte	0x3
+ 1532 0531 00000000 		.4byte	ADC_Battery_offset
+ 1533 0535 05       		.uleb128 0x5
+ 1534 0536 B0000000 		.4byte	0xb0
+ 1535 053a 18       		.uleb128 0x18
+ 1536 053b 9C010000 		.4byte	.LASF56
+ 1537 053f 01       		.byte	0x1
+ 1538 0540 25       		.byte	0x25
+ 1539 0541 35050000 		.4byte	0x535
+ 1540 0545 05       		.uleb128 0x5
+ 1541 0546 03       		.byte	0x3
+ 1542 0547 00000000 		.4byte	ADC_Battery_countsPerVolt
+ 1543 054b 18       		.uleb128 0x18
+ 1544 054c 52010000 		.4byte	.LASF57
+ 1545 0550 01       		.byte	0x1
+ 1546 0551 26       		.byte	0x26
+ 1547 0552 5C050000 		.4byte	0x55c
+ 1548 0556 05       		.uleb128 0x5
+ 1549 0557 03       		.byte	0x3
+ 1550 0558 00000000 		.4byte	ADC_Battery_countsPer10Volt
+ 1551 055c 05       		.uleb128 0x5
+ 1552 055d BC000000 		.4byte	0xbc
+ 1553 0561 18       		.uleb128 0x18
+ 1554 0562 D2000000 		.4byte	.LASF58
+ 1555 0566 01       		.byte	0x1
+ 1556 0567 27       		.byte	0x27
+ 1557 0568 35050000 		.4byte	0x535
+ 1558 056c 05       		.uleb128 0x5
+ 1559 056d 03       		.byte	0x3
+ 1560 056e 00000000 		.4byte	ADC_Battery_shift
+ 1561 0572 19       		.uleb128 0x19
+ 1562 0573 8B020000 		.4byte	.LASF59
+ 1563 0577 8B020000 		.4byte	.LASF59
+ 1564 057b 03       		.byte	0x3
+ 1565 057c 7F       		.byte	0x7f
+ 1566 057d 19       		.uleb128 0x19
+ 1567 057e BC010000 		.4byte	.LASF60
+ 1568 0582 BC010000 		.4byte	.LASF60
+ 1569 0586 03       		.byte	0x3
+ 1570 0587 7D       		.byte	0x7d
+ 1571 0588 19       		.uleb128 0x19
+ 1572 0589 FF000000 		.4byte	.LASF61
+ 1573 058d FF000000 		.4byte	.LASF61
+ 1574 0591 03       		.byte	0x3
+ 1575 0592 77       		.byte	0x77
+ 1576 0593 19       		.uleb128 0x19
+ 1577 0594 2B000000 		.4byte	.LASF62
+ 1578 0598 2B000000 		.4byte	.LASF62
+ 1579 059c 03       		.byte	0x3
+ 1580 059d 7E       		.byte	0x7e
+ 1581 059e 19       		.uleb128 0x19
+ 1582 059f 6D040000 		.4byte	.LASF63
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 45
+
+
+ 1583 05a3 6D040000 		.4byte	.LASF63
+ 1584 05a7 04       		.byte	0x4
+ 1585 05a8 32       		.byte	0x32
+ 1586 05a9 19       		.uleb128 0x19
+ 1587 05aa 40020000 		.4byte	.LASF64
+ 1588 05ae 40020000 		.4byte	.LASF64
+ 1589 05b2 03       		.byte	0x3
+ 1590 05b3 8B       		.byte	0x8b
+ 1591 05b4 19       		.uleb128 0x19
+ 1592 05b5 27010000 		.4byte	.LASF65
+ 1593 05b9 27010000 		.4byte	.LASF65
+ 1594 05bd 03       		.byte	0x3
+ 1595 05be 88       		.byte	0x88
+ 1596 05bf 00       		.byte	0
+ 1597              		.section	.debug_abbrev,"",%progbits
+ 1598              	.Ldebug_abbrev0:
+ 1599 0000 01       		.uleb128 0x1
+ 1600 0001 11       		.uleb128 0x11
+ 1601 0002 01       		.byte	0x1
+ 1602 0003 25       		.uleb128 0x25
+ 1603 0004 0E       		.uleb128 0xe
+ 1604 0005 13       		.uleb128 0x13
+ 1605 0006 0B       		.uleb128 0xb
+ 1606 0007 03       		.uleb128 0x3
+ 1607 0008 0E       		.uleb128 0xe
+ 1608 0009 1B       		.uleb128 0x1b
+ 1609 000a 0E       		.uleb128 0xe
+ 1610 000b 55       		.uleb128 0x55
+ 1611 000c 17       		.uleb128 0x17
+ 1612 000d 11       		.uleb128 0x11
+ 1613 000e 01       		.uleb128 0x1
+ 1614 000f 10       		.uleb128 0x10
+ 1615 0010 17       		.uleb128 0x17
+ 1616 0011 00       		.byte	0
+ 1617 0012 00       		.byte	0
+ 1618 0013 02       		.uleb128 0x2
+ 1619 0014 24       		.uleb128 0x24
+ 1620 0015 00       		.byte	0
+ 1621 0016 0B       		.uleb128 0xb
+ 1622 0017 0B       		.uleb128 0xb
+ 1623 0018 3E       		.uleb128 0x3e
+ 1624 0019 0B       		.uleb128 0xb
+ 1625 001a 03       		.uleb128 0x3
+ 1626 001b 08       		.uleb128 0x8
+ 1627 001c 00       		.byte	0
+ 1628 001d 00       		.byte	0
+ 1629 001e 03       		.uleb128 0x3
+ 1630 001f 24       		.uleb128 0x24
+ 1631 0020 00       		.byte	0
+ 1632 0021 0B       		.uleb128 0xb
+ 1633 0022 0B       		.uleb128 0xb
+ 1634 0023 3E       		.uleb128 0x3e
+ 1635 0024 0B       		.uleb128 0xb
+ 1636 0025 03       		.uleb128 0x3
+ 1637 0026 0E       		.uleb128 0xe
+ 1638 0027 00       		.byte	0
+ 1639 0028 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 46
+
+
+ 1640 0029 04       		.uleb128 0x4
+ 1641 002a 16       		.uleb128 0x16
+ 1642 002b 00       		.byte	0
+ 1643 002c 03       		.uleb128 0x3
+ 1644 002d 0E       		.uleb128 0xe
+ 1645 002e 3A       		.uleb128 0x3a
+ 1646 002f 0B       		.uleb128 0xb
+ 1647 0030 3B       		.uleb128 0x3b
+ 1648 0031 05       		.uleb128 0x5
+ 1649 0032 49       		.uleb128 0x49
+ 1650 0033 13       		.uleb128 0x13
+ 1651 0034 00       		.byte	0
+ 1652 0035 00       		.byte	0
+ 1653 0036 05       		.uleb128 0x5
+ 1654 0037 35       		.uleb128 0x35
+ 1655 0038 00       		.byte	0
+ 1656 0039 49       		.uleb128 0x49
+ 1657 003a 13       		.uleb128 0x13
+ 1658 003b 00       		.byte	0
+ 1659 003c 00       		.byte	0
+ 1660 003d 06       		.uleb128 0x6
+ 1661 003e 2E       		.uleb128 0x2e
+ 1662 003f 01       		.byte	0x1
+ 1663 0040 03       		.uleb128 0x3
+ 1664 0041 0E       		.uleb128 0xe
+ 1665 0042 3A       		.uleb128 0x3a
+ 1666 0043 0B       		.uleb128 0xb
+ 1667 0044 3B       		.uleb128 0x3b
+ 1668 0045 05       		.uleb128 0x5
+ 1669 0046 27       		.uleb128 0x27
+ 1670 0047 19       		.uleb128 0x19
+ 1671 0048 11       		.uleb128 0x11
+ 1672 0049 01       		.uleb128 0x1
+ 1673 004a 12       		.uleb128 0x12
+ 1674 004b 06       		.uleb128 0x6
+ 1675 004c 40       		.uleb128 0x40
+ 1676 004d 18       		.uleb128 0x18
+ 1677 004e 9742     		.uleb128 0x2117
+ 1678 0050 19       		.uleb128 0x19
+ 1679 0051 01       		.uleb128 0x1
+ 1680 0052 13       		.uleb128 0x13
+ 1681 0053 00       		.byte	0
+ 1682 0054 00       		.byte	0
+ 1683 0055 07       		.uleb128 0x7
+ 1684 0056 05       		.uleb128 0x5
+ 1685 0057 00       		.byte	0
+ 1686 0058 03       		.uleb128 0x3
+ 1687 0059 0E       		.uleb128 0xe
+ 1688 005a 3A       		.uleb128 0x3a
+ 1689 005b 0B       		.uleb128 0xb
+ 1690 005c 3B       		.uleb128 0x3b
+ 1691 005d 05       		.uleb128 0x5
+ 1692 005e 49       		.uleb128 0x49
+ 1693 005f 13       		.uleb128 0x13
+ 1694 0060 02       		.uleb128 0x2
+ 1695 0061 17       		.uleb128 0x17
+ 1696 0062 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 47
+
+
+ 1697 0063 00       		.byte	0
+ 1698 0064 08       		.uleb128 0x8
+ 1699 0065 34       		.uleb128 0x34
+ 1700 0066 00       		.byte	0
+ 1701 0067 03       		.uleb128 0x3
+ 1702 0068 0E       		.uleb128 0xe
+ 1703 0069 3A       		.uleb128 0x3a
+ 1704 006a 0B       		.uleb128 0xb
+ 1705 006b 3B       		.uleb128 0x3b
+ 1706 006c 05       		.uleb128 0x5
+ 1707 006d 49       		.uleb128 0x49
+ 1708 006e 13       		.uleb128 0x13
+ 1709 006f 02       		.uleb128 0x2
+ 1710 0070 17       		.uleb128 0x17
+ 1711 0071 00       		.byte	0
+ 1712 0072 00       		.byte	0
+ 1713 0073 09       		.uleb128 0x9
+ 1714 0074 898201   		.uleb128 0x4109
+ 1715 0077 01       		.byte	0x1
+ 1716 0078 11       		.uleb128 0x11
+ 1717 0079 01       		.uleb128 0x1
+ 1718 007a 31       		.uleb128 0x31
+ 1719 007b 13       		.uleb128 0x13
+ 1720 007c 00       		.byte	0
+ 1721 007d 00       		.byte	0
+ 1722 007e 0A       		.uleb128 0xa
+ 1723 007f 8A8201   		.uleb128 0x410a
+ 1724 0082 00       		.byte	0
+ 1725 0083 02       		.uleb128 0x2
+ 1726 0084 18       		.uleb128 0x18
+ 1727 0085 9142     		.uleb128 0x2111
+ 1728 0087 18       		.uleb128 0x18
+ 1729 0088 00       		.byte	0
+ 1730 0089 00       		.byte	0
+ 1731 008a 0B       		.uleb128 0xb
+ 1732 008b 2E       		.uleb128 0x2e
+ 1733 008c 01       		.byte	0x1
+ 1734 008d 3F       		.uleb128 0x3f
+ 1735 008e 19       		.uleb128 0x19
+ 1736 008f 03       		.uleb128 0x3
+ 1737 0090 0E       		.uleb128 0xe
+ 1738 0091 3A       		.uleb128 0x3a
+ 1739 0092 0B       		.uleb128 0xb
+ 1740 0093 3B       		.uleb128 0x3b
+ 1741 0094 0B       		.uleb128 0xb
+ 1742 0095 27       		.uleb128 0x27
+ 1743 0096 19       		.uleb128 0x19
+ 1744 0097 11       		.uleb128 0x11
+ 1745 0098 01       		.uleb128 0x1
+ 1746 0099 12       		.uleb128 0x12
+ 1747 009a 06       		.uleb128 0x6
+ 1748 009b 40       		.uleb128 0x40
+ 1749 009c 18       		.uleb128 0x18
+ 1750 009d 9742     		.uleb128 0x2117
+ 1751 009f 19       		.uleb128 0x19
+ 1752 00a0 01       		.uleb128 0x1
+ 1753 00a1 13       		.uleb128 0x13
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 48
+
+
+ 1754 00a2 00       		.byte	0
+ 1755 00a3 00       		.byte	0
+ 1756 00a4 0C       		.uleb128 0xc
+ 1757 00a5 34       		.uleb128 0x34
+ 1758 00a6 00       		.byte	0
+ 1759 00a7 03       		.uleb128 0x3
+ 1760 00a8 0E       		.uleb128 0xe
+ 1761 00a9 3A       		.uleb128 0x3a
+ 1762 00aa 0B       		.uleb128 0xb
+ 1763 00ab 3B       		.uleb128 0x3b
+ 1764 00ac 0B       		.uleb128 0xb
+ 1765 00ad 49       		.uleb128 0x49
+ 1766 00ae 13       		.uleb128 0x13
+ 1767 00af 02       		.uleb128 0x2
+ 1768 00b0 17       		.uleb128 0x17
+ 1769 00b1 00       		.byte	0
+ 1770 00b2 00       		.byte	0
+ 1771 00b3 0D       		.uleb128 0xd
+ 1772 00b4 898201   		.uleb128 0x4109
+ 1773 00b7 00       		.byte	0
+ 1774 00b8 11       		.uleb128 0x11
+ 1775 00b9 01       		.uleb128 0x1
+ 1776 00ba 31       		.uleb128 0x31
+ 1777 00bb 13       		.uleb128 0x13
+ 1778 00bc 00       		.byte	0
+ 1779 00bd 00       		.byte	0
+ 1780 00be 0E       		.uleb128 0xe
+ 1781 00bf 898201   		.uleb128 0x4109
+ 1782 00c2 01       		.byte	0x1
+ 1783 00c3 11       		.uleb128 0x11
+ 1784 00c4 01       		.uleb128 0x1
+ 1785 00c5 31       		.uleb128 0x31
+ 1786 00c6 13       		.uleb128 0x13
+ 1787 00c7 01       		.uleb128 0x1
+ 1788 00c8 13       		.uleb128 0x13
+ 1789 00c9 00       		.byte	0
+ 1790 00ca 00       		.byte	0
+ 1791 00cb 0F       		.uleb128 0xf
+ 1792 00cc 2E       		.uleb128 0x2e
+ 1793 00cd 01       		.byte	0x1
+ 1794 00ce 3F       		.uleb128 0x3f
+ 1795 00cf 19       		.uleb128 0x19
+ 1796 00d0 03       		.uleb128 0x3
+ 1797 00d1 0E       		.uleb128 0xe
+ 1798 00d2 3A       		.uleb128 0x3a
+ 1799 00d3 0B       		.uleb128 0xb
+ 1800 00d4 3B       		.uleb128 0x3b
+ 1801 00d5 05       		.uleb128 0x5
+ 1802 00d6 27       		.uleb128 0x27
+ 1803 00d7 19       		.uleb128 0x19
+ 1804 00d8 11       		.uleb128 0x11
+ 1805 00d9 01       		.uleb128 0x1
+ 1806 00da 12       		.uleb128 0x12
+ 1807 00db 06       		.uleb128 0x6
+ 1808 00dc 40       		.uleb128 0x40
+ 1809 00dd 18       		.uleb128 0x18
+ 1810 00de 9742     		.uleb128 0x2117
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 49
+
+
+ 1811 00e0 19       		.uleb128 0x19
+ 1812 00e1 01       		.uleb128 0x1
+ 1813 00e2 13       		.uleb128 0x13
+ 1814 00e3 00       		.byte	0
+ 1815 00e4 00       		.byte	0
+ 1816 00e5 10       		.uleb128 0x10
+ 1817 00e6 2E       		.uleb128 0x2e
+ 1818 00e7 00       		.byte	0
+ 1819 00e8 3F       		.uleb128 0x3f
+ 1820 00e9 19       		.uleb128 0x19
+ 1821 00ea 03       		.uleb128 0x3
+ 1822 00eb 0E       		.uleb128 0xe
+ 1823 00ec 3A       		.uleb128 0x3a
+ 1824 00ed 0B       		.uleb128 0xb
+ 1825 00ee 3B       		.uleb128 0x3b
+ 1826 00ef 05       		.uleb128 0x5
+ 1827 00f0 27       		.uleb128 0x27
+ 1828 00f1 19       		.uleb128 0x19
+ 1829 00f2 11       		.uleb128 0x11
+ 1830 00f3 01       		.uleb128 0x1
+ 1831 00f4 12       		.uleb128 0x12
+ 1832 00f5 06       		.uleb128 0x6
+ 1833 00f6 40       		.uleb128 0x40
+ 1834 00f7 18       		.uleb128 0x18
+ 1835 00f8 9742     		.uleb128 0x2117
+ 1836 00fa 19       		.uleb128 0x19
+ 1837 00fb 00       		.byte	0
+ 1838 00fc 00       		.byte	0
+ 1839 00fd 11       		.uleb128 0x11
+ 1840 00fe 2E       		.uleb128 0x2e
+ 1841 00ff 01       		.byte	0x1
+ 1842 0100 3F       		.uleb128 0x3f
+ 1843 0101 19       		.uleb128 0x19
+ 1844 0102 03       		.uleb128 0x3
+ 1845 0103 0E       		.uleb128 0xe
+ 1846 0104 3A       		.uleb128 0x3a
+ 1847 0105 0B       		.uleb128 0xb
+ 1848 0106 3B       		.uleb128 0x3b
+ 1849 0107 05       		.uleb128 0x5
+ 1850 0108 27       		.uleb128 0x27
+ 1851 0109 19       		.uleb128 0x19
+ 1852 010a 49       		.uleb128 0x49
+ 1853 010b 13       		.uleb128 0x13
+ 1854 010c 11       		.uleb128 0x11
+ 1855 010d 01       		.uleb128 0x1
+ 1856 010e 12       		.uleb128 0x12
+ 1857 010f 06       		.uleb128 0x6
+ 1858 0110 40       		.uleb128 0x40
+ 1859 0111 18       		.uleb128 0x18
+ 1860 0112 9742     		.uleb128 0x2117
+ 1861 0114 19       		.uleb128 0x19
+ 1862 0115 01       		.uleb128 0x1
+ 1863 0116 13       		.uleb128 0x13
+ 1864 0117 00       		.byte	0
+ 1865 0118 00       		.byte	0
+ 1866 0119 12       		.uleb128 0x12
+ 1867 011a 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 50
+
+
+ 1868 011b 00       		.byte	0
+ 1869 011c 3F       		.uleb128 0x3f
+ 1870 011d 19       		.uleb128 0x19
+ 1871 011e 03       		.uleb128 0x3
+ 1872 011f 0E       		.uleb128 0xe
+ 1873 0120 3A       		.uleb128 0x3a
+ 1874 0121 0B       		.uleb128 0xb
+ 1875 0122 3B       		.uleb128 0x3b
+ 1876 0123 05       		.uleb128 0x5
+ 1877 0124 27       		.uleb128 0x27
+ 1878 0125 19       		.uleb128 0x19
+ 1879 0126 49       		.uleb128 0x49
+ 1880 0127 13       		.uleb128 0x13
+ 1881 0128 11       		.uleb128 0x11
+ 1882 0129 01       		.uleb128 0x1
+ 1883 012a 12       		.uleb128 0x12
+ 1884 012b 06       		.uleb128 0x6
+ 1885 012c 40       		.uleb128 0x40
+ 1886 012d 18       		.uleb128 0x18
+ 1887 012e 9742     		.uleb128 0x2117
+ 1888 0130 19       		.uleb128 0x19
+ 1889 0131 00       		.byte	0
+ 1890 0132 00       		.byte	0
+ 1891 0133 13       		.uleb128 0x13
+ 1892 0134 34       		.uleb128 0x34
+ 1893 0135 00       		.byte	0
+ 1894 0136 03       		.uleb128 0x3
+ 1895 0137 08       		.uleb128 0x8
+ 1896 0138 3A       		.uleb128 0x3a
+ 1897 0139 0B       		.uleb128 0xb
+ 1898 013a 3B       		.uleb128 0x3b
+ 1899 013b 05       		.uleb128 0x5
+ 1900 013c 49       		.uleb128 0x49
+ 1901 013d 13       		.uleb128 0x13
+ 1902 013e 02       		.uleb128 0x2
+ 1903 013f 17       		.uleb128 0x17
+ 1904 0140 00       		.byte	0
+ 1905 0141 00       		.byte	0
+ 1906 0142 14       		.uleb128 0x14
+ 1907 0143 05       		.uleb128 0x5
+ 1908 0144 00       		.byte	0
+ 1909 0145 03       		.uleb128 0x3
+ 1910 0146 0E       		.uleb128 0xe
+ 1911 0147 3A       		.uleb128 0x3a
+ 1912 0148 0B       		.uleb128 0xb
+ 1913 0149 3B       		.uleb128 0x3b
+ 1914 014a 05       		.uleb128 0x5
+ 1915 014b 49       		.uleb128 0x49
+ 1916 014c 13       		.uleb128 0x13
+ 1917 014d 02       		.uleb128 0x2
+ 1918 014e 18       		.uleb128 0x18
+ 1919 014f 00       		.byte	0
+ 1920 0150 00       		.byte	0
+ 1921 0151 15       		.uleb128 0x15
+ 1922 0152 34       		.uleb128 0x34
+ 1923 0153 00       		.byte	0
+ 1924 0154 03       		.uleb128 0x3
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 51
+
+
+ 1925 0155 0E       		.uleb128 0xe
+ 1926 0156 3A       		.uleb128 0x3a
+ 1927 0157 0B       		.uleb128 0xb
+ 1928 0158 3B       		.uleb128 0x3b
+ 1929 0159 05       		.uleb128 0x5
+ 1930 015a 49       		.uleb128 0x49
+ 1931 015b 13       		.uleb128 0x13
+ 1932 015c 02       		.uleb128 0x2
+ 1933 015d 18       		.uleb128 0x18
+ 1934 015e 00       		.byte	0
+ 1935 015f 00       		.byte	0
+ 1936 0160 16       		.uleb128 0x16
+ 1937 0161 2E       		.uleb128 0x2e
+ 1938 0162 01       		.byte	0x1
+ 1939 0163 3F       		.uleb128 0x3f
+ 1940 0164 19       		.uleb128 0x19
+ 1941 0165 03       		.uleb128 0x3
+ 1942 0166 0E       		.uleb128 0xe
+ 1943 0167 3A       		.uleb128 0x3a
+ 1944 0168 0B       		.uleb128 0xb
+ 1945 0169 3B       		.uleb128 0x3b
+ 1946 016a 05       		.uleb128 0x5
+ 1947 016b 27       		.uleb128 0x27
+ 1948 016c 19       		.uleb128 0x19
+ 1949 016d 49       		.uleb128 0x49
+ 1950 016e 13       		.uleb128 0x13
+ 1951 016f 11       		.uleb128 0x11
+ 1952 0170 01       		.uleb128 0x1
+ 1953 0171 12       		.uleb128 0x12
+ 1954 0172 06       		.uleb128 0x6
+ 1955 0173 40       		.uleb128 0x40
+ 1956 0174 18       		.uleb128 0x18
+ 1957 0175 9642     		.uleb128 0x2116
+ 1958 0177 19       		.uleb128 0x19
+ 1959 0178 01       		.uleb128 0x1
+ 1960 0179 13       		.uleb128 0x13
+ 1961 017a 00       		.byte	0
+ 1962 017b 00       		.byte	0
+ 1963 017c 17       		.uleb128 0x17
+ 1964 017d 34       		.uleb128 0x34
+ 1965 017e 00       		.byte	0
+ 1966 017f 03       		.uleb128 0x3
+ 1967 0180 0E       		.uleb128 0xe
+ 1968 0181 3A       		.uleb128 0x3a
+ 1969 0182 0B       		.uleb128 0xb
+ 1970 0183 3B       		.uleb128 0x3b
+ 1971 0184 05       		.uleb128 0x5
+ 1972 0185 49       		.uleb128 0x49
+ 1973 0186 13       		.uleb128 0x13
+ 1974 0187 00       		.byte	0
+ 1975 0188 00       		.byte	0
+ 1976 0189 18       		.uleb128 0x18
+ 1977 018a 34       		.uleb128 0x34
+ 1978 018b 00       		.byte	0
+ 1979 018c 03       		.uleb128 0x3
+ 1980 018d 0E       		.uleb128 0xe
+ 1981 018e 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 52
+
+
+ 1982 018f 0B       		.uleb128 0xb
+ 1983 0190 3B       		.uleb128 0x3b
+ 1984 0191 0B       		.uleb128 0xb
+ 1985 0192 49       		.uleb128 0x49
+ 1986 0193 13       		.uleb128 0x13
+ 1987 0194 3F       		.uleb128 0x3f
+ 1988 0195 19       		.uleb128 0x19
+ 1989 0196 02       		.uleb128 0x2
+ 1990 0197 18       		.uleb128 0x18
+ 1991 0198 00       		.byte	0
+ 1992 0199 00       		.byte	0
+ 1993 019a 19       		.uleb128 0x19
+ 1994 019b 2E       		.uleb128 0x2e
+ 1995 019c 00       		.byte	0
+ 1996 019d 3F       		.uleb128 0x3f
+ 1997 019e 19       		.uleb128 0x19
+ 1998 019f 3C       		.uleb128 0x3c
+ 1999 01a0 19       		.uleb128 0x19
+ 2000 01a1 6E       		.uleb128 0x6e
+ 2001 01a2 0E       		.uleb128 0xe
+ 2002 01a3 03       		.uleb128 0x3
+ 2003 01a4 0E       		.uleb128 0xe
+ 2004 01a5 3A       		.uleb128 0x3a
+ 2005 01a6 0B       		.uleb128 0xb
+ 2006 01a7 3B       		.uleb128 0x3b
+ 2007 01a8 0B       		.uleb128 0xb
+ 2008 01a9 00       		.byte	0
+ 2009 01aa 00       		.byte	0
+ 2010 01ab 00       		.byte	0
+ 2011              		.section	.debug_loc,"",%progbits
+ 2012              	.Ldebug_loc0:
+ 2013              	.LLST0:
+ 2014 0000 00000000 		.4byte	.LVL0
+ 2015 0004 1E000000 		.4byte	.LVL3
+ 2016 0008 0100     		.2byte	0x1
+ 2017 000a 50       		.byte	0x50
+ 2018 000b 1E000000 		.4byte	.LVL3
+ 2019 000f 26000000 		.4byte	.LVL5
+ 2020 0013 0400     		.2byte	0x4
+ 2021 0015 F3       		.byte	0xf3
+ 2022 0016 01       		.uleb128 0x1
+ 2023 0017 50       		.byte	0x50
+ 2024 0018 9F       		.byte	0x9f
+ 2025 0019 26000000 		.4byte	.LVL5
+ 2026 001d 2A000000 		.4byte	.LVL6
+ 2027 0021 0100     		.2byte	0x1
+ 2028 0023 50       		.byte	0x50
+ 2029 0024 2A000000 		.4byte	.LVL6
+ 2030 0028 64000000 		.4byte	.LFE12
+ 2031 002c 0400     		.2byte	0x4
+ 2032 002e F3       		.byte	0xf3
+ 2033 002f 01       		.uleb128 0x1
+ 2034 0030 50       		.byte	0x50
+ 2035 0031 9F       		.byte	0x9f
+ 2036 0032 00000000 		.4byte	0
+ 2037 0036 00000000 		.4byte	0
+ 2038              	.LLST1:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 53
+
+
+ 2039 003a 16000000 		.4byte	.LVL1
+ 2040 003e 1C000000 		.4byte	.LVL2
+ 2041 0042 0400     		.2byte	0x4
+ 2042 0044 0A       		.byte	0xa
+ 2043 0045 0001     		.2byte	0x100
+ 2044 0047 9F       		.byte	0x9f
+ 2045 0048 1C000000 		.4byte	.LVL2
+ 2046 004c 26000000 		.4byte	.LVL5
+ 2047 0050 0200     		.2byte	0x2
+ 2048 0052 30       		.byte	0x30
+ 2049 0053 9F       		.byte	0x9f
+ 2050 0054 2A000000 		.4byte	.LVL6
+ 2051 0058 3E000000 		.4byte	.LVL7
+ 2052 005c 0100     		.2byte	0x1
+ 2053 005e 52       		.byte	0x52
+ 2054 005f 00000000 		.4byte	0
+ 2055 0063 00000000 		.4byte	0
+ 2056              	.LLST2:
+ 2057 0067 38000000 		.4byte	.LVL10
+ 2058 006b 3C000000 		.4byte	.LVL11
+ 2059 006f 0500     		.2byte	0x5
+ 2060 0071 73       		.byte	0x73
+ 2061 0072 00       		.sleb128 0
+ 2062 0073 32       		.byte	0x32
+ 2063 0074 21       		.byte	0x21
+ 2064 0075 9F       		.byte	0x9f
+ 2065 0076 3C000000 		.4byte	.LVL11
+ 2066 007a 42000000 		.4byte	.LVL12
+ 2067 007e 0100     		.2byte	0x1
+ 2068 0080 53       		.byte	0x53
+ 2069 0081 42000000 		.4byte	.LVL12
+ 2070 0085 44000000 		.4byte	.LVL13
+ 2071 0089 0500     		.2byte	0x5
+ 2072 008b 0C       		.byte	0xc
+ 2073 008c 0B590040 		.4byte	0x4000590b
+ 2074 0090 00000000 		.4byte	0
+ 2075 0094 00000000 		.4byte	0
+ 2076              	.LLST3:
+ 2077 0098 08000000 		.4byte	.LVL9
+ 2078 009c 82000000 		.4byte	.LVL16
+ 2079 00a0 0100     		.2byte	0x1
+ 2080 00a2 54       		.byte	0x54
+ 2081 00a3 00000000 		.4byte	0
+ 2082 00a7 00000000 		.4byte	0
+ 2083              	.LLST4:
+ 2084 00ab 06000000 		.4byte	.LVL17
+ 2085 00af 3F000000 		.4byte	.LVL18-1
+ 2086 00b3 0100     		.2byte	0x1
+ 2087 00b5 50       		.byte	0x50
+ 2088 00b6 00000000 		.4byte	0
+ 2089 00ba 00000000 		.4byte	0
+ 2090              	.LLST5:
+ 2091 00be 00000000 		.4byte	.LVL19
+ 2092 00c2 00000000 		.4byte	.LVL19
+ 2093 00c6 0100     		.2byte	0x1
+ 2094 00c8 50       		.byte	0x50
+ 2095 00c9 00000000 		.4byte	.LVL19
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 54
+
+
+ 2096 00cd 0C000000 		.4byte	.LVL21
+ 2097 00d1 0500     		.2byte	0x5
+ 2098 00d3 70       		.byte	0x70
+ 2099 00d4 00       		.sleb128 0
+ 2100 00d5 33       		.byte	0x33
+ 2101 00d6 1A       		.byte	0x1a
+ 2102 00d7 9F       		.byte	0x9f
+ 2103 00d8 0C000000 		.4byte	.LVL21
+ 2104 00dc 18000000 		.4byte	.LFE4
+ 2105 00e0 0600     		.2byte	0x6
+ 2106 00e2 F3       		.byte	0xf3
+ 2107 00e3 01       		.uleb128 0x1
+ 2108 00e4 50       		.byte	0x50
+ 2109 00e5 33       		.byte	0x33
+ 2110 00e6 1A       		.byte	0x1a
+ 2111 00e7 9F       		.byte	0x9f
+ 2112 00e8 00000000 		.4byte	0
+ 2113 00ec 00000000 		.4byte	0
+ 2114              	.LLST6:
+ 2115 00f0 08000000 		.4byte	.LVL20
+ 2116 00f4 0E000000 		.4byte	.LVL22
+ 2117 00f8 0100     		.2byte	0x1
+ 2118 00fa 53       		.byte	0x53
+ 2119 00fb 0E000000 		.4byte	.LVL22
+ 2120 00ff 18000000 		.4byte	.LFE4
+ 2121 0103 0100     		.2byte	0x1
+ 2122 0105 50       		.byte	0x50
+ 2123 0106 00000000 		.4byte	0
+ 2124 010a 00000000 		.4byte	0
+ 2125              	.LLST7:
+ 2126 010e 00000000 		.4byte	.LVL23
+ 2127 0112 1C000000 		.4byte	.LVL26
+ 2128 0116 0100     		.2byte	0x1
+ 2129 0118 50       		.byte	0x50
+ 2130 0119 1C000000 		.4byte	.LVL26
+ 2131 011d 24000000 		.4byte	.LVL28
+ 2132 0121 0400     		.2byte	0x4
+ 2133 0123 F3       		.byte	0xf3
+ 2134 0124 01       		.uleb128 0x1
+ 2135 0125 50       		.byte	0x50
+ 2136 0126 9F       		.byte	0x9f
+ 2137 0127 24000000 		.4byte	.LVL28
+ 2138 012b 26000000 		.4byte	.LVL29
+ 2139 012f 0100     		.2byte	0x1
+ 2140 0131 50       		.byte	0x50
+ 2141 0132 26000000 		.4byte	.LVL29
+ 2142 0136 38000000 		.4byte	.LFE5
+ 2143 013a 0400     		.2byte	0x4
+ 2144 013c F3       		.byte	0xf3
+ 2145 013d 01       		.uleb128 0x1
+ 2146 013e 50       		.byte	0x50
+ 2147 013f 9F       		.byte	0x9f
+ 2148 0140 00000000 		.4byte	0
+ 2149 0144 00000000 		.4byte	0
+ 2150              	.LLST8:
+ 2151 0148 16000000 		.4byte	.LVL24
+ 2152 014c 1A000000 		.4byte	.LVL25
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 55
+
+
+ 2153 0150 0300     		.2byte	0x3
+ 2154 0152 08       		.byte	0x8
+ 2155 0153 44       		.byte	0x44
+ 2156 0154 9F       		.byte	0x9f
+ 2157 0155 1A000000 		.4byte	.LVL25
+ 2158 0159 24000000 		.4byte	.LVL28
+ 2159 015d 0300     		.2byte	0x3
+ 2160 015f 09       		.byte	0x9
+ 2161 0160 C4       		.byte	0xc4
+ 2162 0161 9F       		.byte	0x9f
+ 2163 0162 26000000 		.4byte	.LVL29
+ 2164 0166 2F000000 		.4byte	.LVL30-1
+ 2165 016a 0100     		.2byte	0x1
+ 2166 016c 52       		.byte	0x52
+ 2167 016d 00000000 		.4byte	0
+ 2168 0171 00000000 		.4byte	0
+ 2169              	.LLST9:
+ 2170 0175 00000000 		.4byte	.LVL37
+ 2171 0179 14000000 		.4byte	.LVL39
+ 2172 017d 0100     		.2byte	0x1
+ 2173 017f 50       		.byte	0x50
+ 2174 0180 14000000 		.4byte	.LVL39
+ 2175 0184 24000000 		.4byte	.LFE8
+ 2176 0188 0400     		.2byte	0x4
+ 2177 018a F3       		.byte	0xf3
+ 2178 018b 01       		.uleb128 0x1
+ 2179 018c 50       		.byte	0x50
+ 2180 018d 9F       		.byte	0x9f
+ 2181 018e 00000000 		.4byte	0
+ 2182 0192 00000000 		.4byte	0
+ 2183              	.LLST10:
+ 2184 0196 06000000 		.4byte	.LVL38
+ 2185 019a 17000000 		.4byte	.LVL40-1
+ 2186 019e 0500     		.2byte	0x5
+ 2187 01a0 73       		.byte	0x73
+ 2188 01a1 00       		.sleb128 0
+ 2189 01a2 31       		.byte	0x31
+ 2190 01a3 1A       		.byte	0x1a
+ 2191 01a4 9F       		.byte	0x9f
+ 2192 01a5 00000000 		.4byte	0
+ 2193 01a9 00000000 		.4byte	0
+ 2194              	.LLST11:
+ 2195 01ad 06000000 		.4byte	.LVL41
+ 2196 01b1 0C000000 		.4byte	.LVL42
+ 2197 01b5 0100     		.2byte	0x1
+ 2198 01b7 50       		.byte	0x50
+ 2199 01b8 00000000 		.4byte	0
+ 2200 01bc 00000000 		.4byte	0
+ 2201              	.LLST12:
+ 2202 01c0 00000000 		.4byte	.LVL44
+ 2203 01c4 04000000 		.4byte	.LVL45
+ 2204 01c8 0100     		.2byte	0x1
+ 2205 01ca 50       		.byte	0x50
+ 2206 01cb 04000000 		.4byte	.LVL45
+ 2207 01cf 10000000 		.4byte	.LFE13
+ 2208 01d3 0400     		.2byte	0x4
+ 2209 01d5 F3       		.byte	0xf3
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 56
+
+
+ 2210 01d6 01       		.uleb128 0x1
+ 2211 01d7 50       		.byte	0x50
+ 2212 01d8 9F       		.byte	0x9f
+ 2213 01d9 00000000 		.4byte	0
+ 2214 01dd 00000000 		.4byte	0
+ 2215              	.LLST13:
+ 2216 01e1 00000000 		.4byte	.LVL47
+ 2217 01e5 24000000 		.4byte	.LVL51
+ 2218 01e9 0100     		.2byte	0x1
+ 2219 01eb 50       		.byte	0x50
+ 2220 01ec 24000000 		.4byte	.LVL51
+ 2221 01f0 58000000 		.4byte	.LFE15
+ 2222 01f4 0100     		.2byte	0x1
+ 2223 01f6 51       		.byte	0x51
+ 2224 01f7 00000000 		.4byte	0
+ 2225 01fb 00000000 		.4byte	0
+ 2226              	.LLST14:
+ 2227 01ff 16000000 		.4byte	.LVL48
+ 2228 0203 18000000 		.4byte	.LVL49
+ 2229 0207 0100     		.2byte	0x1
+ 2230 0209 54       		.byte	0x54
+ 2231 020a 1C000000 		.4byte	.LVL50
+ 2232 020e 4A000000 		.4byte	.LVL53
+ 2233 0212 0100     		.2byte	0x1
+ 2234 0214 54       		.byte	0x54
+ 2235 0215 00000000 		.4byte	0
+ 2236 0219 00000000 		.4byte	0
+ 2237              	.LLST15:
+ 2238 021d 00000000 		.4byte	.LVL54
+ 2239 0221 22000000 		.4byte	.LVL58
+ 2240 0225 0100     		.2byte	0x1
+ 2241 0227 50       		.byte	0x50
+ 2242 0228 22000000 		.4byte	.LVL58
+ 2243 022c 38000000 		.4byte	.LVL60
+ 2244 0230 0100     		.2byte	0x1
+ 2245 0232 54       		.byte	0x54
+ 2246 0233 00000000 		.4byte	0
+ 2247 0237 00000000 		.4byte	0
+ 2248              	.LLST16:
+ 2249 023b 16000000 		.4byte	.LVL55
+ 2250 023f 18000000 		.4byte	.LVL56
+ 2251 0243 0100     		.2byte	0x1
+ 2252 0245 52       		.byte	0x52
+ 2253 0246 1C000000 		.4byte	.LVL57
+ 2254 024a 35000000 		.4byte	.LVL59-1
+ 2255 024e 0100     		.2byte	0x1
+ 2256 0250 52       		.byte	0x52
+ 2257 0251 00000000 		.4byte	0
+ 2258 0255 00000000 		.4byte	0
+ 2259              	.LLST17:
+ 2260 0259 00000000 		.4byte	.LVL61
+ 2261 025d 22000000 		.4byte	.LVL65
+ 2262 0261 0100     		.2byte	0x1
+ 2263 0263 50       		.byte	0x50
+ 2264 0264 22000000 		.4byte	.LVL65
+ 2265 0268 27000000 		.4byte	.LVL66-1
+ 2266 026c 0100     		.2byte	0x1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 57
+
+
+ 2267 026e 50       		.byte	0x50
+ 2268 026f 00000000 		.4byte	0
+ 2269 0273 00000000 		.4byte	0
+ 2270              	.LLST18:
+ 2271 0277 16000000 		.4byte	.LVL62
+ 2272 027b 18000000 		.4byte	.LVL63
+ 2273 027f 0100     		.2byte	0x1
+ 2274 0281 54       		.byte	0x54
+ 2275 0282 1C000000 		.4byte	.LVL64
+ 2276 0286 40000000 		.4byte	.LVL70
+ 2277 028a 0100     		.2byte	0x1
+ 2278 028c 54       		.byte	0x54
+ 2279 028d 00000000 		.4byte	0
+ 2280 0291 00000000 		.4byte	0
+ 2281              		.section	.debug_aranges,"",%progbits
+ 2282 0000 A4000000 		.4byte	0xa4
+ 2283 0004 0200     		.2byte	0x2
+ 2284 0006 00000000 		.4byte	.Ldebug_info0
+ 2285 000a 04       		.byte	0x4
+ 2286 000b 00       		.byte	0
+ 2287 000c 0000     		.2byte	0
+ 2288 000e 0000     		.2byte	0
+ 2289 0010 00000000 		.4byte	.LFB12
+ 2290 0014 64000000 		.4byte	.LFE12-.LFB12
+ 2291 0018 00000000 		.4byte	.LFB2
+ 2292 001c 94000000 		.4byte	.LFE2-.LFB2
+ 2293 0020 00000000 		.4byte	.LFB3
+ 2294 0024 48000000 		.4byte	.LFE3-.LFB3
+ 2295 0028 00000000 		.4byte	.LFB4
+ 2296 002c 18000000 		.4byte	.LFE4-.LFB4
+ 2297 0030 00000000 		.4byte	.LFB5
+ 2298 0034 38000000 		.4byte	.LFE5-.LFB5
+ 2299 0038 00000000 		.4byte	.LFB1
+ 2300 003c 3C000000 		.4byte	.LFE1-.LFB1
+ 2301 0040 00000000 		.4byte	.LFB0
+ 2302 0044 1C000000 		.4byte	.LFE0-.LFB0
+ 2303 0048 00000000 		.4byte	.LFB6
+ 2304 004c 10000000 		.4byte	.LFE6-.LFB6
+ 2305 0050 00000000 		.4byte	.LFB7
+ 2306 0054 10000000 		.4byte	.LFE7-.LFB7
+ 2307 0058 00000000 		.4byte	.LFB8
+ 2308 005c 24000000 		.4byte	.LFE8-.LFB8
+ 2309 0060 00000000 		.4byte	.LFB9
+ 2310 0064 18000000 		.4byte	.LFE9-.LFB9
+ 2311 0068 00000000 		.4byte	.LFB10
+ 2312 006c 18000000 		.4byte	.LFE10-.LFB10
+ 2313 0070 00000000 		.4byte	.LFB11
+ 2314 0074 0C000000 		.4byte	.LFE11-.LFB11
+ 2315 0078 00000000 		.4byte	.LFB13
+ 2316 007c 10000000 		.4byte	.LFE13-.LFB13
+ 2317 0080 00000000 		.4byte	.LFB14
+ 2318 0084 0C000000 		.4byte	.LFE14-.LFB14
+ 2319 0088 00000000 		.4byte	.LFB15
+ 2320 008c 58000000 		.4byte	.LFE15-.LFB15
+ 2321 0090 00000000 		.4byte	.LFB16
+ 2322 0094 48000000 		.4byte	.LFE16-.LFB16
+ 2323 0098 00000000 		.4byte	.LFB17
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 58
+
+
+ 2324 009c 50000000 		.4byte	.LFE17-.LFB17
+ 2325 00a0 00000000 		.4byte	0
+ 2326 00a4 00000000 		.4byte	0
+ 2327              		.section	.debug_ranges,"",%progbits
+ 2328              	.Ldebug_ranges0:
+ 2329 0000 00000000 		.4byte	.LFB12
+ 2330 0004 64000000 		.4byte	.LFE12
+ 2331 0008 00000000 		.4byte	.LFB2
+ 2332 000c 94000000 		.4byte	.LFE2
+ 2333 0010 00000000 		.4byte	.LFB3
+ 2334 0014 48000000 		.4byte	.LFE3
+ 2335 0018 00000000 		.4byte	.LFB4
+ 2336 001c 18000000 		.4byte	.LFE4
+ 2337 0020 00000000 		.4byte	.LFB5
+ 2338 0024 38000000 		.4byte	.LFE5
+ 2339 0028 00000000 		.4byte	.LFB1
+ 2340 002c 3C000000 		.4byte	.LFE1
+ 2341 0030 00000000 		.4byte	.LFB0
+ 2342 0034 1C000000 		.4byte	.LFE0
+ 2343 0038 00000000 		.4byte	.LFB6
+ 2344 003c 10000000 		.4byte	.LFE6
+ 2345 0040 00000000 		.4byte	.LFB7
+ 2346 0044 10000000 		.4byte	.LFE7
+ 2347 0048 00000000 		.4byte	.LFB8
+ 2348 004c 24000000 		.4byte	.LFE8
+ 2349 0050 00000000 		.4byte	.LFB9
+ 2350 0054 18000000 		.4byte	.LFE9
+ 2351 0058 00000000 		.4byte	.LFB10
+ 2352 005c 18000000 		.4byte	.LFE10
+ 2353 0060 00000000 		.4byte	.LFB11
+ 2354 0064 0C000000 		.4byte	.LFE11
+ 2355 0068 00000000 		.4byte	.LFB13
+ 2356 006c 10000000 		.4byte	.LFE13
+ 2357 0070 00000000 		.4byte	.LFB14
+ 2358 0074 0C000000 		.4byte	.LFE14
+ 2359 0078 00000000 		.4byte	.LFB15
+ 2360 007c 58000000 		.4byte	.LFE15
+ 2361 0080 00000000 		.4byte	.LFB16
+ 2362 0084 48000000 		.4byte	.LFE16
+ 2363 0088 00000000 		.4byte	.LFB17
+ 2364 008c 50000000 		.4byte	.LFE17
+ 2365 0090 00000000 		.4byte	0
+ 2366 0094 00000000 		.4byte	0
+ 2367              		.section	.debug_line,"",%progbits
+ 2368              	.Ldebug_line0:
+ 2369 0000 1E020000 		.section	.debug_str,"MS",%progbits,1
+ 2369      02006C00 
+ 2369      00000201 
+ 2369      FB0E0D00 
+ 2369      01010101 
+ 2370              	.LASF13:
+ 2371 0000 75696E74 		.ascii	"uint16\000"
+ 2371      313600
+ 2372              	.LASF47:
+ 2373 0007 4144435F 		.ascii	"ADC_Battery_CountsTo_mVolts\000"
+ 2373      42617474 
+ 2373      6572795F 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 59
+
+
+ 2373      436F756E 
+ 2373      7473546F 
+ 2374              	.LASF45:
+ 2375 0023 61646347 		.ascii	"adcGain\000"
+ 2375      61696E00 
+ 2376              	.LASF62:
+ 2377 002b 43794578 		.ascii	"CyExitCriticalSection\000"
+ 2377      69744372 
+ 2377      69746963 
+ 2377      616C5365 
+ 2377      6374696F 
+ 2378              	.LASF29:
+ 2379 0041 4144435F 		.ascii	"ADC_Battery_Stop\000"
+ 2379      42617474 
+ 2379      6572795F 
+ 2379      53746F70 
+ 2379      00
+ 2380              	.LASF25:
+ 2381 0052 636F756E 		.ascii	"counts\000"
+ 2381      747300
+ 2382              	.LASF70:
+ 2383 0059 4144435F 		.ascii	"ADC_Battery_GetResult8\000"
+ 2383      42617474 
+ 2383      6572795F 
+ 2383      47657452 
+ 2383      6573756C 
+ 2384              	.LASF37:
+ 2385 0070 4144435F 		.ascii	"ADC_Battery_StopConvert\000"
+ 2385      42617474 
+ 2385      6572795F 
+ 2385      53746F70 
+ 2385      436F6E76 
+ 2386              	.LASF9:
+ 2387 0088 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2387      206C6F6E 
+ 2387      6720756E 
+ 2387      7369676E 
+ 2387      65642069 
+ 2388              	.LASF36:
+ 2389 009f 4144435F 		.ascii	"ADC_Battery_StartConvert\000"
+ 2389      42617474 
+ 2389      6572795F 
+ 2389      53746172 
+ 2389      74436F6E 
+ 2390              	.LASF1:
+ 2391 00b8 6C6F6E67 		.ascii	"long long int\000"
+ 2391      206C6F6E 
+ 2391      6720696E 
+ 2391      7400
+ 2392              	.LASF3:
+ 2393 00c6 7369676E 		.ascii	"signed char\000"
+ 2393      65642063 
+ 2393      68617200 
+ 2394              	.LASF58:
+ 2395 00d2 4144435F 		.ascii	"ADC_Battery_shift\000"
+ 2395      42617474 
+ 2395      6572795F 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 60
+
+
+ 2395      73686966 
+ 2395      7400
+ 2396              	.LASF17:
+ 2397 00e4 696E7433 		.ascii	"int32\000"
+ 2397      3200
+ 2398              	.LASF7:
+ 2399 00ea 6C6F6E67 		.ascii	"long int\000"
+ 2399      20696E74 
+ 2399      00
+ 2400              	.LASF23:
+ 2401 00f3 72656731 		.ascii	"reg16\000"
+ 2401      3600
+ 2402              	.LASF12:
+ 2403 00f9 75696E74 		.ascii	"uint8\000"
+ 2403      3800
+ 2404              	.LASF61:
+ 2405 00ff 43794465 		.ascii	"CyDelayUs\000"
+ 2405      6C617955 
+ 2405      7300
+ 2406              	.LASF20:
+ 2407 0109 646F7562 		.ascii	"double\000"
+ 2407      6C6500
+ 2408              	.LASF14:
+ 2409 0110 75696E74 		.ascii	"uint32\000"
+ 2409      333200
+ 2410              	.LASF50:
+ 2411 0117 636F756E 		.ascii	"countsPer10Volt\000"
+ 2411      74735065 
+ 2411      72313056 
+ 2411      6F6C7400 
+ 2412              	.LASF65:
+ 2413 0127 4379496E 		.ascii	"CyIntSetVector\000"
+ 2413      74536574 
+ 2413      56656374 
+ 2413      6F7200
+ 2414              	.LASF40:
+ 2415 0136 4144435F 		.ascii	"ADC_Battery_IsEndConversion\000"
+ 2415      42617474 
+ 2415      6572795F 
+ 2415      4973456E 
+ 2415      64436F6E 
+ 2416              	.LASF57:
+ 2417 0152 4144435F 		.ascii	"ADC_Battery_countsPer10Volt\000"
+ 2417      42617474 
+ 2417      6572795F 
+ 2417      636F756E 
+ 2417      74735065 
+ 2418              	.LASF38:
+ 2419 016e 7265744D 		.ascii	"retMode\000"
+ 2419      6F646500 
+ 2420              	.LASF0:
+ 2421 0176 756E7369 		.ascii	"unsigned int\000"
+ 2421      676E6564 
+ 2421      20696E74 
+ 2421      00
+ 2422              	.LASF71:
+ 2423 0183 75566F6C 		.ascii	"uVolts\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 61
+
+
+ 2423      747300
+ 2424              	.LASF8:
+ 2425 018a 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2425      20756E73 
+ 2425      69676E65 
+ 2425      6420696E 
+ 2425      7400
+ 2426              	.LASF56:
+ 2427 019c 4144435F 		.ascii	"ADC_Battery_countsPerVolt\000"
+ 2427      42617474 
+ 2427      6572795F 
+ 2427      636F756E 
+ 2427      74735065 
+ 2428              	.LASF53:
+ 2429 01b6 766F6C74 		.ascii	"volts\000"
+ 2429      7300
+ 2430              	.LASF60:
+ 2431 01bc 4379456E 		.ascii	"CyEnterCriticalSection\000"
+ 2431      74657243 
+ 2431      72697469 
+ 2431      63616C53 
+ 2431      65637469 
+ 2432              	.LASF6:
+ 2433 01d3 73686F72 		.ascii	"short unsigned int\000"
+ 2433      7420756E 
+ 2433      7369676E 
+ 2433      65642069 
+ 2433      6E7400
+ 2434              	.LASF15:
+ 2435 01e6 696E7438 		.ascii	"int8\000"
+ 2435      00
+ 2436              	.LASF34:
+ 2437 01eb 4144435F 		.ascii	"ADC_Battery_Init\000"
+ 2437      42617474 
+ 2437      6572795F 
+ 2437      496E6974 
+ 2437      00
+ 2438              	.LASF49:
+ 2439 01fc 6D566F6C 		.ascii	"mVolts\000"
+ 2439      747300
+ 2440              	.LASF24:
+ 2441 0203 72656733 		.ascii	"reg32\000"
+ 2441      3200
+ 2442              	.LASF54:
+ 2443 0209 4144435F 		.ascii	"ADC_Battery_initVar\000"
+ 2443      42617474 
+ 2443      6572795F 
+ 2443      696E6974 
+ 2443      56617200 
+ 2444              	.LASF18:
+ 2445 021d 666C6F61 		.ascii	"float32\000"
+ 2445      74333200 
+ 2446              	.LASF10:
+ 2447 0225 73697A65 		.ascii	"sizetype\000"
+ 2447      74797065 
+ 2447      00
+ 2448              	.LASF2:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 62
+
+
+ 2449 022e 6C6F6E67 		.ascii	"long double\000"
+ 2449      20646F75 
+ 2449      626C6500 
+ 2450              	.LASF21:
+ 2451 023a 696E7436 		.ascii	"int64\000"
+ 2451      3400
+ 2452              	.LASF64:
+ 2453 0240 4379496E 		.ascii	"CyIntSetPriority\000"
+ 2453      74536574 
+ 2453      5072696F 
+ 2453      72697479 
+ 2453      00
+ 2454              	.LASF55:
+ 2455 0251 4144435F 		.ascii	"ADC_Battery_offset\000"
+ 2455      42617474 
+ 2455      6572795F 
+ 2455      6F666673 
+ 2455      657400
+ 2456              	.LASF19:
+ 2457 0264 666C6F61 		.ascii	"float\000"
+ 2457      7400
+ 2458              	.LASF42:
+ 2459 026a 4144435F 		.ascii	"ADC_Battery_SetOffset\000"
+ 2459      42617474 
+ 2459      6572795F 
+ 2459      5365744F 
+ 2459      66667365 
+ 2460              	.LASF32:
+ 2461 0280 706F7765 		.ascii	"power\000"
+ 2461      7200
+ 2462              	.LASF22:
+ 2463 0286 72656738 		.ascii	"reg8\000"
+ 2463      00
+ 2464              	.LASF59:
+ 2465 028b 43794861 		.ascii	"CyHalt\000"
+ 2465      6C7400
+ 2466              	.LASF4:
+ 2467 0292 756E7369 		.ascii	"unsigned char\000"
+ 2467      676E6564 
+ 2467      20636861 
+ 2467      7200
+ 2468              	.LASF5:
+ 2469 02a0 73686F72 		.ascii	"short int\000"
+ 2469      7420696E 
+ 2469      7400
+ 2470              	.LASF66:
+ 2471 02aa 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2471      43313120 
+ 2471      352E342E 
+ 2471      31203230 
+ 2471      31363036 
+ 2472 02dd 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2472      20726576 
+ 2472      6973696F 
+ 2472      6E203233 
+ 2472      37373135 
+ 2473 0310 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 63
+
+
+ 2473      66756E63 
+ 2473      74696F6E 
+ 2473      2D736563 
+ 2473      74696F6E 
+ 2474              	.LASF33:
+ 2475 0338 4144435F 		.ascii	"ADC_Battery_SetResolution\000"
+ 2475      42617474 
+ 2475      6572795F 
+ 2475      53657452 
+ 2475      65736F6C 
+ 2476              	.LASF41:
+ 2477 0352 4144435F 		.ascii	"ADC_Battery_GetResult16\000"
+ 2477      42617474 
+ 2477      6572795F 
+ 2477      47657452 
+ 2477      6573756C 
+ 2478              	.LASF67:
+ 2479 036a 47656E65 		.ascii	"Generated_Source\\PSoC5\\ADC_Battery.c\000"
+ 2479      72617465 
+ 2479      645F536F 
+ 2479      75726365 
+ 2479      5C50536F 
+ 2480              	.LASF52:
+ 2481 038f 4144435F 		.ascii	"ADC_Battery_CountsTo_Volts\000"
+ 2481      42617474 
+ 2481      6572795F 
+ 2481      436F756E 
+ 2481      7473546F 
+ 2482              	.LASF35:
+ 2483 03aa 4144435F 		.ascii	"ADC_Battery_Start\000"
+ 2483      42617474 
+ 2483      6572795F 
+ 2483      53746172 
+ 2483      7400
+ 2484              	.LASF11:
+ 2485 03bc 63686172 		.ascii	"char\000"
+ 2485      00
+ 2486              	.LASF44:
+ 2487 03c1 4144435F 		.ascii	"ADC_Battery_SetGain\000"
+ 2487      42617474 
+ 2487      6572795F 
+ 2487      53657447 
+ 2487      61696E00 
+ 2488              	.LASF28:
+ 2489 03d5 4144435F 		.ascii	"ADC_Battery_Enable\000"
+ 2489      42617474 
+ 2489      6572795F 
+ 2489      456E6162 
+ 2489      6C6500
+ 2490              	.LASF31:
+ 2491 03e8 7265736F 		.ascii	"resolution\000"
+ 2491      6C757469 
+ 2491      6F6E00
+ 2492              	.LASF30:
+ 2493 03f3 4144435F 		.ascii	"ADC_Battery_SetPower\000"
+ 2493      42617474 
+ 2493      6572795F 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 64
+
+
+ 2493      53657450 
+ 2493      6F776572 
+ 2494              	.LASF43:
+ 2495 0408 6F666673 		.ascii	"offset\000"
+ 2495      657400
+ 2496              	.LASF48:
+ 2497 040f 61646343 		.ascii	"adcCounts\000"
+ 2497      6F756E74 
+ 2497      7300
+ 2498              	.LASF27:
+ 2499 0419 656E6162 		.ascii	"enableInterrupts\000"
+ 2499      6C65496E 
+ 2499      74657272 
+ 2499      75707473 
+ 2499      00
+ 2500              	.LASF46:
+ 2501 042a 4144435F 		.ascii	"ADC_Battery_SetScaledGain\000"
+ 2501      42617474 
+ 2501      6572795F 
+ 2501      53657453 
+ 2501      63616C65 
+ 2502              	.LASF39:
+ 2503 0444 73746174 		.ascii	"status\000"
+ 2503      757300
+ 2504              	.LASF16:
+ 2505 044b 696E7431 		.ascii	"int16\000"
+ 2505      3600
+ 2506              	.LASF51:
+ 2507 0451 4144435F 		.ascii	"ADC_Battery_CountsTo_uVolts\000"
+ 2507      42617474 
+ 2507      6572795F 
+ 2507      436F756E 
+ 2507      7473546F 
+ 2508              	.LASF63:
+ 2509 046d 4144435F 		.ascii	"ADC_Battery_theACLK_SetModeRegister\000"
+ 2509      42617474 
+ 2509      6572795F 
+ 2509      74686541 
+ 2509      434C4B5F 
+ 2510              	.LASF69:
+ 2511 0491 4144435F 		.ascii	"ADC_Battery_CalcGain\000"
+ 2511      42617474 
+ 2511      6572795F 
+ 2511      43616C63 
+ 2511      4761696E 
+ 2512              	.LASF26:
+ 2513 04a6 746D7052 		.ascii	"tmpReg\000"
+ 2513      656700
+ 2514              	.LASF68:
+ 2515 04ad 433A5C55 		.ascii	"C:\\Users\\manuelfu\\Documents\\PSoC Creator\\zumo\\"
+ 2515      73657273 
+ 2515      5C6D616E 
+ 2515      75656C66 
+ 2515      755C446F 
+ 2516 04db 5A756D6F 		.ascii	"ZumoBot.cydsn\000"
+ 2516      426F742E 
+ 2516      63796473 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccGVt4LA.s 			page 65
+
+
+ 2516      6E00
+ 2517              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

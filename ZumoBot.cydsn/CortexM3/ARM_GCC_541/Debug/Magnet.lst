@@ -1,0 +1,655 @@
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Magnet.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.heading,"ax",%progbits
+  20              		.align	2
+  21              		.global	heading
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	heading, %function
+  25              	heading:
+  26              	.LFB64:
+  27              		.file 1 "ZumoLibrary\\Magnet.c"
+   1:ZumoLibrary/Magnet.c **** /**
+   2:ZumoLibrary/Magnet.c ****  * @file    Magnet.c
+   3:ZumoLibrary/Magnet.c ****  * @brief   Basic methods for operating magnetometer. For more details, please refer to Accel_magne
+   4:ZumoLibrary/Magnet.c ****  * @details part number: LSM303D (simultaneously used with accelerometer and included in Zumo shiel
+   5:ZumoLibrary/Magnet.c **** */
+   6:ZumoLibrary/Magnet.c **** #include "Accel_magnet.h"
+   7:ZumoLibrary/Magnet.c **** 
+   8:ZumoLibrary/Magnet.c **** 
+   9:ZumoLibrary/Magnet.c **** /**
+  10:ZumoLibrary/Magnet.c **** * @brief    Heading
+  11:ZumoLibrary/Magnet.c **** * @details  
+  12:ZumoLibrary/Magnet.c **** * @param    double X_AXIS : X axis value
+  13:ZumoLibrary/Magnet.c **** * @param    double Y_AXIS : Y axis value
+  14:ZumoLibrary/Magnet.c **** */
+  15:ZumoLibrary/Magnet.c **** void heading(double X_AXIS, double Y_AXIS)          // defined as the angle between X axis and Y ax
+  16:ZumoLibrary/Magnet.c **** {
+  28              		.loc 1 16 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 08B5     		push	{r3, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  17:ZumoLibrary/Magnet.c ****     double heading;
+  18:ZumoLibrary/Magnet.c ****     heading = 180 * atan2 (X_AXIS, Y_AXIS) / M_PI;
+  37              		.loc 1 18 0
+  38 0002 FFF7FEFF 		bl	atan2
+  39              	.LVL1:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 2
+
+
+  19:ZumoLibrary/Magnet.c ****     
+  20:ZumoLibrary/Magnet.c ****     if(heading < 0)
+  21:ZumoLibrary/Magnet.c ****         heading += 360;
+  22:ZumoLibrary/Magnet.c ****     
+  23:ZumoLibrary/Magnet.c ****     //If you want to print out the value  
+  24:ZumoLibrary/Magnet.c ****     //printf("heading: %7.3f \r\n", heading);
+  25:ZumoLibrary/Magnet.c ****     CyDelay(250);
+  40              		.loc 1 25 0
+  41 0006 FA20     		movs	r0, #250
+  42 0008 FFF7FEFF 		bl	CyDelay
+  43              	.LVL2:
+  44 000c 08BD     		pop	{r3, pc}
+  45              		.cfi_endproc
+  46              	.LFE64:
+  47              		.size	heading, .-heading
+  48 000e 00BF     		.text
+  49              	.Letext0:
+  50              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+  51              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+  52              		.file 4 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+  53              		.file 5 "Generated_Source\\PSoC5/CyLib.h"
+  54              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+  55              		.section	.debug_info,"",%progbits
+  56              	.Ldebug_info0:
+  57 0000 41010000 		.4byte	0x141
+  58 0004 0400     		.2byte	0x4
+  59 0006 00000000 		.4byte	.Ldebug_abbrev0
+  60 000a 04       		.byte	0x4
+  61 000b 01       		.uleb128 0x1
+  62 000c 22000000 		.4byte	.LASF20
+  63 0010 0C       		.byte	0xc
+  64 0011 8A010000 		.4byte	.LASF21
+  65 0015 F4000000 		.4byte	.LASF22
+  66 0019 00000000 		.4byte	.Ldebug_ranges0+0
+  67 001d 00000000 		.4byte	0
+  68 0021 00000000 		.4byte	.Ldebug_line0
+  69 0025 02       		.uleb128 0x2
+  70 0026 08       		.byte	0x8
+  71 0027 04       		.byte	0x4
+  72 0028 4C010000 		.4byte	.LASF0
+  73 002c 02       		.uleb128 0x2
+  74 002d 01       		.byte	0x1
+  75 002e 06       		.byte	0x6
+  76 002f 60010000 		.4byte	.LASF1
+  77 0033 02       		.uleb128 0x2
+  78 0034 01       		.byte	0x1
+  79 0035 08       		.byte	0x8
+  80 0036 30010000 		.4byte	.LASF2
+  81 003a 02       		.uleb128 0x2
+  82 003b 02       		.byte	0x2
+  83 003c 05       		.byte	0x5
+  84 003d B2010000 		.4byte	.LASF3
+  85 0041 02       		.uleb128 0x2
+  86 0042 02       		.byte	0x2
+  87 0043 07       		.byte	0x7
+  88 0044 E1000000 		.4byte	.LASF4
+  89 0048 03       		.uleb128 0x3
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 3
+
+
+  90 0049 80010000 		.4byte	.LASF10
+  91 004d 02       		.byte	0x2
+  92 004e 3F       		.byte	0x3f
+  93 004f 53000000 		.4byte	0x53
+  94 0053 02       		.uleb128 0x2
+  95 0054 04       		.byte	0x4
+  96 0055 05       		.byte	0x5
+  97 0056 43010000 		.4byte	.LASF5
+  98 005a 02       		.uleb128 0x2
+  99 005b 04       		.byte	0x4
+ 100 005c 07       		.byte	0x7
+ 101 005d B8000000 		.4byte	.LASF6
+ 102 0061 02       		.uleb128 0x2
+ 103 0062 08       		.byte	0x8
+ 104 0063 05       		.byte	0x5
+ 105 0064 00000000 		.4byte	.LASF7
+ 106 0068 02       		.uleb128 0x2
+ 107 0069 08       		.byte	0x8
+ 108 006a 07       		.byte	0x7
+ 109 006b CA000000 		.4byte	.LASF8
+ 110 006f 04       		.uleb128 0x4
+ 111 0070 04       		.byte	0x4
+ 112 0071 05       		.byte	0x5
+ 113 0072 696E7400 		.ascii	"int\000"
+ 114 0076 02       		.uleb128 0x2
+ 115 0077 04       		.byte	0x4
+ 116 0078 07       		.byte	0x7
+ 117 0079 15000000 		.4byte	.LASF9
+ 118 007d 03       		.uleb128 0x3
+ 119 007e BC010000 		.4byte	.LASF11
+ 120 0082 03       		.byte	0x3
+ 121 0083 2C       		.byte	0x2c
+ 122 0084 48000000 		.4byte	0x48
+ 123 0088 02       		.uleb128 0x2
+ 124 0089 04       		.byte	0x4
+ 125 008a 04       		.byte	0x4
+ 126 008b 9F010000 		.4byte	.LASF12
+ 127 008f 02       		.uleb128 0x2
+ 128 0090 01       		.byte	0x1
+ 129 0091 08       		.byte	0x8
+ 130 0092 3E010000 		.4byte	.LASF13
+ 131 0096 02       		.uleb128 0x2
+ 132 0097 08       		.byte	0x8
+ 133 0098 04       		.byte	0x4
+ 134 0099 6C010000 		.4byte	.LASF14
+ 135 009d 02       		.uleb128 0x2
+ 136 009e 04       		.byte	0x4
+ 137 009f 07       		.byte	0x7
+ 138 00a0 C4010000 		.4byte	.LASF15
+ 139 00a4 05       		.uleb128 0x5
+ 140 00a5 78010000 		.4byte	.LASF23
+ 141 00a9 01       		.byte	0x1
+ 142 00aa 0F       		.byte	0xf
+ 143 00ab 00000000 		.4byte	.LFB64
+ 144 00af 0E000000 		.4byte	.LFE64-.LFB64
+ 145 00b3 01       		.uleb128 0x1
+ 146 00b4 9C       		.byte	0x9c
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 4
+
+
+ 147 00b5 1D010000 		.4byte	0x11d
+ 148 00b9 06       		.uleb128 0x6
+ 149 00ba 0E000000 		.4byte	.LASF16
+ 150 00be 01       		.byte	0x1
+ 151 00bf 0F       		.byte	0xf
+ 152 00c0 25000000 		.4byte	0x25
+ 153 00c4 00000000 		.4byte	.LLST0
+ 154 00c8 06       		.uleb128 0x6
+ 155 00c9 A5010000 		.4byte	.LASF17
+ 156 00cd 01       		.byte	0x1
+ 157 00ce 0F       		.byte	0xf
+ 158 00cf 25000000 		.4byte	0x25
+ 159 00d3 28000000 		.4byte	.LLST1
+ 160 00d7 07       		.uleb128 0x7
+ 161 00d8 78010000 		.4byte	.LASF23
+ 162 00dc 01       		.byte	0x1
+ 163 00dd 11       		.byte	0x11
+ 164 00de 25000000 		.4byte	0x25
+ 165 00e2 08       		.uleb128 0x8
+ 166 00e3 06000000 		.4byte	.LVL1
+ 167 00e7 2E010000 		.4byte	0x12e
+ 168 00eb 0C010000 		.4byte	0x10c
+ 169 00ef 09       		.uleb128 0x9
+ 170 00f0 06       		.uleb128 0x6
+ 171 00f1 50       		.byte	0x50
+ 172 00f2 93       		.byte	0x93
+ 173 00f3 04       		.uleb128 0x4
+ 174 00f4 51       		.byte	0x51
+ 175 00f5 93       		.byte	0x93
+ 176 00f6 04       		.uleb128 0x4
+ 177 00f7 05       		.uleb128 0x5
+ 178 00f8 F3       		.byte	0xf3
+ 179 00f9 03       		.uleb128 0x3
+ 180 00fa F5       		.byte	0xf5
+ 181 00fb 00       		.uleb128 0
+ 182 00fc 25       		.uleb128 0x25
+ 183 00fd 09       		.uleb128 0x9
+ 184 00fe 06       		.uleb128 0x6
+ 185 00ff 52       		.byte	0x52
+ 186 0100 93       		.byte	0x93
+ 187 0101 04       		.uleb128 0x4
+ 188 0102 53       		.byte	0x53
+ 189 0103 93       		.byte	0x93
+ 190 0104 04       		.uleb128 0x4
+ 191 0105 05       		.uleb128 0x5
+ 192 0106 F3       		.byte	0xf3
+ 193 0107 03       		.uleb128 0x3
+ 194 0108 F5       		.byte	0xf5
+ 195 0109 02       		.uleb128 0x2
+ 196 010a 25       		.uleb128 0x25
+ 197 010b 00       		.byte	0
+ 198 010c 0A       		.uleb128 0xa
+ 199 010d 0C000000 		.4byte	.LVL2
+ 200 0111 39010000 		.4byte	0x139
+ 201 0115 09       		.uleb128 0x9
+ 202 0116 01       		.uleb128 0x1
+ 203 0117 50       		.byte	0x50
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 5
+
+
+ 204 0118 02       		.uleb128 0x2
+ 205 0119 08       		.byte	0x8
+ 206 011a FA       		.byte	0xfa
+ 207 011b 00       		.byte	0
+ 208 011c 00       		.byte	0
+ 209 011d 0B       		.uleb128 0xb
+ 210 011e 53010000 		.4byte	.LASF24
+ 211 0122 06       		.byte	0x6
+ 212 0123 1207     		.2byte	0x712
+ 213 0125 29010000 		.4byte	0x129
+ 214 0129 0C       		.uleb128 0xc
+ 215 012a 7D000000 		.4byte	0x7d
+ 216 012e 0D       		.uleb128 0xd
+ 217 012f AC010000 		.4byte	.LASF18
+ 218 0133 AC010000 		.4byte	.LASF18
+ 219 0137 04       		.byte	0x4
+ 220 0138 7F       		.byte	0x7f
+ 221 0139 0D       		.uleb128 0xd
+ 222 013a B0000000 		.4byte	.LASF19
+ 223 013e B0000000 		.4byte	.LASF19
+ 224 0142 05       		.byte	0x5
+ 225 0143 76       		.byte	0x76
+ 226 0144 00       		.byte	0
+ 227              		.section	.debug_abbrev,"",%progbits
+ 228              	.Ldebug_abbrev0:
+ 229 0000 01       		.uleb128 0x1
+ 230 0001 11       		.uleb128 0x11
+ 231 0002 01       		.byte	0x1
+ 232 0003 25       		.uleb128 0x25
+ 233 0004 0E       		.uleb128 0xe
+ 234 0005 13       		.uleb128 0x13
+ 235 0006 0B       		.uleb128 0xb
+ 236 0007 03       		.uleb128 0x3
+ 237 0008 0E       		.uleb128 0xe
+ 238 0009 1B       		.uleb128 0x1b
+ 239 000a 0E       		.uleb128 0xe
+ 240 000b 55       		.uleb128 0x55
+ 241 000c 17       		.uleb128 0x17
+ 242 000d 11       		.uleb128 0x11
+ 243 000e 01       		.uleb128 0x1
+ 244 000f 10       		.uleb128 0x10
+ 245 0010 17       		.uleb128 0x17
+ 246 0011 00       		.byte	0
+ 247 0012 00       		.byte	0
+ 248 0013 02       		.uleb128 0x2
+ 249 0014 24       		.uleb128 0x24
+ 250 0015 00       		.byte	0
+ 251 0016 0B       		.uleb128 0xb
+ 252 0017 0B       		.uleb128 0xb
+ 253 0018 3E       		.uleb128 0x3e
+ 254 0019 0B       		.uleb128 0xb
+ 255 001a 03       		.uleb128 0x3
+ 256 001b 0E       		.uleb128 0xe
+ 257 001c 00       		.byte	0
+ 258 001d 00       		.byte	0
+ 259 001e 03       		.uleb128 0x3
+ 260 001f 16       		.uleb128 0x16
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 6
+
+
+ 261 0020 00       		.byte	0
+ 262 0021 03       		.uleb128 0x3
+ 263 0022 0E       		.uleb128 0xe
+ 264 0023 3A       		.uleb128 0x3a
+ 265 0024 0B       		.uleb128 0xb
+ 266 0025 3B       		.uleb128 0x3b
+ 267 0026 0B       		.uleb128 0xb
+ 268 0027 49       		.uleb128 0x49
+ 269 0028 13       		.uleb128 0x13
+ 270 0029 00       		.byte	0
+ 271 002a 00       		.byte	0
+ 272 002b 04       		.uleb128 0x4
+ 273 002c 24       		.uleb128 0x24
+ 274 002d 00       		.byte	0
+ 275 002e 0B       		.uleb128 0xb
+ 276 002f 0B       		.uleb128 0xb
+ 277 0030 3E       		.uleb128 0x3e
+ 278 0031 0B       		.uleb128 0xb
+ 279 0032 03       		.uleb128 0x3
+ 280 0033 08       		.uleb128 0x8
+ 281 0034 00       		.byte	0
+ 282 0035 00       		.byte	0
+ 283 0036 05       		.uleb128 0x5
+ 284 0037 2E       		.uleb128 0x2e
+ 285 0038 01       		.byte	0x1
+ 286 0039 3F       		.uleb128 0x3f
+ 287 003a 19       		.uleb128 0x19
+ 288 003b 03       		.uleb128 0x3
+ 289 003c 0E       		.uleb128 0xe
+ 290 003d 3A       		.uleb128 0x3a
+ 291 003e 0B       		.uleb128 0xb
+ 292 003f 3B       		.uleb128 0x3b
+ 293 0040 0B       		.uleb128 0xb
+ 294 0041 27       		.uleb128 0x27
+ 295 0042 19       		.uleb128 0x19
+ 296 0043 11       		.uleb128 0x11
+ 297 0044 01       		.uleb128 0x1
+ 298 0045 12       		.uleb128 0x12
+ 299 0046 06       		.uleb128 0x6
+ 300 0047 40       		.uleb128 0x40
+ 301 0048 18       		.uleb128 0x18
+ 302 0049 9742     		.uleb128 0x2117
+ 303 004b 19       		.uleb128 0x19
+ 304 004c 01       		.uleb128 0x1
+ 305 004d 13       		.uleb128 0x13
+ 306 004e 00       		.byte	0
+ 307 004f 00       		.byte	0
+ 308 0050 06       		.uleb128 0x6
+ 309 0051 05       		.uleb128 0x5
+ 310 0052 00       		.byte	0
+ 311 0053 03       		.uleb128 0x3
+ 312 0054 0E       		.uleb128 0xe
+ 313 0055 3A       		.uleb128 0x3a
+ 314 0056 0B       		.uleb128 0xb
+ 315 0057 3B       		.uleb128 0x3b
+ 316 0058 0B       		.uleb128 0xb
+ 317 0059 49       		.uleb128 0x49
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 7
+
+
+ 318 005a 13       		.uleb128 0x13
+ 319 005b 02       		.uleb128 0x2
+ 320 005c 17       		.uleb128 0x17
+ 321 005d 00       		.byte	0
+ 322 005e 00       		.byte	0
+ 323 005f 07       		.uleb128 0x7
+ 324 0060 34       		.uleb128 0x34
+ 325 0061 00       		.byte	0
+ 326 0062 03       		.uleb128 0x3
+ 327 0063 0E       		.uleb128 0xe
+ 328 0064 3A       		.uleb128 0x3a
+ 329 0065 0B       		.uleb128 0xb
+ 330 0066 3B       		.uleb128 0x3b
+ 331 0067 0B       		.uleb128 0xb
+ 332 0068 49       		.uleb128 0x49
+ 333 0069 13       		.uleb128 0x13
+ 334 006a 00       		.byte	0
+ 335 006b 00       		.byte	0
+ 336 006c 08       		.uleb128 0x8
+ 337 006d 898201   		.uleb128 0x4109
+ 338 0070 01       		.byte	0x1
+ 339 0071 11       		.uleb128 0x11
+ 340 0072 01       		.uleb128 0x1
+ 341 0073 31       		.uleb128 0x31
+ 342 0074 13       		.uleb128 0x13
+ 343 0075 01       		.uleb128 0x1
+ 344 0076 13       		.uleb128 0x13
+ 345 0077 00       		.byte	0
+ 346 0078 00       		.byte	0
+ 347 0079 09       		.uleb128 0x9
+ 348 007a 8A8201   		.uleb128 0x410a
+ 349 007d 00       		.byte	0
+ 350 007e 02       		.uleb128 0x2
+ 351 007f 18       		.uleb128 0x18
+ 352 0080 9142     		.uleb128 0x2111
+ 353 0082 18       		.uleb128 0x18
+ 354 0083 00       		.byte	0
+ 355 0084 00       		.byte	0
+ 356 0085 0A       		.uleb128 0xa
+ 357 0086 898201   		.uleb128 0x4109
+ 358 0089 01       		.byte	0x1
+ 359 008a 11       		.uleb128 0x11
+ 360 008b 01       		.uleb128 0x1
+ 361 008c 31       		.uleb128 0x31
+ 362 008d 13       		.uleb128 0x13
+ 363 008e 00       		.byte	0
+ 364 008f 00       		.byte	0
+ 365 0090 0B       		.uleb128 0xb
+ 366 0091 34       		.uleb128 0x34
+ 367 0092 00       		.byte	0
+ 368 0093 03       		.uleb128 0x3
+ 369 0094 0E       		.uleb128 0xe
+ 370 0095 3A       		.uleb128 0x3a
+ 371 0096 0B       		.uleb128 0xb
+ 372 0097 3B       		.uleb128 0x3b
+ 373 0098 05       		.uleb128 0x5
+ 374 0099 49       		.uleb128 0x49
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 8
+
+
+ 375 009a 13       		.uleb128 0x13
+ 376 009b 3F       		.uleb128 0x3f
+ 377 009c 19       		.uleb128 0x19
+ 378 009d 3C       		.uleb128 0x3c
+ 379 009e 19       		.uleb128 0x19
+ 380 009f 00       		.byte	0
+ 381 00a0 00       		.byte	0
+ 382 00a1 0C       		.uleb128 0xc
+ 383 00a2 35       		.uleb128 0x35
+ 384 00a3 00       		.byte	0
+ 385 00a4 49       		.uleb128 0x49
+ 386 00a5 13       		.uleb128 0x13
+ 387 00a6 00       		.byte	0
+ 388 00a7 00       		.byte	0
+ 389 00a8 0D       		.uleb128 0xd
+ 390 00a9 2E       		.uleb128 0x2e
+ 391 00aa 00       		.byte	0
+ 392 00ab 3F       		.uleb128 0x3f
+ 393 00ac 19       		.uleb128 0x19
+ 394 00ad 3C       		.uleb128 0x3c
+ 395 00ae 19       		.uleb128 0x19
+ 396 00af 6E       		.uleb128 0x6e
+ 397 00b0 0E       		.uleb128 0xe
+ 398 00b1 03       		.uleb128 0x3
+ 399 00b2 0E       		.uleb128 0xe
+ 400 00b3 3A       		.uleb128 0x3a
+ 401 00b4 0B       		.uleb128 0xb
+ 402 00b5 3B       		.uleb128 0x3b
+ 403 00b6 0B       		.uleb128 0xb
+ 404 00b7 00       		.byte	0
+ 405 00b8 00       		.byte	0
+ 406 00b9 00       		.byte	0
+ 407              		.section	.debug_loc,"",%progbits
+ 408              	.Ldebug_loc0:
+ 409              	.LLST0:
+ 410 0000 00000000 		.4byte	.LVL0
+ 411 0004 05000000 		.4byte	.LVL1-1
+ 412 0008 0600     		.2byte	0x6
+ 413 000a 50       		.byte	0x50
+ 414 000b 93       		.byte	0x93
+ 415 000c 04       		.uleb128 0x4
+ 416 000d 51       		.byte	0x51
+ 417 000e 93       		.byte	0x93
+ 418 000f 04       		.uleb128 0x4
+ 419 0010 05000000 		.4byte	.LVL1-1
+ 420 0014 0E000000 		.4byte	.LFE64
+ 421 0018 0600     		.2byte	0x6
+ 422 001a F3       		.byte	0xf3
+ 423 001b 03       		.uleb128 0x3
+ 424 001c F5       		.byte	0xf5
+ 425 001d 00       		.uleb128 0
+ 426 001e 25       		.uleb128 0x25
+ 427 001f 9F       		.byte	0x9f
+ 428 0020 00000000 		.4byte	0
+ 429 0024 00000000 		.4byte	0
+ 430              	.LLST1:
+ 431 0028 00000000 		.4byte	.LVL0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 9
+
+
+ 432 002c 05000000 		.4byte	.LVL1-1
+ 433 0030 0600     		.2byte	0x6
+ 434 0032 52       		.byte	0x52
+ 435 0033 93       		.byte	0x93
+ 436 0034 04       		.uleb128 0x4
+ 437 0035 53       		.byte	0x53
+ 438 0036 93       		.byte	0x93
+ 439 0037 04       		.uleb128 0x4
+ 440 0038 05000000 		.4byte	.LVL1-1
+ 441 003c 0E000000 		.4byte	.LFE64
+ 442 0040 0600     		.2byte	0x6
+ 443 0042 F3       		.byte	0xf3
+ 444 0043 03       		.uleb128 0x3
+ 445 0044 F5       		.byte	0xf5
+ 446 0045 02       		.uleb128 0x2
+ 447 0046 25       		.uleb128 0x25
+ 448 0047 9F       		.byte	0x9f
+ 449 0048 00000000 		.4byte	0
+ 450 004c 00000000 		.4byte	0
+ 451              		.section	.debug_aranges,"",%progbits
+ 452 0000 1C000000 		.4byte	0x1c
+ 453 0004 0200     		.2byte	0x2
+ 454 0006 00000000 		.4byte	.Ldebug_info0
+ 455 000a 04       		.byte	0x4
+ 456 000b 00       		.byte	0
+ 457 000c 0000     		.2byte	0
+ 458 000e 0000     		.2byte	0
+ 459 0010 00000000 		.4byte	.LFB64
+ 460 0014 0E000000 		.4byte	.LFE64-.LFB64
+ 461 0018 00000000 		.4byte	0
+ 462 001c 00000000 		.4byte	0
+ 463              		.section	.debug_ranges,"",%progbits
+ 464              	.Ldebug_ranges0:
+ 465 0000 00000000 		.4byte	.LFB64
+ 466 0004 0E000000 		.4byte	.LFE64
+ 467 0008 00000000 		.4byte	0
+ 468 000c 00000000 		.4byte	0
+ 469              		.section	.debug_line,"",%progbits
+ 470              	.Ldebug_line0:
+ 471 0000 E1010000 		.section	.debug_str,"MS",%progbits,1
+ 471      0200CA01 
+ 471      00000201 
+ 471      FB0E0D00 
+ 471      01010101 
+ 472              	.LASF7:
+ 473 0000 6C6F6E67 		.ascii	"long long int\000"
+ 473      206C6F6E 
+ 473      6720696E 
+ 473      7400
+ 474              	.LASF16:
+ 475 000e 585F4158 		.ascii	"X_AXIS\000"
+ 475      495300
+ 476              	.LASF9:
+ 477 0015 756E7369 		.ascii	"unsigned int\000"
+ 477      676E6564 
+ 477      20696E74 
+ 477      00
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 10
+
+
+ 478              	.LASF20:
+ 479 0022 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 479      43313120 
+ 479      352E342E 
+ 479      31203230 
+ 479      31363036 
+ 480 0055 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 480      20726576 
+ 480      6973696F 
+ 480      6E203233 
+ 480      37373135 
+ 481 0088 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 481      66756E63 
+ 481      74696F6E 
+ 481      2D736563 
+ 481      74696F6E 
+ 482              	.LASF19:
+ 483 00b0 43794465 		.ascii	"CyDelay\000"
+ 483      6C617900 
+ 484              	.LASF6:
+ 485 00b8 6C6F6E67 		.ascii	"long unsigned int\000"
+ 485      20756E73 
+ 485      69676E65 
+ 485      6420696E 
+ 485      7400
+ 486              	.LASF8:
+ 487 00ca 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 487      206C6F6E 
+ 487      6720756E 
+ 487      7369676E 
+ 487      65642069 
+ 488              	.LASF4:
+ 489 00e1 73686F72 		.ascii	"short unsigned int\000"
+ 489      7420756E 
+ 489      7369676E 
+ 489      65642069 
+ 489      6E7400
+ 490              	.LASF22:
+ 491 00f4 433A5C55 		.ascii	"C:\\Users\\manuelfu\\Documents\\PSoC Creator\\zumo\\"
+ 491      73657273 
+ 491      5C6D616E 
+ 491      75656C66 
+ 491      755C446F 
+ 492 0122 5A756D6F 		.ascii	"ZumoBot.cydsn\000"
+ 492      426F742E 
+ 492      63796473 
+ 492      6E00
+ 493              	.LASF2:
+ 494 0130 756E7369 		.ascii	"unsigned char\000"
+ 494      676E6564 
+ 494      20636861 
+ 494      7200
+ 495              	.LASF13:
+ 496 013e 63686172 		.ascii	"char\000"
+ 496      00
+ 497              	.LASF5:
+ 498 0143 6C6F6E67 		.ascii	"long int\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccSO6XTS.s 			page 11
+
+
+ 498      20696E74 
+ 498      00
+ 499              	.LASF0:
+ 500 014c 646F7562 		.ascii	"double\000"
+ 500      6C6500
+ 501              	.LASF24:
+ 502 0153 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 502      52784275 
+ 502      66666572 
+ 502      00
+ 503              	.LASF1:
+ 504 0160 7369676E 		.ascii	"signed char\000"
+ 504      65642063 
+ 504      68617200 
+ 505              	.LASF14:
+ 506 016c 6C6F6E67 		.ascii	"long double\000"
+ 506      20646F75 
+ 506      626C6500 
+ 507              	.LASF23:
+ 508 0178 68656164 		.ascii	"heading\000"
+ 508      696E6700 
+ 509              	.LASF10:
+ 510 0180 5F5F696E 		.ascii	"__int32_t\000"
+ 510      7433325F 
+ 510      7400
+ 511              	.LASF21:
+ 512 018a 5A756D6F 		.ascii	"ZumoLibrary\\Magnet.c\000"
+ 512      4C696272 
+ 512      6172795C 
+ 512      4D61676E 
+ 512      65742E63 
+ 513              	.LASF12:
+ 514 019f 666C6F61 		.ascii	"float\000"
+ 514      7400
+ 515              	.LASF17:
+ 516 01a5 595F4158 		.ascii	"Y_AXIS\000"
+ 516      495300
+ 517              	.LASF18:
+ 518 01ac 6174616E 		.ascii	"atan2\000"
+ 518      3200
+ 519              	.LASF3:
+ 520 01b2 73686F72 		.ascii	"short int\000"
+ 520      7420696E 
+ 520      7400
+ 521              	.LASF11:
+ 522 01bc 696E7433 		.ascii	"int32_t\000"
+ 522      325F7400 
+ 523              	.LASF15:
+ 524 01c4 73697A65 		.ascii	"sizetype\000"
+ 524      74797065 
+ 524      00
+ 525              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

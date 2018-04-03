@@ -1,0 +1,2806 @@
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Reflectance.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.reflectance_handler,"ax",%progbits
+  20              		.align	2
+  21              		.global	reflectance_handler
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	reflectance_handler, %function
+  25              	reflectance_handler:
+  26              	.LFB64:
+  27              		.file 1 "ZumoLibrary\\Reflectance.c"
+   1:ZumoLibrary/Reflectance.c **** /**
+   2:ZumoLibrary/Reflectance.c ****  * @file    Reflectance.c
+   3:ZumoLibrary/Reflectance.c ****  * @brief   Basic methods for operating reflectance sensor. For more details, please refer to Refle
+   4:ZumoLibrary/Reflectance.c ****  * @details included in Zumo shield
+   5:ZumoLibrary/Reflectance.c **** */
+   6:ZumoLibrary/Reflectance.c **** #include <stdio.h>
+   7:ZumoLibrary/Reflectance.c **** #include <stdbool.h>
+   8:ZumoLibrary/Reflectance.c **** #include "project.h"
+   9:ZumoLibrary/Reflectance.c **** 
+  10:ZumoLibrary/Reflectance.c **** #include "Reflectance.h"
+  11:ZumoLibrary/Reflectance.c **** #include "Systick.h"
+  12:ZumoLibrary/Reflectance.c **** 
+  13:ZumoLibrary/Reflectance.c **** static volatile struct sensors_ sensors;
+  14:ZumoLibrary/Reflectance.c **** static volatile struct sensors_  digital_sensor_value;
+  15:ZumoLibrary/Reflectance.c **** static struct sensors_ threshold = { 10000, 10000, 10000, 10000, 10000, 10000};
+  16:ZumoLibrary/Reflectance.c **** static volatile bool refl_init = false;
+  17:ZumoLibrary/Reflectance.c **** 
+  18:ZumoLibrary/Reflectance.c **** /**
+  19:ZumoLibrary/Reflectance.c **** * @brief    Reflectance Sensor Interrupt Handler
+  20:ZumoLibrary/Reflectance.c **** * @details  Measuring each sensors' time to recognition of white or black
+  21:ZumoLibrary/Reflectance.c **** */
+  22:ZumoLibrary/Reflectance.c **** //CY_ISR(sensor_isr_handler)
+  23:ZumoLibrary/Reflectance.c **** void reflectance_handler(void)
+  24:ZumoLibrary/Reflectance.c **** {
+  28              		.loc 1 24 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+  33              		.cfi_def_cfa_offset 32
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 2
+
+
+  34              		.cfi_offset 3, -32
+  35              		.cfi_offset 4, -28
+  36              		.cfi_offset 5, -24
+  37              		.cfi_offset 6, -20
+  38              		.cfi_offset 7, -16
+  39              		.cfi_offset 8, -12
+  40              		.cfi_offset 9, -8
+  41              		.cfi_offset 14, -4
+  25:ZumoLibrary/Reflectance.c ****     if(!refl_init) return;
+  42              		.loc 1 25 0
+  43 0004 6E4B     		ldr	r3, .L16
+  44 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  45 0008 13F0FF0F 		tst	r3, #255
+  46 000c 00F0D580 		beq	.L1
+  26:ZumoLibrary/Reflectance.c ****     
+  27:ZumoLibrary/Reflectance.c ****     uint32_t statusR1 = Timer_R1_ReadStatusRegister();
+  47              		.loc 1 27 0
+  48 0010 FFF7FEFF 		bl	Timer_R1_ReadStatusRegister
+  49              	.LVL0:
+  50 0014 0446     		mov	r4, r0
+  51              	.LVL1:
+  28:ZumoLibrary/Reflectance.c ****     uint32_t statusR2 = Timer_R2_ReadStatusRegister();
+  52              		.loc 1 28 0
+  53 0016 FFF7FEFF 		bl	Timer_R2_ReadStatusRegister
+  54              	.LVL2:
+  55 001a 8046     		mov	r8, r0
+  56              	.LVL3:
+  29:ZumoLibrary/Reflectance.c ****     uint32_t statusR3 = Timer_R3_ReadStatusRegister();
+  57              		.loc 1 29 0
+  58 001c FFF7FEFF 		bl	Timer_R3_ReadStatusRegister
+  59              	.LVL4:
+  60 0020 0646     		mov	r6, r0
+  61              	.LVL5:
+  30:ZumoLibrary/Reflectance.c ****     uint32_t statusL3 = Timer_L3_ReadStatusRegister();
+  62              		.loc 1 30 0
+  63 0022 FFF7FEFF 		bl	Timer_L3_ReadStatusRegister
+  64              	.LVL6:
+  65 0026 0546     		mov	r5, r0
+  66              	.LVL7:
+  31:ZumoLibrary/Reflectance.c ****     uint32_t statusL2 = Timer_L2_ReadStatusRegister();
+  67              		.loc 1 31 0
+  68 0028 FFF7FEFF 		bl	Timer_L2_ReadStatusRegister
+  69              	.LVL8:
+  70 002c 0746     		mov	r7, r0
+  71              	.LVL9:
+  32:ZumoLibrary/Reflectance.c ****     uint32_t statusL1 = Timer_L1_ReadStatusRegister();
+  72              		.loc 1 32 0
+  73 002e FFF7FEFF 		bl	Timer_L1_ReadStatusRegister
+  74              	.LVL10:
+  75 0032 8146     		mov	r9, r0
+  76              	.LVL11:
+  33:ZumoLibrary/Reflectance.c **** 
+  34:ZumoLibrary/Reflectance.c ****     if(statusR1 & Timer_R1_STATUS_CAPTURE) {
+  77              		.loc 1 34 0
+  78 0034 14F0400F 		tst	r4, #64
+  79 0038 09D0     		beq	.L3
+  35:ZumoLibrary/Reflectance.c ****         sensors.r1 = Timer_R1_ReadPeriod() - Timer_R1_ReadCapture();
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 3
+
+
+  80              		.loc 1 35 0
+  81 003a FFF7FEFF 		bl	Timer_R1_ReadPeriod
+  82              	.LVL12:
+  83 003e 0446     		mov	r4, r0
+  84              	.LVL13:
+  85 0040 FFF7FEFF 		bl	Timer_R1_ReadCapture
+  86              	.LVL14:
+  87 0044 201A     		subs	r0, r4, r0
+  88 0046 80B2     		uxth	r0, r0
+  89 0048 5D4B     		ldr	r3, .L16
+  90 004a 5881     		strh	r0, [r3, #10]	@ movhi
+  91 004c 08E0     		b	.L4
+  92              	.LVL15:
+  93              	.L3:
+  36:ZumoLibrary/Reflectance.c ****     }
+  37:ZumoLibrary/Reflectance.c ****     else {
+  38:ZumoLibrary/Reflectance.c ****         sensors.r1 = Timer_R1_ReadPeriod() - Timer_R1_ReadCounter();
+  94              		.loc 1 38 0
+  95 004e FFF7FEFF 		bl	Timer_R1_ReadPeriod
+  96              	.LVL16:
+  97 0052 0446     		mov	r4, r0
+  98              	.LVL17:
+  99 0054 FFF7FEFF 		bl	Timer_R1_ReadCounter
+ 100              	.LVL18:
+ 101 0058 201A     		subs	r0, r4, r0
+ 102 005a 80B2     		uxth	r0, r0
+ 103 005c 584B     		ldr	r3, .L16
+ 104 005e 5881     		strh	r0, [r3, #10]	@ movhi
+ 105              	.L4:
+  39:ZumoLibrary/Reflectance.c ****     }
+  40:ZumoLibrary/Reflectance.c ****     
+  41:ZumoLibrary/Reflectance.c ****     if(statusL1 & Timer_L1_STATUS_CAPTURE) {
+ 106              		.loc 1 41 0
+ 107 0060 19F0400F 		tst	r9, #64
+ 108 0064 09D0     		beq	.L5
+  42:ZumoLibrary/Reflectance.c ****         sensors.l1 = Timer_L1_ReadPeriod() - Timer_L1_ReadCapture();
+ 109              		.loc 1 42 0
+ 110 0066 FFF7FEFF 		bl	Timer_L1_ReadPeriod
+ 111              	.LVL19:
+ 112 006a 0446     		mov	r4, r0
+ 113 006c FFF7FEFF 		bl	Timer_L1_ReadCapture
+ 114              	.LVL20:
+ 115 0070 201A     		subs	r0, r4, r0
+ 116 0072 80B2     		uxth	r0, r0
+ 117 0074 524B     		ldr	r3, .L16
+ 118 0076 1881     		strh	r0, [r3, #8]	@ movhi
+ 119 0078 08E0     		b	.L6
+ 120              	.L5:
+  43:ZumoLibrary/Reflectance.c ****     }
+  44:ZumoLibrary/Reflectance.c ****     else {
+  45:ZumoLibrary/Reflectance.c ****         sensors.l1 = Timer_L1_ReadPeriod() - Timer_L1_ReadCounter();
+ 121              		.loc 1 45 0
+ 122 007a FFF7FEFF 		bl	Timer_L1_ReadPeriod
+ 123              	.LVL21:
+ 124 007e 0446     		mov	r4, r0
+ 125 0080 FFF7FEFF 		bl	Timer_L1_ReadCounter
+ 126              	.LVL22:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 4
+
+
+ 127 0084 201A     		subs	r0, r4, r0
+ 128 0086 80B2     		uxth	r0, r0
+ 129 0088 4D4B     		ldr	r3, .L16
+ 130 008a 1881     		strh	r0, [r3, #8]	@ movhi
+ 131              	.L6:
+  46:ZumoLibrary/Reflectance.c ****     }
+  47:ZumoLibrary/Reflectance.c **** 
+  48:ZumoLibrary/Reflectance.c ****     if(statusR2 & Timer_R2_STATUS_CAPTURE) {
+ 132              		.loc 1 48 0
+ 133 008c 18F0020F 		tst	r8, #2
+ 134 0090 09D0     		beq	.L7
+  49:ZumoLibrary/Reflectance.c ****         sensors.r2 = Timer_R2_ReadPeriod() - Timer_R2_ReadCapture();
+ 135              		.loc 1 49 0
+ 136 0092 FFF7FEFF 		bl	Timer_R2_ReadPeriod
+ 137              	.LVL23:
+ 138 0096 0446     		mov	r4, r0
+ 139 0098 FFF7FEFF 		bl	Timer_R2_ReadCapture
+ 140              	.LVL24:
+ 141 009c 201A     		subs	r0, r4, r0
+ 142 009e 80B2     		uxth	r0, r0
+ 143 00a0 474B     		ldr	r3, .L16
+ 144 00a2 9881     		strh	r0, [r3, #12]	@ movhi
+ 145 00a4 08E0     		b	.L8
+ 146              	.L7:
+  50:ZumoLibrary/Reflectance.c ****     }
+  51:ZumoLibrary/Reflectance.c ****     else {
+  52:ZumoLibrary/Reflectance.c ****         sensors.r2 = Timer_R2_ReadPeriod() - Timer_R2_ReadCounter();
+ 147              		.loc 1 52 0
+ 148 00a6 FFF7FEFF 		bl	Timer_R2_ReadPeriod
+ 149              	.LVL25:
+ 150 00aa 0446     		mov	r4, r0
+ 151 00ac FFF7FEFF 		bl	Timer_R2_ReadCounter
+ 152              	.LVL26:
+ 153 00b0 201A     		subs	r0, r4, r0
+ 154 00b2 80B2     		uxth	r0, r0
+ 155 00b4 424B     		ldr	r3, .L16
+ 156 00b6 9881     		strh	r0, [r3, #12]	@ movhi
+ 157              	.L8:
+  53:ZumoLibrary/Reflectance.c ****     }
+  54:ZumoLibrary/Reflectance.c ****     
+  55:ZumoLibrary/Reflectance.c ****     if(statusL2 & Timer_L2_STATUS_CAPTURE) {
+ 158              		.loc 1 55 0
+ 159 00b8 17F0020F 		tst	r7, #2
+ 160 00bc 09D0     		beq	.L9
+  56:ZumoLibrary/Reflectance.c ****         sensors.l2 = Timer_L2_ReadPeriod() - Timer_L2_ReadCapture();
+ 161              		.loc 1 56 0
+ 162 00be FFF7FEFF 		bl	Timer_L2_ReadPeriod
+ 163              	.LVL27:
+ 164 00c2 0446     		mov	r4, r0
+ 165 00c4 FFF7FEFF 		bl	Timer_L2_ReadCapture
+ 166              	.LVL28:
+ 167 00c8 201A     		subs	r0, r4, r0
+ 168 00ca 80B2     		uxth	r0, r0
+ 169 00cc 3C4B     		ldr	r3, .L16
+ 170 00ce D880     		strh	r0, [r3, #6]	@ movhi
+ 171 00d0 08E0     		b	.L10
+ 172              	.L9:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 5
+
+
+  57:ZumoLibrary/Reflectance.c ****     }
+  58:ZumoLibrary/Reflectance.c ****     else {
+  59:ZumoLibrary/Reflectance.c ****         sensors.l2 = Timer_L2_ReadPeriod() - Timer_L2_ReadCounter();
+ 173              		.loc 1 59 0
+ 174 00d2 FFF7FEFF 		bl	Timer_L2_ReadPeriod
+ 175              	.LVL29:
+ 176 00d6 0446     		mov	r4, r0
+ 177 00d8 FFF7FEFF 		bl	Timer_L2_ReadCounter
+ 178              	.LVL30:
+ 179 00dc 201A     		subs	r0, r4, r0
+ 180 00de 80B2     		uxth	r0, r0
+ 181 00e0 374B     		ldr	r3, .L16
+ 182 00e2 D880     		strh	r0, [r3, #6]	@ movhi
+ 183              	.L10:
+  60:ZumoLibrary/Reflectance.c ****     }
+  61:ZumoLibrary/Reflectance.c ****     
+  62:ZumoLibrary/Reflectance.c ****     if(statusR3 & Timer_R3_STATUS_CAPTURE) {
+ 184              		.loc 1 62 0
+ 185 00e4 16F0400F 		tst	r6, #64
+ 186 00e8 09D0     		beq	.L11
+  63:ZumoLibrary/Reflectance.c ****         sensors.r3 = Timer_R3_ReadPeriod() - Timer_R3_ReadCapture();
+ 187              		.loc 1 63 0
+ 188 00ea FFF7FEFF 		bl	Timer_R3_ReadPeriod
+ 189              	.LVL31:
+ 190 00ee 0446     		mov	r4, r0
+ 191 00f0 FFF7FEFF 		bl	Timer_R3_ReadCapture
+ 192              	.LVL32:
+ 193 00f4 201A     		subs	r0, r4, r0
+ 194 00f6 80B2     		uxth	r0, r0
+ 195 00f8 314B     		ldr	r3, .L16
+ 196 00fa D881     		strh	r0, [r3, #14]	@ movhi
+ 197 00fc 08E0     		b	.L12
+ 198              	.L11:
+  64:ZumoLibrary/Reflectance.c ****     }
+  65:ZumoLibrary/Reflectance.c ****     else {
+  66:ZumoLibrary/Reflectance.c ****         sensors.r3 = Timer_R3_ReadPeriod() - Timer_R3_ReadCounter();
+ 199              		.loc 1 66 0
+ 200 00fe FFF7FEFF 		bl	Timer_R3_ReadPeriod
+ 201              	.LVL33:
+ 202 0102 0446     		mov	r4, r0
+ 203 0104 FFF7FEFF 		bl	Timer_R3_ReadCounter
+ 204              	.LVL34:
+ 205 0108 201A     		subs	r0, r4, r0
+ 206 010a 80B2     		uxth	r0, r0
+ 207 010c 2C4B     		ldr	r3, .L16
+ 208 010e D881     		strh	r0, [r3, #14]	@ movhi
+ 209              	.L12:
+  67:ZumoLibrary/Reflectance.c ****     }
+  68:ZumoLibrary/Reflectance.c ****     
+  69:ZumoLibrary/Reflectance.c ****     if(statusL3 & Timer_L3_STATUS_CAPTURE) {
+ 210              		.loc 1 69 0
+ 211 0110 15F0400F 		tst	r5, #64
+ 212 0114 09D0     		beq	.L13
+  70:ZumoLibrary/Reflectance.c ****         sensors.l3 = Timer_L3_ReadPeriod() - Timer_L3_ReadCapture();
+ 213              		.loc 1 70 0
+ 214 0116 FFF7FEFF 		bl	Timer_L3_ReadPeriod
+ 215              	.LVL35:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 6
+
+
+ 216 011a 0446     		mov	r4, r0
+ 217 011c FFF7FEFF 		bl	Timer_L3_ReadCapture
+ 218              	.LVL36:
+ 219 0120 201A     		subs	r0, r4, r0
+ 220 0122 80B2     		uxth	r0, r0
+ 221 0124 264B     		ldr	r3, .L16
+ 222 0126 9880     		strh	r0, [r3, #4]	@ movhi
+ 223 0128 08E0     		b	.L14
+ 224              	.L13:
+  71:ZumoLibrary/Reflectance.c ****     }
+  72:ZumoLibrary/Reflectance.c ****     else {
+  73:ZumoLibrary/Reflectance.c ****         sensors.l3 = Timer_L3_ReadPeriod() - Timer_L3_ReadCounter();
+ 225              		.loc 1 73 0
+ 226 012a FFF7FEFF 		bl	Timer_L3_ReadPeriod
+ 227              	.LVL37:
+ 228 012e 0446     		mov	r4, r0
+ 229 0130 FFF7FEFF 		bl	Timer_L3_ReadCounter
+ 230              	.LVL38:
+ 231 0134 201A     		subs	r0, r4, r0
+ 232 0136 80B2     		uxth	r0, r0
+ 233 0138 214B     		ldr	r3, .L16
+ 234 013a 9880     		strh	r0, [r3, #4]	@ movhi
+ 235              	.L14:
+  74:ZumoLibrary/Reflectance.c ****     }
+  75:ZumoLibrary/Reflectance.c ****     
+  76:ZumoLibrary/Reflectance.c ****     
+  77:ZumoLibrary/Reflectance.c ****     Control_Reg_1_Write(1);
+ 236              		.loc 1 77 0
+ 237 013c 0120     		movs	r0, #1
+ 238 013e FFF7FEFF 		bl	Control_Reg_1_Write
+ 239              	.LVL39:
+  78:ZumoLibrary/Reflectance.c ****     
+  79:ZumoLibrary/Reflectance.c ****     R1_SetDriveMode(PIN_DM_STRONG);
+ 240              		.loc 1 79 0
+ 241 0142 0C20     		movs	r0, #12
+ 242 0144 FFF7FEFF 		bl	R1_SetDriveMode
+ 243              	.LVL40:
+  80:ZumoLibrary/Reflectance.c ****     R1_Write(1);
+ 244              		.loc 1 80 0
+ 245 0148 0120     		movs	r0, #1
+ 246 014a FFF7FEFF 		bl	R1_Write
+ 247              	.LVL41:
+  81:ZumoLibrary/Reflectance.c ****     R2_SetDriveMode(PIN_DM_STRONG);
+ 248              		.loc 1 81 0
+ 249 014e 0C20     		movs	r0, #12
+ 250 0150 FFF7FEFF 		bl	R2_SetDriveMode
+ 251              	.LVL42:
+  82:ZumoLibrary/Reflectance.c ****     R2_Write(1);
+ 252              		.loc 1 82 0
+ 253 0154 0120     		movs	r0, #1
+ 254 0156 FFF7FEFF 		bl	R2_Write
+ 255              	.LVL43:
+  83:ZumoLibrary/Reflectance.c ****     R3_SetDriveMode(PIN_DM_STRONG);
+ 256              		.loc 1 83 0
+ 257 015a 0C20     		movs	r0, #12
+ 258 015c FFF7FEFF 		bl	R3_SetDriveMode
+ 259              	.LVL44:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 7
+
+
+  84:ZumoLibrary/Reflectance.c ****     R3_Write(1);
+ 260              		.loc 1 84 0
+ 261 0160 0120     		movs	r0, #1
+ 262 0162 FFF7FEFF 		bl	R3_Write
+ 263              	.LVL45:
+  85:ZumoLibrary/Reflectance.c ****     L3_SetDriveMode(PIN_DM_STRONG);
+ 264              		.loc 1 85 0
+ 265 0166 0C20     		movs	r0, #12
+ 266 0168 FFF7FEFF 		bl	L3_SetDriveMode
+ 267              	.LVL46:
+  86:ZumoLibrary/Reflectance.c ****     L3_Write(1);
+ 268              		.loc 1 86 0
+ 269 016c 0120     		movs	r0, #1
+ 270 016e FFF7FEFF 		bl	L3_Write
+ 271              	.LVL47:
+  87:ZumoLibrary/Reflectance.c ****     L2_SetDriveMode(PIN_DM_STRONG);
+ 272              		.loc 1 87 0
+ 273 0172 0C20     		movs	r0, #12
+ 274 0174 FFF7FEFF 		bl	L2_SetDriveMode
+ 275              	.LVL48:
+  88:ZumoLibrary/Reflectance.c ****     L2_Write(1);
+ 276              		.loc 1 88 0
+ 277 0178 0120     		movs	r0, #1
+ 278 017a FFF7FEFF 		bl	L2_Write
+ 279              	.LVL49:
+  89:ZumoLibrary/Reflectance.c ****     L1_SetDriveMode(PIN_DM_STRONG);
+ 280              		.loc 1 89 0
+ 281 017e 0C20     		movs	r0, #12
+ 282 0180 FFF7FEFF 		bl	L1_SetDriveMode
+ 283              	.LVL50:
+  90:ZumoLibrary/Reflectance.c ****     L1_Write(1);
+ 284              		.loc 1 90 0
+ 285 0184 0120     		movs	r0, #1
+ 286 0186 FFF7FEFF 		bl	L1_Write
+ 287              	.LVL51:
+  91:ZumoLibrary/Reflectance.c ****     Control_Reg_1_Write(0);
+ 288              		.loc 1 91 0
+ 289 018a 0020     		movs	r0, #0
+ 290 018c FFF7FEFF 		bl	Control_Reg_1_Write
+ 291              	.LVL52:
+  92:ZumoLibrary/Reflectance.c **** 
+  93:ZumoLibrary/Reflectance.c ****     CyDelayUs(10);
+ 292              		.loc 1 93 0
+ 293 0190 0A20     		movs	r0, #10
+ 294 0192 FFF7FEFF 		bl	CyDelayUs
+ 295              	.LVL53:
+  94:ZumoLibrary/Reflectance.c ****     R1_SetDriveMode(PIN_DM_DIG_HIZ);
+ 296              		.loc 1 94 0
+ 297 0196 0220     		movs	r0, #2
+ 298 0198 FFF7FEFF 		bl	R1_SetDriveMode
+ 299              	.LVL54:
+  95:ZumoLibrary/Reflectance.c ****     R2_SetDriveMode(PIN_DM_DIG_HIZ);
+ 300              		.loc 1 95 0
+ 301 019c 0220     		movs	r0, #2
+ 302 019e FFF7FEFF 		bl	R2_SetDriveMode
+ 303              	.LVL55:
+  96:ZumoLibrary/Reflectance.c ****     R3_SetDriveMode(PIN_DM_DIG_HIZ);
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 8
+
+
+ 304              		.loc 1 96 0
+ 305 01a2 0220     		movs	r0, #2
+ 306 01a4 FFF7FEFF 		bl	R3_SetDriveMode
+ 307              	.LVL56:
+  97:ZumoLibrary/Reflectance.c ****     L3_SetDriveMode(PIN_DM_DIG_HIZ);
+ 308              		.loc 1 97 0
+ 309 01a8 0220     		movs	r0, #2
+ 310 01aa FFF7FEFF 		bl	L3_SetDriveMode
+ 311              	.LVL57:
+  98:ZumoLibrary/Reflectance.c ****     L2_SetDriveMode(PIN_DM_DIG_HIZ);
+ 312              		.loc 1 98 0
+ 313 01ae 0220     		movs	r0, #2
+ 314 01b0 FFF7FEFF 		bl	L2_SetDriveMode
+ 315              	.LVL58:
+  99:ZumoLibrary/Reflectance.c ****     L1_SetDriveMode(PIN_DM_DIG_HIZ);
+ 316              		.loc 1 99 0
+ 317 01b4 0220     		movs	r0, #2
+ 318 01b6 FFF7FEFF 		bl	L1_SetDriveMode
+ 319              	.LVL59:
+ 320              	.L1:
+ 321 01ba BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 322              	.L17:
+ 323 01be 00BF     		.align	2
+ 324              	.L16:
+ 325 01c0 00000000 		.word	.LANCHOR0
+ 326              		.cfi_endproc
+ 327              	.LFE64:
+ 328              		.size	reflectance_handler, .-reflectance_handler
+ 329              		.section	.text.reflectance_start,"ax",%progbits
+ 330              		.align	2
+ 331              		.global	reflectance_start
+ 332              		.thumb
+ 333              		.thumb_func
+ 334              		.type	reflectance_start, %function
+ 335              	reflectance_start:
+ 336              	.LFB65:
+ 100:ZumoLibrary/Reflectance.c **** }
+ 101:ZumoLibrary/Reflectance.c **** 
+ 102:ZumoLibrary/Reflectance.c **** 
+ 103:ZumoLibrary/Reflectance.c **** /**
+ 104:ZumoLibrary/Reflectance.c **** * @brief    Starting Reflectance Sensor
+ 105:ZumoLibrary/Reflectance.c **** * @details 
+ 106:ZumoLibrary/Reflectance.c **** */
+ 107:ZumoLibrary/Reflectance.c **** void reflectance_start()
+ 108:ZumoLibrary/Reflectance.c **** {
+ 337              		.loc 1 108 0
+ 338              		.cfi_startproc
+ 339              		@ args = 0, pretend = 0, frame = 0
+ 340              		@ frame_needed = 0, uses_anonymous_args = 0
+ 341 0000 08B5     		push	{r3, lr}
+ 342              		.cfi_def_cfa_offset 8
+ 343              		.cfi_offset 3, -8
+ 344              		.cfi_offset 14, -4
+ 109:ZumoLibrary/Reflectance.c ****     IR_led_Write(1);
+ 345              		.loc 1 109 0
+ 346 0002 0120     		movs	r0, #1
+ 347 0004 FFF7FEFF 		bl	IR_led_Write
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 9
+
+
+ 348              	.LVL60:
+ 110:ZumoLibrary/Reflectance.c ****     //sensor_isr_StartEx(sensor_isr_handler);
+ 111:ZumoLibrary/Reflectance.c ****     Timer_R1_Start();
+ 349              		.loc 1 111 0
+ 350 0008 FFF7FEFF 		bl	Timer_R1_Start
+ 351              	.LVL61:
+ 112:ZumoLibrary/Reflectance.c ****     Timer_R2_Start();
+ 352              		.loc 1 112 0
+ 353 000c FFF7FEFF 		bl	Timer_R2_Start
+ 354              	.LVL62:
+ 113:ZumoLibrary/Reflectance.c ****     Timer_R3_Start();
+ 355              		.loc 1 113 0
+ 356 0010 FFF7FEFF 		bl	Timer_R3_Start
+ 357              	.LVL63:
+ 114:ZumoLibrary/Reflectance.c ****     Timer_L3_Start();
+ 358              		.loc 1 114 0
+ 359 0014 FFF7FEFF 		bl	Timer_L3_Start
+ 360              	.LVL64:
+ 115:ZumoLibrary/Reflectance.c ****     Timer_L2_Start();
+ 361              		.loc 1 115 0
+ 362 0018 FFF7FEFF 		bl	Timer_L2_Start
+ 363              	.LVL65:
+ 116:ZumoLibrary/Reflectance.c ****     Timer_L1_Start();
+ 364              		.loc 1 116 0
+ 365 001c FFF7FEFF 		bl	Timer_L1_Start
+ 366              	.LVL66:
+ 117:ZumoLibrary/Reflectance.c ****     refl_init = true;
+ 367              		.loc 1 117 0
+ 368 0020 0122     		movs	r2, #1
+ 369 0022 024B     		ldr	r3, .L20
+ 370 0024 1A70     		strb	r2, [r3]
+ 118:ZumoLibrary/Reflectance.c ****     Systick_Start();
+ 371              		.loc 1 118 0
+ 372 0026 FFF7FEFF 		bl	Systick_Start
+ 373              	.LVL67:
+ 374 002a 08BD     		pop	{r3, pc}
+ 375              	.L21:
+ 376              		.align	2
+ 377              	.L20:
+ 378 002c 00000000 		.word	.LANCHOR0
+ 379              		.cfi_endproc
+ 380              	.LFE65:
+ 381              		.size	reflectance_start, .-reflectance_start
+ 382              		.section	.text.reflectance_read,"ax",%progbits
+ 383              		.align	2
+ 384              		.global	reflectance_read
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.type	reflectance_read, %function
+ 388              	reflectance_read:
+ 389              	.LFB66:
+ 119:ZumoLibrary/Reflectance.c **** }
+ 120:ZumoLibrary/Reflectance.c **** 
+ 121:ZumoLibrary/Reflectance.c **** 
+ 122:ZumoLibrary/Reflectance.c **** /**
+ 123:ZumoLibrary/Reflectance.c **** * @brief    Read reflectance sensor values
+ 124:ZumoLibrary/Reflectance.c **** * @details
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 10
+
+
+ 125:ZumoLibrary/Reflectance.c **** */
+ 126:ZumoLibrary/Reflectance.c **** void reflectance_read(struct sensors_ *values)
+ 127:ZumoLibrary/Reflectance.c **** {
+ 390              		.loc 1 127 0
+ 391              		.cfi_startproc
+ 392              		@ args = 0, pretend = 0, frame = 0
+ 393              		@ frame_needed = 0, uses_anonymous_args = 0
+ 394              		@ link register save eliminated.
+ 395              	.LVL68:
+ 396 0000 10B4     		push	{r4}
+ 397              		.cfi_def_cfa_offset 4
+ 398              		.cfi_offset 4, -4
+ 399 0002 0446     		mov	r4, r0
+ 128:ZumoLibrary/Reflectance.c ****     *values = sensors;
+ 400              		.loc 1 128 0
+ 401 0004 034B     		ldr	r3, .L24
+ 402 0006 07CB     		ldmia	r3!, {r0, r1, r2}
+ 403              	.LVL69:
+ 404 0008 2060     		str	r0, [r4]	@ unaligned
+ 405 000a 6160     		str	r1, [r4, #4]	@ unaligned
+ 406 000c A260     		str	r2, [r4, #8]	@ unaligned
+ 129:ZumoLibrary/Reflectance.c **** }
+ 407              		.loc 1 129 0
+ 408 000e 10BC     		pop	{r4}
+ 409              		.cfi_restore 4
+ 410              		.cfi_def_cfa_offset 0
+ 411              	.LVL70:
+ 412 0010 7047     		bx	lr
+ 413              	.L25:
+ 414 0012 00BF     		.align	2
+ 415              	.L24:
+ 416 0014 04000000 		.word	.LANCHOR0+4
+ 417              		.cfi_endproc
+ 418              	.LFE66:
+ 419              		.size	reflectance_read, .-reflectance_read
+ 420              		.section	.text.reflectance_digital,"ax",%progbits
+ 421              		.align	2
+ 422              		.global	reflectance_digital
+ 423              		.thumb
+ 424              		.thumb_func
+ 425              		.type	reflectance_digital, %function
+ 426              	reflectance_digital:
+ 427              	.LFB67:
+ 130:ZumoLibrary/Reflectance.c **** 
+ 131:ZumoLibrary/Reflectance.c **** 
+ 132:ZumoLibrary/Reflectance.c **** /**
+ 133:ZumoLibrary/Reflectance.c **** * @brief    Making Reflectance Sensor's period to digital
+ 134:ZumoLibrary/Reflectance.c **** * @details
+ 135:ZumoLibrary/Reflectance.c **** */
+ 136:ZumoLibrary/Reflectance.c **** void reflectance_digital(struct sensors_ *digital)
+ 137:ZumoLibrary/Reflectance.c **** {
+ 428              		.loc 1 137 0
+ 429              		.cfi_startproc
+ 430              		@ args = 0, pretend = 0, frame = 0
+ 431              		@ frame_needed = 0, uses_anonymous_args = 0
+ 432              		@ link register save eliminated.
+ 433              	.LVL71:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 11
+
+
+ 138:ZumoLibrary/Reflectance.c ****     //if the results of reflectance_period function is over threshold, set digital_sensor_value to 
+ 139:ZumoLibrary/Reflectance.c ****     if(sensors.l3 < threshold.l3)
+ 434              		.loc 1 139 0
+ 435 0000 244B     		ldr	r3, .L39
+ 436 0002 9B88     		ldrh	r3, [r3, #4]
+ 437 0004 9BB2     		uxth	r3, r3
+ 438 0006 244A     		ldr	r2, .L39+4
+ 439 0008 1288     		ldrh	r2, [r2]
+ 440 000a 9342     		cmp	r3, r2
+ 441 000c 02D2     		bcs	.L27
+ 140:ZumoLibrary/Reflectance.c ****         digital->l3 = 0;
+ 442              		.loc 1 140 0
+ 443 000e 0023     		movs	r3, #0
+ 444 0010 0380     		strh	r3, [r0]	@ movhi
+ 445 0012 01E0     		b	.L28
+ 446              	.L27:
+ 141:ZumoLibrary/Reflectance.c ****     else
+ 142:ZumoLibrary/Reflectance.c ****         digital->l3 = 1;
+ 447              		.loc 1 142 0
+ 448 0014 0123     		movs	r3, #1
+ 449 0016 0380     		strh	r3, [r0]	@ movhi
+ 450              	.L28:
+ 143:ZumoLibrary/Reflectance.c ****     
+ 144:ZumoLibrary/Reflectance.c ****     if(sensors.l2 < threshold.l2)
+ 451              		.loc 1 144 0
+ 452 0018 1E4B     		ldr	r3, .L39
+ 453 001a DB88     		ldrh	r3, [r3, #6]
+ 454 001c 9BB2     		uxth	r3, r3
+ 455 001e 1E4A     		ldr	r2, .L39+4
+ 456 0020 5288     		ldrh	r2, [r2, #2]
+ 457 0022 9342     		cmp	r3, r2
+ 458 0024 02D2     		bcs	.L29
+ 145:ZumoLibrary/Reflectance.c ****         digital->l2 = 0;
+ 459              		.loc 1 145 0
+ 460 0026 0023     		movs	r3, #0
+ 461 0028 4380     		strh	r3, [r0, #2]	@ movhi
+ 462 002a 01E0     		b	.L30
+ 463              	.L29:
+ 146:ZumoLibrary/Reflectance.c ****     else
+ 147:ZumoLibrary/Reflectance.c ****         digital->l2 = 1;
+ 464              		.loc 1 147 0
+ 465 002c 0123     		movs	r3, #1
+ 466 002e 4380     		strh	r3, [r0, #2]	@ movhi
+ 467              	.L30:
+ 148:ZumoLibrary/Reflectance.c ****     
+ 149:ZumoLibrary/Reflectance.c ****     if(sensors.l1 < threshold.l1)
+ 468              		.loc 1 149 0
+ 469 0030 184B     		ldr	r3, .L39
+ 470 0032 1B89     		ldrh	r3, [r3, #8]
+ 471 0034 9BB2     		uxth	r3, r3
+ 472 0036 184A     		ldr	r2, .L39+4
+ 473 0038 9288     		ldrh	r2, [r2, #4]
+ 474 003a 9342     		cmp	r3, r2
+ 475 003c 02D2     		bcs	.L31
+ 150:ZumoLibrary/Reflectance.c ****         digital->l1 = 0;
+ 476              		.loc 1 150 0
+ 477 003e 0023     		movs	r3, #0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 12
+
+
+ 478 0040 8380     		strh	r3, [r0, #4]	@ movhi
+ 479 0042 01E0     		b	.L32
+ 480              	.L31:
+ 151:ZumoLibrary/Reflectance.c ****     else
+ 152:ZumoLibrary/Reflectance.c ****         digital->l1 = 1;
+ 481              		.loc 1 152 0
+ 482 0044 0123     		movs	r3, #1
+ 483 0046 8380     		strh	r3, [r0, #4]	@ movhi
+ 484              	.L32:
+ 153:ZumoLibrary/Reflectance.c ****     
+ 154:ZumoLibrary/Reflectance.c ****     if(sensors.r1 < threshold.r1)
+ 485              		.loc 1 154 0
+ 486 0048 124B     		ldr	r3, .L39
+ 487 004a 5B89     		ldrh	r3, [r3, #10]
+ 488 004c 9BB2     		uxth	r3, r3
+ 489 004e 124A     		ldr	r2, .L39+4
+ 490 0050 D288     		ldrh	r2, [r2, #6]
+ 491 0052 9342     		cmp	r3, r2
+ 492 0054 02D2     		bcs	.L33
+ 155:ZumoLibrary/Reflectance.c ****         digital->r1 = 0;
+ 493              		.loc 1 155 0
+ 494 0056 0023     		movs	r3, #0
+ 495 0058 C380     		strh	r3, [r0, #6]	@ movhi
+ 496 005a 01E0     		b	.L34
+ 497              	.L33:
+ 156:ZumoLibrary/Reflectance.c ****     else
+ 157:ZumoLibrary/Reflectance.c ****         digital->r1 = 1;
+ 498              		.loc 1 157 0
+ 499 005c 0123     		movs	r3, #1
+ 500 005e C380     		strh	r3, [r0, #6]	@ movhi
+ 501              	.L34:
+ 158:ZumoLibrary/Reflectance.c ****     
+ 159:ZumoLibrary/Reflectance.c ****     if(sensors.r2 < threshold.r2)
+ 502              		.loc 1 159 0
+ 503 0060 0C4B     		ldr	r3, .L39
+ 504 0062 9B89     		ldrh	r3, [r3, #12]
+ 505 0064 9BB2     		uxth	r3, r3
+ 506 0066 0C4A     		ldr	r2, .L39+4
+ 507 0068 1289     		ldrh	r2, [r2, #8]
+ 508 006a 9342     		cmp	r3, r2
+ 509 006c 02D2     		bcs	.L35
+ 160:ZumoLibrary/Reflectance.c ****         digital->r2 = 0;
+ 510              		.loc 1 160 0
+ 511 006e 0023     		movs	r3, #0
+ 512 0070 0381     		strh	r3, [r0, #8]	@ movhi
+ 513 0072 01E0     		b	.L36
+ 514              	.L35:
+ 161:ZumoLibrary/Reflectance.c ****     else
+ 162:ZumoLibrary/Reflectance.c ****         digital->r2 = 1;
+ 515              		.loc 1 162 0
+ 516 0074 0123     		movs	r3, #1
+ 517 0076 0381     		strh	r3, [r0, #8]	@ movhi
+ 518              	.L36:
+ 163:ZumoLibrary/Reflectance.c ****     
+ 164:ZumoLibrary/Reflectance.c ****     if(sensors.r3 < threshold.r3)
+ 519              		.loc 1 164 0
+ 520 0078 064B     		ldr	r3, .L39
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 13
+
+
+ 521 007a DB89     		ldrh	r3, [r3, #14]
+ 522 007c 9BB2     		uxth	r3, r3
+ 523 007e 064A     		ldr	r2, .L39+4
+ 524 0080 5289     		ldrh	r2, [r2, #10]
+ 525 0082 9342     		cmp	r3, r2
+ 526 0084 02D2     		bcs	.L37
+ 165:ZumoLibrary/Reflectance.c ****         digital->r3 = 0;
+ 527              		.loc 1 165 0
+ 528 0086 0023     		movs	r3, #0
+ 529 0088 4381     		strh	r3, [r0, #10]	@ movhi
+ 530 008a 7047     		bx	lr
+ 531              	.L37:
+ 166:ZumoLibrary/Reflectance.c ****     else
+ 167:ZumoLibrary/Reflectance.c ****         digital->r3 = 1;
+ 532              		.loc 1 167 0
+ 533 008c 0123     		movs	r3, #1
+ 534 008e 4381     		strh	r3, [r0, #10]	@ movhi
+ 535 0090 7047     		bx	lr
+ 536              	.L40:
+ 537 0092 00BF     		.align	2
+ 538              	.L39:
+ 539 0094 00000000 		.word	.LANCHOR0
+ 540 0098 00000000 		.word	.LANCHOR1
+ 541              		.cfi_endproc
+ 542              	.LFE67:
+ 543              		.size	reflectance_digital, .-reflectance_digital
+ 544              		.section	.text.reflectance_set_threshold,"ax",%progbits
+ 545              		.align	2
+ 546              		.global	reflectance_set_threshold
+ 547              		.thumb
+ 548              		.thumb_func
+ 549              		.type	reflectance_set_threshold, %function
+ 550              	reflectance_set_threshold:
+ 551              	.LFB68:
+ 168:ZumoLibrary/Reflectance.c ****         
+ 169:ZumoLibrary/Reflectance.c **** }
+ 170:ZumoLibrary/Reflectance.c **** 
+ 171:ZumoLibrary/Reflectance.c **** void reflectance_set_threshold(uint16_t l3, uint16_t l2, uint16_t l1, uint16_t r1, uint16_t r2, uin
+ 172:ZumoLibrary/Reflectance.c **** {
+ 552              		.loc 1 172 0
+ 553              		.cfi_startproc
+ 554              		@ args = 8, pretend = 0, frame = 0
+ 555              		@ frame_needed = 0, uses_anonymous_args = 0
+ 556              		@ link register save eliminated.
+ 557              	.LVL72:
+ 558 0000 10B4     		push	{r4}
+ 559              		.cfi_def_cfa_offset 4
+ 560              		.cfi_offset 4, -4
+ 173:ZumoLibrary/Reflectance.c ****     threshold.l3 = l3;
+ 561              		.loc 1 173 0
+ 562 0002 064C     		ldr	r4, .L43
+ 563 0004 2080     		strh	r0, [r4]	@ movhi
+ 174:ZumoLibrary/Reflectance.c ****     threshold.l2 = l2;
+ 564              		.loc 1 174 0
+ 565 0006 6180     		strh	r1, [r4, #2]	@ movhi
+ 175:ZumoLibrary/Reflectance.c ****     threshold.l1 = l1;
+ 566              		.loc 1 175 0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 14
+
+
+ 567 0008 A280     		strh	r2, [r4, #4]	@ movhi
+ 176:ZumoLibrary/Reflectance.c ****     threshold.r3 = r3;
+ 568              		.loc 1 176 0
+ 569 000a BDF80820 		ldrh	r2, [sp, #8]
+ 570              	.LVL73:
+ 571 000e 6281     		strh	r2, [r4, #10]	@ movhi
+ 177:ZumoLibrary/Reflectance.c ****     threshold.r2 = r2;
+ 572              		.loc 1 177 0
+ 573 0010 BDF80420 		ldrh	r2, [sp, #4]
+ 574 0014 2281     		strh	r2, [r4, #8]	@ movhi
+ 178:ZumoLibrary/Reflectance.c ****     threshold.r1 = r1;
+ 575              		.loc 1 178 0
+ 576 0016 E380     		strh	r3, [r4, #6]	@ movhi
+ 179:ZumoLibrary/Reflectance.c **** }
+ 577              		.loc 1 179 0
+ 578 0018 10BC     		pop	{r4}
+ 579              		.cfi_restore 4
+ 580              		.cfi_def_cfa_offset 0
+ 581              	.LVL74:
+ 582 001a 7047     		bx	lr
+ 583              	.L44:
+ 584              		.align	2
+ 585              	.L43:
+ 586 001c 00000000 		.word	.LANCHOR1
+ 587              		.cfi_endproc
+ 588              	.LFE68:
+ 589              		.size	reflectance_set_threshold, .-reflectance_set_threshold
+ 590              		.data
+ 591              		.align	2
+ 592              		.set	.LANCHOR1,. + 0
+ 593              		.type	threshold, %object
+ 594              		.size	threshold, 12
+ 595              	threshold:
+ 596 0000 1027     		.short	10000
+ 597 0002 1027     		.short	10000
+ 598 0004 1027     		.short	10000
+ 599 0006 1027     		.short	10000
+ 600 0008 1027     		.short	10000
+ 601 000a 1027     		.short	10000
+ 602              		.bss
+ 603              		.align	2
+ 604              		.set	.LANCHOR0,. + 0
+ 605              		.type	refl_init, %object
+ 606              		.size	refl_init, 1
+ 607              	refl_init:
+ 608 0000 00       		.space	1
+ 609 0001 000000   		.space	3
+ 610              		.type	sensors, %object
+ 611              		.size	sensors, 12
+ 612              	sensors:
+ 613 0004 00000000 		.space	12
+ 613      00000000 
+ 613      00000000 
+ 614              		.type	digital_sensor_value, %object
+ 615              		.size	digital_sensor_value, 12
+ 616              	digital_sensor_value:
+ 617 0010 00000000 		.space	12
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 15
+
+
+ 617      00000000 
+ 617      00000000 
+ 618              		.text
+ 619              	.Letext0:
+ 620              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 621              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 622              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 623              		.file 5 "ZumoLibrary\\Reflectance.h"
+ 624              		.file 6 "Generated_Source\\PSoC5/Timer_R1.h"
+ 625              		.file 7 "Generated_Source\\PSoC5/Timer_R2.h"
+ 626              		.file 8 "Generated_Source\\PSoC5/Timer_R3.h"
+ 627              		.file 9 "Generated_Source\\PSoC5/Timer_L3.h"
+ 628              		.file 10 "Generated_Source\\PSoC5/Timer_L2.h"
+ 629              		.file 11 "Generated_Source\\PSoC5/Timer_L1.h"
+ 630              		.file 12 "Generated_Source\\PSoC5/Control_Reg_1.h"
+ 631              		.file 13 "Generated_Source\\PSoC5/R1.h"
+ 632              		.file 14 "Generated_Source\\PSoC5/R2.h"
+ 633              		.file 15 "Generated_Source\\PSoC5/R3.h"
+ 634              		.file 16 "Generated_Source\\PSoC5/L3.h"
+ 635              		.file 17 "Generated_Source\\PSoC5/L2.h"
+ 636              		.file 18 "Generated_Source\\PSoC5/L1.h"
+ 637              		.file 19 "Generated_Source\\PSoC5/CyLib.h"
+ 638              		.file 20 "Generated_Source\\PSoC5/IR_led.h"
+ 639              		.file 21 "ZumoLibrary\\Systick.h"
+ 640              		.file 22 "Generated_Source\\PSoC5/core_cm3.h"
+ 641              		.section	.debug_info,"",%progbits
+ 642              	.Ldebug_info0:
+ 643 0000 AB070000 		.4byte	0x7ab
+ 644 0004 0400     		.2byte	0x4
+ 645 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 646 000a 04       		.byte	0x4
+ 647 000b 01       		.uleb128 0x1
+ 648 000c F2040000 		.4byte	.LASF85
+ 649 0010 0C       		.byte	0xc
+ 650 0011 A9050000 		.4byte	.LASF86
+ 651 0015 74040000 		.4byte	.LASF87
+ 652 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 653 001d 00000000 		.4byte	0
+ 654 0021 00000000 		.4byte	.Ldebug_line0
+ 655 0025 02       		.uleb128 0x2
+ 656 0026 01       		.byte	0x1
+ 657 0027 06       		.byte	0x6
+ 658 0028 8D020000 		.4byte	.LASF0
+ 659 002c 02       		.uleb128 0x2
+ 660 002d 01       		.byte	0x1
+ 661 002e 08       		.byte	0x8
+ 662 002f 05020000 		.4byte	.LASF1
+ 663 0033 02       		.uleb128 0x2
+ 664 0034 02       		.byte	0x2
+ 665 0035 05       		.byte	0x5
+ 666 0036 50000000 		.4byte	.LASF2
+ 667 003a 03       		.uleb128 0x3
+ 668 003b B2000000 		.4byte	.LASF4
+ 669 003f 02       		.byte	0x2
+ 670 0040 2B       		.byte	0x2b
+ 671 0041 45000000 		.4byte	0x45
+ 672 0045 02       		.uleb128 0x2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 16
+
+
+ 673 0046 02       		.byte	0x2
+ 674 0047 07       		.byte	0x7
+ 675 0048 10030000 		.4byte	.LASF3
+ 676 004c 03       		.uleb128 0x3
+ 677 004d 6A040000 		.4byte	.LASF5
+ 678 0051 02       		.byte	0x2
+ 679 0052 3F       		.byte	0x3f
+ 680 0053 57000000 		.4byte	0x57
+ 681 0057 02       		.uleb128 0x2
+ 682 0058 04       		.byte	0x4
+ 683 0059 05       		.byte	0x5
+ 684 005a D8010000 		.4byte	.LASF6
+ 685 005e 03       		.uleb128 0x3
+ 686 005f 97000000 		.4byte	.LASF7
+ 687 0063 02       		.byte	0x2
+ 688 0064 41       		.byte	0x41
+ 689 0065 69000000 		.4byte	0x69
+ 690 0069 02       		.uleb128 0x2
+ 691 006a 04       		.byte	0x4
+ 692 006b 07       		.byte	0x7
+ 693 006c 0A040000 		.4byte	.LASF8
+ 694 0070 02       		.uleb128 0x2
+ 695 0071 08       		.byte	0x8
+ 696 0072 05       		.byte	0x5
+ 697 0073 89000000 		.4byte	.LASF9
+ 698 0077 02       		.uleb128 0x2
+ 699 0078 08       		.byte	0x8
+ 700 0079 07       		.byte	0x7
+ 701 007a 99020000 		.4byte	.LASF10
+ 702 007e 04       		.uleb128 0x4
+ 703 007f 04       		.byte	0x4
+ 704 0080 05       		.byte	0x5
+ 705 0081 696E7400 		.ascii	"int\000"
+ 706 0085 02       		.uleb128 0x2
+ 707 0086 04       		.byte	0x4
+ 708 0087 07       		.byte	0x7
+ 709 0088 DD020000 		.4byte	.LASF11
+ 710 008c 02       		.uleb128 0x2
+ 711 008d 08       		.byte	0x8
+ 712 008e 04       		.byte	0x4
+ 713 008f 38020000 		.4byte	.LASF12
+ 714 0093 02       		.uleb128 0x2
+ 715 0094 04       		.byte	0x4
+ 716 0095 07       		.byte	0x7
+ 717 0096 63000000 		.4byte	.LASF13
+ 718 009a 02       		.uleb128 0x2
+ 719 009b 01       		.byte	0x1
+ 720 009c 08       		.byte	0x8
+ 721 009d BF010000 		.4byte	.LASF14
+ 722 00a1 03       		.uleb128 0x3
+ 723 00a2 EA020000 		.4byte	.LASF15
+ 724 00a6 03       		.byte	0x3
+ 725 00a7 24       		.byte	0x24
+ 726 00a8 3A000000 		.4byte	0x3a
+ 727 00ac 03       		.uleb128 0x3
+ 728 00ad 84030000 		.4byte	.LASF16
+ 729 00b1 03       		.byte	0x3
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 17
+
+
+ 730 00b2 2C       		.byte	0x2c
+ 731 00b3 4C000000 		.4byte	0x4c
+ 732 00b7 03       		.uleb128 0x3
+ 733 00b8 BF020000 		.4byte	.LASF17
+ 734 00bc 03       		.byte	0x3
+ 735 00bd 30       		.byte	0x30
+ 736 00be 5E000000 		.4byte	0x5e
+ 737 00c2 05       		.uleb128 0x5
+ 738 00c3 8C030000 		.4byte	.LASF18
+ 739 00c7 04       		.byte	0x4
+ 740 00c8 E401     		.2byte	0x1e4
+ 741 00ca 2C000000 		.4byte	0x2c
+ 742 00ce 02       		.uleb128 0x2
+ 743 00cf 04       		.byte	0x4
+ 744 00d0 04       		.byte	0x4
+ 745 00d1 4C010000 		.4byte	.LASF19
+ 746 00d5 02       		.uleb128 0x2
+ 747 00d6 08       		.byte	0x8
+ 748 00d7 04       		.byte	0x4
+ 749 00d8 09000000 		.4byte	.LASF20
+ 750 00dc 06       		.uleb128 0x6
+ 751 00dd D0030000 		.4byte	.LASF88
+ 752 00e1 0C       		.byte	0xc
+ 753 00e2 05       		.byte	0x5
+ 754 00e3 0E       		.byte	0xe
+ 755 00e4 2B010000 		.4byte	0x12b
+ 756 00e8 07       		.uleb128 0x7
+ 757 00e9 6C3300   		.ascii	"l3\000"
+ 758 00ec 05       		.byte	0x5
+ 759 00ed 0F       		.byte	0xf
+ 760 00ee A1000000 		.4byte	0xa1
+ 761 00f2 00       		.byte	0
+ 762 00f3 07       		.uleb128 0x7
+ 763 00f4 6C3200   		.ascii	"l2\000"
+ 764 00f7 05       		.byte	0x5
+ 765 00f8 10       		.byte	0x10
+ 766 00f9 A1000000 		.4byte	0xa1
+ 767 00fd 02       		.byte	0x2
+ 768 00fe 07       		.uleb128 0x7
+ 769 00ff 6C3100   		.ascii	"l1\000"
+ 770 0102 05       		.byte	0x5
+ 771 0103 11       		.byte	0x11
+ 772 0104 A1000000 		.4byte	0xa1
+ 773 0108 04       		.byte	0x4
+ 774 0109 07       		.uleb128 0x7
+ 775 010a 723100   		.ascii	"r1\000"
+ 776 010d 05       		.byte	0x5
+ 777 010e 12       		.byte	0x12
+ 778 010f A1000000 		.4byte	0xa1
+ 779 0113 06       		.byte	0x6
+ 780 0114 07       		.uleb128 0x7
+ 781 0115 723200   		.ascii	"r2\000"
+ 782 0118 05       		.byte	0x5
+ 783 0119 13       		.byte	0x13
+ 784 011a A1000000 		.4byte	0xa1
+ 785 011e 08       		.byte	0x8
+ 786 011f 07       		.uleb128 0x7
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 18
+
+
+ 787 0120 723300   		.ascii	"r3\000"
+ 788 0123 05       		.byte	0x5
+ 789 0124 14       		.byte	0x14
+ 790 0125 A1000000 		.4byte	0xa1
+ 791 0129 0A       		.byte	0xa
+ 792 012a 00       		.byte	0
+ 793 012b 08       		.uleb128 0x8
+ 794 012c F6030000 		.4byte	.LASF27
+ 795 0130 01       		.byte	0x1
+ 796 0131 17       		.byte	0x17
+ 797 0132 00000000 		.4byte	.LFB64
+ 798 0136 C4010000 		.4byte	.LFE64-.LFB64
+ 799 013a 01       		.uleb128 0x1
+ 800 013b 9C       		.byte	0x9c
+ 801 013c 34040000 		.4byte	0x434
+ 802 0140 09       		.uleb128 0x9
+ 803 0141 D2000000 		.4byte	.LASF21
+ 804 0145 01       		.byte	0x1
+ 805 0146 1B       		.byte	0x1b
+ 806 0147 B7000000 		.4byte	0xb7
+ 807 014b 00000000 		.4byte	.LLST0
+ 808 014f 09       		.uleb128 0x9
+ 809 0150 DB000000 		.4byte	.LASF22
+ 810 0154 01       		.byte	0x1
+ 811 0155 1C       		.byte	0x1c
+ 812 0156 B7000000 		.4byte	0xb7
+ 813 015a 28000000 		.4byte	.LLST1
+ 814 015e 09       		.uleb128 0x9
+ 815 015f 00000000 		.4byte	.LASF23
+ 816 0163 01       		.byte	0x1
+ 817 0164 1D       		.byte	0x1d
+ 818 0165 B7000000 		.4byte	0xb7
+ 819 0169 40000000 		.4byte	.LLST2
+ 820 016d 09       		.uleb128 0x9
+ 821 016e 7B030000 		.4byte	.LASF24
+ 822 0172 01       		.byte	0x1
+ 823 0173 1E       		.byte	0x1e
+ 824 0174 B7000000 		.4byte	0xb7
+ 825 0178 58000000 		.4byte	.LLST3
+ 826 017c 09       		.uleb128 0x9
+ 827 017d 72030000 		.4byte	.LASF25
+ 828 0181 01       		.byte	0x1
+ 829 0182 1F       		.byte	0x1f
+ 830 0183 B7000000 		.4byte	0xb7
+ 831 0187 70000000 		.4byte	.LLST4
+ 832 018b 09       		.uleb128 0x9
+ 833 018c 30040000 		.4byte	.LASF26
+ 834 0190 01       		.byte	0x1
+ 835 0191 20       		.byte	0x20
+ 836 0192 B7000000 		.4byte	0xb7
+ 837 0196 88000000 		.4byte	.LLST5
+ 838 019a 0A       		.uleb128 0xa
+ 839 019b 14000000 		.4byte	.LVL0
+ 840 019f B4050000 		.4byte	0x5b4
+ 841 01a3 0A       		.uleb128 0xa
+ 842 01a4 1A000000 		.4byte	.LVL2
+ 843 01a8 BF050000 		.4byte	0x5bf
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 19
+
+
+ 844 01ac 0A       		.uleb128 0xa
+ 845 01ad 20000000 		.4byte	.LVL4
+ 846 01b1 CA050000 		.4byte	0x5ca
+ 847 01b5 0A       		.uleb128 0xa
+ 848 01b6 26000000 		.4byte	.LVL6
+ 849 01ba D5050000 		.4byte	0x5d5
+ 850 01be 0A       		.uleb128 0xa
+ 851 01bf 2C000000 		.4byte	.LVL8
+ 852 01c3 E0050000 		.4byte	0x5e0
+ 853 01c7 0A       		.uleb128 0xa
+ 854 01c8 32000000 		.4byte	.LVL10
+ 855 01cc EB050000 		.4byte	0x5eb
+ 856 01d0 0A       		.uleb128 0xa
+ 857 01d1 3E000000 		.4byte	.LVL12
+ 858 01d5 F6050000 		.4byte	0x5f6
+ 859 01d9 0A       		.uleb128 0xa
+ 860 01da 44000000 		.4byte	.LVL14
+ 861 01de 01060000 		.4byte	0x601
+ 862 01e2 0A       		.uleb128 0xa
+ 863 01e3 52000000 		.4byte	.LVL16
+ 864 01e7 F6050000 		.4byte	0x5f6
+ 865 01eb 0A       		.uleb128 0xa
+ 866 01ec 58000000 		.4byte	.LVL18
+ 867 01f0 0C060000 		.4byte	0x60c
+ 868 01f4 0A       		.uleb128 0xa
+ 869 01f5 6A000000 		.4byte	.LVL19
+ 870 01f9 17060000 		.4byte	0x617
+ 871 01fd 0A       		.uleb128 0xa
+ 872 01fe 70000000 		.4byte	.LVL20
+ 873 0202 22060000 		.4byte	0x622
+ 874 0206 0A       		.uleb128 0xa
+ 875 0207 7E000000 		.4byte	.LVL21
+ 876 020b 17060000 		.4byte	0x617
+ 877 020f 0A       		.uleb128 0xa
+ 878 0210 84000000 		.4byte	.LVL22
+ 879 0214 2D060000 		.4byte	0x62d
+ 880 0218 0A       		.uleb128 0xa
+ 881 0219 96000000 		.4byte	.LVL23
+ 882 021d 38060000 		.4byte	0x638
+ 883 0221 0A       		.uleb128 0xa
+ 884 0222 9C000000 		.4byte	.LVL24
+ 885 0226 43060000 		.4byte	0x643
+ 886 022a 0A       		.uleb128 0xa
+ 887 022b AA000000 		.4byte	.LVL25
+ 888 022f 38060000 		.4byte	0x638
+ 889 0233 0A       		.uleb128 0xa
+ 890 0234 B0000000 		.4byte	.LVL26
+ 891 0238 4E060000 		.4byte	0x64e
+ 892 023c 0A       		.uleb128 0xa
+ 893 023d C2000000 		.4byte	.LVL27
+ 894 0241 59060000 		.4byte	0x659
+ 895 0245 0A       		.uleb128 0xa
+ 896 0246 C8000000 		.4byte	.LVL28
+ 897 024a 64060000 		.4byte	0x664
+ 898 024e 0A       		.uleb128 0xa
+ 899 024f D6000000 		.4byte	.LVL29
+ 900 0253 59060000 		.4byte	0x659
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 20
+
+
+ 901 0257 0A       		.uleb128 0xa
+ 902 0258 DC000000 		.4byte	.LVL30
+ 903 025c 6F060000 		.4byte	0x66f
+ 904 0260 0A       		.uleb128 0xa
+ 905 0261 EE000000 		.4byte	.LVL31
+ 906 0265 7A060000 		.4byte	0x67a
+ 907 0269 0A       		.uleb128 0xa
+ 908 026a F4000000 		.4byte	.LVL32
+ 909 026e 85060000 		.4byte	0x685
+ 910 0272 0A       		.uleb128 0xa
+ 911 0273 02010000 		.4byte	.LVL33
+ 912 0277 7A060000 		.4byte	0x67a
+ 913 027b 0A       		.uleb128 0xa
+ 914 027c 08010000 		.4byte	.LVL34
+ 915 0280 90060000 		.4byte	0x690
+ 916 0284 0A       		.uleb128 0xa
+ 917 0285 1A010000 		.4byte	.LVL35
+ 918 0289 9B060000 		.4byte	0x69b
+ 919 028d 0A       		.uleb128 0xa
+ 920 028e 20010000 		.4byte	.LVL36
+ 921 0292 A6060000 		.4byte	0x6a6
+ 922 0296 0A       		.uleb128 0xa
+ 923 0297 2E010000 		.4byte	.LVL37
+ 924 029b 9B060000 		.4byte	0x69b
+ 925 029f 0A       		.uleb128 0xa
+ 926 02a0 34010000 		.4byte	.LVL38
+ 927 02a4 B1060000 		.4byte	0x6b1
+ 928 02a8 0B       		.uleb128 0xb
+ 929 02a9 42010000 		.4byte	.LVL39
+ 930 02ad BC060000 		.4byte	0x6bc
+ 931 02b1 BB020000 		.4byte	0x2bb
+ 932 02b5 0C       		.uleb128 0xc
+ 933 02b6 01       		.uleb128 0x1
+ 934 02b7 50       		.byte	0x50
+ 935 02b8 01       		.uleb128 0x1
+ 936 02b9 31       		.byte	0x31
+ 937 02ba 00       		.byte	0
+ 938 02bb 0B       		.uleb128 0xb
+ 939 02bc 48010000 		.4byte	.LVL40
+ 940 02c0 C7060000 		.4byte	0x6c7
+ 941 02c4 CE020000 		.4byte	0x2ce
+ 942 02c8 0C       		.uleb128 0xc
+ 943 02c9 01       		.uleb128 0x1
+ 944 02ca 50       		.byte	0x50
+ 945 02cb 01       		.uleb128 0x1
+ 946 02cc 3C       		.byte	0x3c
+ 947 02cd 00       		.byte	0
+ 948 02ce 0B       		.uleb128 0xb
+ 949 02cf 4E010000 		.4byte	.LVL41
+ 950 02d3 D2060000 		.4byte	0x6d2
+ 951 02d7 E1020000 		.4byte	0x2e1
+ 952 02db 0C       		.uleb128 0xc
+ 953 02dc 01       		.uleb128 0x1
+ 954 02dd 50       		.byte	0x50
+ 955 02de 01       		.uleb128 0x1
+ 956 02df 31       		.byte	0x31
+ 957 02e0 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 21
+
+
+ 958 02e1 0B       		.uleb128 0xb
+ 959 02e2 54010000 		.4byte	.LVL42
+ 960 02e6 DD060000 		.4byte	0x6dd
+ 961 02ea F4020000 		.4byte	0x2f4
+ 962 02ee 0C       		.uleb128 0xc
+ 963 02ef 01       		.uleb128 0x1
+ 964 02f0 50       		.byte	0x50
+ 965 02f1 01       		.uleb128 0x1
+ 966 02f2 3C       		.byte	0x3c
+ 967 02f3 00       		.byte	0
+ 968 02f4 0B       		.uleb128 0xb
+ 969 02f5 5A010000 		.4byte	.LVL43
+ 970 02f9 E8060000 		.4byte	0x6e8
+ 971 02fd 07030000 		.4byte	0x307
+ 972 0301 0C       		.uleb128 0xc
+ 973 0302 01       		.uleb128 0x1
+ 974 0303 50       		.byte	0x50
+ 975 0304 01       		.uleb128 0x1
+ 976 0305 31       		.byte	0x31
+ 977 0306 00       		.byte	0
+ 978 0307 0B       		.uleb128 0xb
+ 979 0308 60010000 		.4byte	.LVL44
+ 980 030c F3060000 		.4byte	0x6f3
+ 981 0310 1A030000 		.4byte	0x31a
+ 982 0314 0C       		.uleb128 0xc
+ 983 0315 01       		.uleb128 0x1
+ 984 0316 50       		.byte	0x50
+ 985 0317 01       		.uleb128 0x1
+ 986 0318 3C       		.byte	0x3c
+ 987 0319 00       		.byte	0
+ 988 031a 0B       		.uleb128 0xb
+ 989 031b 66010000 		.4byte	.LVL45
+ 990 031f FE060000 		.4byte	0x6fe
+ 991 0323 2D030000 		.4byte	0x32d
+ 992 0327 0C       		.uleb128 0xc
+ 993 0328 01       		.uleb128 0x1
+ 994 0329 50       		.byte	0x50
+ 995 032a 01       		.uleb128 0x1
+ 996 032b 31       		.byte	0x31
+ 997 032c 00       		.byte	0
+ 998 032d 0B       		.uleb128 0xb
+ 999 032e 6C010000 		.4byte	.LVL46
+ 1000 0332 09070000 		.4byte	0x709
+ 1001 0336 40030000 		.4byte	0x340
+ 1002 033a 0C       		.uleb128 0xc
+ 1003 033b 01       		.uleb128 0x1
+ 1004 033c 50       		.byte	0x50
+ 1005 033d 01       		.uleb128 0x1
+ 1006 033e 3C       		.byte	0x3c
+ 1007 033f 00       		.byte	0
+ 1008 0340 0B       		.uleb128 0xb
+ 1009 0341 72010000 		.4byte	.LVL47
+ 1010 0345 14070000 		.4byte	0x714
+ 1011 0349 53030000 		.4byte	0x353
+ 1012 034d 0C       		.uleb128 0xc
+ 1013 034e 01       		.uleb128 0x1
+ 1014 034f 50       		.byte	0x50
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 22
+
+
+ 1015 0350 01       		.uleb128 0x1
+ 1016 0351 31       		.byte	0x31
+ 1017 0352 00       		.byte	0
+ 1018 0353 0B       		.uleb128 0xb
+ 1019 0354 78010000 		.4byte	.LVL48
+ 1020 0358 1F070000 		.4byte	0x71f
+ 1021 035c 66030000 		.4byte	0x366
+ 1022 0360 0C       		.uleb128 0xc
+ 1023 0361 01       		.uleb128 0x1
+ 1024 0362 50       		.byte	0x50
+ 1025 0363 01       		.uleb128 0x1
+ 1026 0364 3C       		.byte	0x3c
+ 1027 0365 00       		.byte	0
+ 1028 0366 0B       		.uleb128 0xb
+ 1029 0367 7E010000 		.4byte	.LVL49
+ 1030 036b 2A070000 		.4byte	0x72a
+ 1031 036f 79030000 		.4byte	0x379
+ 1032 0373 0C       		.uleb128 0xc
+ 1033 0374 01       		.uleb128 0x1
+ 1034 0375 50       		.byte	0x50
+ 1035 0376 01       		.uleb128 0x1
+ 1036 0377 31       		.byte	0x31
+ 1037 0378 00       		.byte	0
+ 1038 0379 0B       		.uleb128 0xb
+ 1039 037a 84010000 		.4byte	.LVL50
+ 1040 037e 35070000 		.4byte	0x735
+ 1041 0382 8C030000 		.4byte	0x38c
+ 1042 0386 0C       		.uleb128 0xc
+ 1043 0387 01       		.uleb128 0x1
+ 1044 0388 50       		.byte	0x50
+ 1045 0389 01       		.uleb128 0x1
+ 1046 038a 3C       		.byte	0x3c
+ 1047 038b 00       		.byte	0
+ 1048 038c 0B       		.uleb128 0xb
+ 1049 038d 8A010000 		.4byte	.LVL51
+ 1050 0391 40070000 		.4byte	0x740
+ 1051 0395 9F030000 		.4byte	0x39f
+ 1052 0399 0C       		.uleb128 0xc
+ 1053 039a 01       		.uleb128 0x1
+ 1054 039b 50       		.byte	0x50
+ 1055 039c 01       		.uleb128 0x1
+ 1056 039d 31       		.byte	0x31
+ 1057 039e 00       		.byte	0
+ 1058 039f 0B       		.uleb128 0xb
+ 1059 03a0 90010000 		.4byte	.LVL52
+ 1060 03a4 BC060000 		.4byte	0x6bc
+ 1061 03a8 B2030000 		.4byte	0x3b2
+ 1062 03ac 0C       		.uleb128 0xc
+ 1063 03ad 01       		.uleb128 0x1
+ 1064 03ae 50       		.byte	0x50
+ 1065 03af 01       		.uleb128 0x1
+ 1066 03b0 30       		.byte	0x30
+ 1067 03b1 00       		.byte	0
+ 1068 03b2 0B       		.uleb128 0xb
+ 1069 03b3 96010000 		.4byte	.LVL53
+ 1070 03b7 4B070000 		.4byte	0x74b
+ 1071 03bb C5030000 		.4byte	0x3c5
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 23
+
+
+ 1072 03bf 0C       		.uleb128 0xc
+ 1073 03c0 01       		.uleb128 0x1
+ 1074 03c1 50       		.byte	0x50
+ 1075 03c2 01       		.uleb128 0x1
+ 1076 03c3 3A       		.byte	0x3a
+ 1077 03c4 00       		.byte	0
+ 1078 03c5 0B       		.uleb128 0xb
+ 1079 03c6 9C010000 		.4byte	.LVL54
+ 1080 03ca C7060000 		.4byte	0x6c7
+ 1081 03ce D8030000 		.4byte	0x3d8
+ 1082 03d2 0C       		.uleb128 0xc
+ 1083 03d3 01       		.uleb128 0x1
+ 1084 03d4 50       		.byte	0x50
+ 1085 03d5 01       		.uleb128 0x1
+ 1086 03d6 32       		.byte	0x32
+ 1087 03d7 00       		.byte	0
+ 1088 03d8 0B       		.uleb128 0xb
+ 1089 03d9 A2010000 		.4byte	.LVL55
+ 1090 03dd DD060000 		.4byte	0x6dd
+ 1091 03e1 EB030000 		.4byte	0x3eb
+ 1092 03e5 0C       		.uleb128 0xc
+ 1093 03e6 01       		.uleb128 0x1
+ 1094 03e7 50       		.byte	0x50
+ 1095 03e8 01       		.uleb128 0x1
+ 1096 03e9 32       		.byte	0x32
+ 1097 03ea 00       		.byte	0
+ 1098 03eb 0B       		.uleb128 0xb
+ 1099 03ec A8010000 		.4byte	.LVL56
+ 1100 03f0 F3060000 		.4byte	0x6f3
+ 1101 03f4 FE030000 		.4byte	0x3fe
+ 1102 03f8 0C       		.uleb128 0xc
+ 1103 03f9 01       		.uleb128 0x1
+ 1104 03fa 50       		.byte	0x50
+ 1105 03fb 01       		.uleb128 0x1
+ 1106 03fc 32       		.byte	0x32
+ 1107 03fd 00       		.byte	0
+ 1108 03fe 0B       		.uleb128 0xb
+ 1109 03ff AE010000 		.4byte	.LVL57
+ 1110 0403 09070000 		.4byte	0x709
+ 1111 0407 11040000 		.4byte	0x411
+ 1112 040b 0C       		.uleb128 0xc
+ 1113 040c 01       		.uleb128 0x1
+ 1114 040d 50       		.byte	0x50
+ 1115 040e 01       		.uleb128 0x1
+ 1116 040f 32       		.byte	0x32
+ 1117 0410 00       		.byte	0
+ 1118 0411 0B       		.uleb128 0xb
+ 1119 0412 B4010000 		.4byte	.LVL58
+ 1120 0416 1F070000 		.4byte	0x71f
+ 1121 041a 24040000 		.4byte	0x424
+ 1122 041e 0C       		.uleb128 0xc
+ 1123 041f 01       		.uleb128 0x1
+ 1124 0420 50       		.byte	0x50
+ 1125 0421 01       		.uleb128 0x1
+ 1126 0422 32       		.byte	0x32
+ 1127 0423 00       		.byte	0
+ 1128 0424 0D       		.uleb128 0xd
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 24
+
+
+ 1129 0425 BA010000 		.4byte	.LVL59
+ 1130 0429 35070000 		.4byte	0x735
+ 1131 042d 0C       		.uleb128 0xc
+ 1132 042e 01       		.uleb128 0x1
+ 1133 042f 50       		.byte	0x50
+ 1134 0430 01       		.uleb128 0x1
+ 1135 0431 32       		.byte	0x32
+ 1136 0432 00       		.byte	0
+ 1137 0433 00       		.byte	0
+ 1138 0434 08       		.uleb128 0x8
+ 1139 0435 31010000 		.4byte	.LASF28
+ 1140 0439 01       		.byte	0x1
+ 1141 043a 6B       		.byte	0x6b
+ 1142 043b 00000000 		.4byte	.LFB65
+ 1143 043f 30000000 		.4byte	.LFE65-.LFB65
+ 1144 0443 01       		.uleb128 0x1
+ 1145 0444 9C       		.byte	0x9c
+ 1146 0445 9C040000 		.4byte	0x49c
+ 1147 0449 0B       		.uleb128 0xb
+ 1148 044a 08000000 		.4byte	.LVL60
+ 1149 044e 56070000 		.4byte	0x756
+ 1150 0452 5C040000 		.4byte	0x45c
+ 1151 0456 0C       		.uleb128 0xc
+ 1152 0457 01       		.uleb128 0x1
+ 1153 0458 50       		.byte	0x50
+ 1154 0459 01       		.uleb128 0x1
+ 1155 045a 31       		.byte	0x31
+ 1156 045b 00       		.byte	0
+ 1157 045c 0A       		.uleb128 0xa
+ 1158 045d 0C000000 		.4byte	.LVL61
+ 1159 0461 61070000 		.4byte	0x761
+ 1160 0465 0A       		.uleb128 0xa
+ 1161 0466 10000000 		.4byte	.LVL62
+ 1162 046a 6C070000 		.4byte	0x76c
+ 1163 046e 0A       		.uleb128 0xa
+ 1164 046f 14000000 		.4byte	.LVL63
+ 1165 0473 77070000 		.4byte	0x777
+ 1166 0477 0A       		.uleb128 0xa
+ 1167 0478 18000000 		.4byte	.LVL64
+ 1168 047c 82070000 		.4byte	0x782
+ 1169 0480 0A       		.uleb128 0xa
+ 1170 0481 1C000000 		.4byte	.LVL65
+ 1171 0485 8D070000 		.4byte	0x78d
+ 1172 0489 0A       		.uleb128 0xa
+ 1173 048a 20000000 		.4byte	.LVL66
+ 1174 048e 98070000 		.4byte	0x798
+ 1175 0492 0A       		.uleb128 0xa
+ 1176 0493 2A000000 		.4byte	.LVL67
+ 1177 0497 A3070000 		.4byte	0x7a3
+ 1178 049b 00       		.byte	0
+ 1179 049c 08       		.uleb128 0x8
+ 1180 049d D3050000 		.4byte	.LASF29
+ 1181 04a1 01       		.byte	0x1
+ 1182 04a2 7E       		.byte	0x7e
+ 1183 04a3 00000000 		.4byte	.LFB66
+ 1184 04a7 18000000 		.4byte	.LFE66-.LFB66
+ 1185 04ab 01       		.uleb128 0x1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 25
+
+
+ 1186 04ac 9C       		.byte	0x9c
+ 1187 04ad C1040000 		.4byte	0x4c1
+ 1188 04b1 0E       		.uleb128 0xe
+ 1189 04b2 E1010000 		.4byte	.LASF31
+ 1190 04b6 01       		.byte	0x1
+ 1191 04b7 7E       		.byte	0x7e
+ 1192 04b8 C1040000 		.4byte	0x4c1
+ 1193 04bc A0000000 		.4byte	.LLST6
+ 1194 04c0 00       		.byte	0
+ 1195 04c1 0F       		.uleb128 0xf
+ 1196 04c2 04       		.byte	0x4
+ 1197 04c3 DC000000 		.4byte	0xdc
+ 1198 04c7 08       		.uleb128 0x8
+ 1199 04c8 A1010000 		.4byte	.LASF30
+ 1200 04cc 01       		.byte	0x1
+ 1201 04cd 88       		.byte	0x88
+ 1202 04ce 00000000 		.4byte	.LFB67
+ 1203 04d2 9C000000 		.4byte	.LFE67-.LFB67
+ 1204 04d6 01       		.uleb128 0x1
+ 1205 04d7 9C       		.byte	0x9c
+ 1206 04d8 EA040000 		.4byte	0x4ea
+ 1207 04dc 10       		.uleb128 0x10
+ 1208 04dd 39040000 		.4byte	.LASF32
+ 1209 04e1 01       		.byte	0x1
+ 1210 04e2 88       		.byte	0x88
+ 1211 04e3 C1040000 		.4byte	0x4c1
+ 1212 04e7 01       		.uleb128 0x1
+ 1213 04e8 50       		.byte	0x50
+ 1214 04e9 00       		.byte	0
+ 1215 04ea 08       		.uleb128 0x8
+ 1216 04eb 73020000 		.4byte	.LASF33
+ 1217 04ef 01       		.byte	0x1
+ 1218 04f0 AB       		.byte	0xab
+ 1219 04f1 00000000 		.4byte	.LFB68
+ 1220 04f5 20000000 		.4byte	.LFE68-.LFB68
+ 1221 04f9 01       		.uleb128 0x1
+ 1222 04fa 9C       		.byte	0x9c
+ 1223 04fb 4E050000 		.4byte	0x54e
+ 1224 04ff 11       		.uleb128 0x11
+ 1225 0500 6C3300   		.ascii	"l3\000"
+ 1226 0503 01       		.byte	0x1
+ 1227 0504 AB       		.byte	0xab
+ 1228 0505 A1000000 		.4byte	0xa1
+ 1229 0509 01       		.uleb128 0x1
+ 1230 050a 50       		.byte	0x50
+ 1231 050b 11       		.uleb128 0x11
+ 1232 050c 6C3200   		.ascii	"l2\000"
+ 1233 050f 01       		.byte	0x1
+ 1234 0510 AB       		.byte	0xab
+ 1235 0511 A1000000 		.4byte	0xa1
+ 1236 0515 01       		.uleb128 0x1
+ 1237 0516 51       		.byte	0x51
+ 1238 0517 12       		.uleb128 0x12
+ 1239 0518 6C3100   		.ascii	"l1\000"
+ 1240 051b 01       		.byte	0x1
+ 1241 051c AB       		.byte	0xab
+ 1242 051d A1000000 		.4byte	0xa1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 26
+
+
+ 1243 0521 CC000000 		.4byte	.LLST7
+ 1244 0525 11       		.uleb128 0x11
+ 1245 0526 723100   		.ascii	"r1\000"
+ 1246 0529 01       		.byte	0x1
+ 1247 052a AB       		.byte	0xab
+ 1248 052b A1000000 		.4byte	0xa1
+ 1249 052f 01       		.uleb128 0x1
+ 1250 0530 53       		.byte	0x53
+ 1251 0531 12       		.uleb128 0x12
+ 1252 0532 723200   		.ascii	"r2\000"
+ 1253 0535 01       		.byte	0x1
+ 1254 0536 AB       		.byte	0xab
+ 1255 0537 A1000000 		.4byte	0xa1
+ 1256 053b EE000000 		.4byte	.LLST8
+ 1257 053f 12       		.uleb128 0x12
+ 1258 0540 723300   		.ascii	"r3\000"
+ 1259 0543 01       		.byte	0x1
+ 1260 0544 AB       		.byte	0xab
+ 1261 0545 A1000000 		.4byte	0xa1
+ 1262 0549 0E010000 		.4byte	.LLST9
+ 1263 054d 00       		.byte	0
+ 1264 054e 13       		.uleb128 0x13
+ 1265 054f 81000000 		.4byte	.LASF34
+ 1266 0553 01       		.byte	0x1
+ 1267 0554 0D       		.byte	0xd
+ 1268 0555 5F050000 		.4byte	0x55f
+ 1269 0559 05       		.uleb128 0x5
+ 1270 055a 03       		.byte	0x3
+ 1271 055b 04000000 		.4byte	sensors
+ 1272 055f 14       		.uleb128 0x14
+ 1273 0560 DC000000 		.4byte	0xdc
+ 1274 0564 13       		.uleb128 0x13
+ 1275 0565 54030000 		.4byte	.LASF35
+ 1276 0569 01       		.byte	0x1
+ 1277 056a 0E       		.byte	0xe
+ 1278 056b 5F050000 		.4byte	0x55f
+ 1279 056f 05       		.uleb128 0x5
+ 1280 0570 03       		.byte	0x3
+ 1281 0571 10000000 		.4byte	digital_sensor_value
+ 1282 0575 13       		.uleb128 0x13
+ 1283 0576 B5010000 		.4byte	.LASF36
+ 1284 057a 01       		.byte	0x1
+ 1285 057b 0F       		.byte	0xf
+ 1286 057c DC000000 		.4byte	0xdc
+ 1287 0580 05       		.uleb128 0x5
+ 1288 0581 03       		.byte	0x3
+ 1289 0582 00000000 		.4byte	threshold
+ 1290 0586 13       		.uleb128 0x13
+ 1291 0587 52010000 		.4byte	.LASF37
+ 1292 058b 01       		.byte	0x1
+ 1293 058c 10       		.byte	0x10
+ 1294 058d 9E050000 		.4byte	0x59e
+ 1295 0591 05       		.uleb128 0x5
+ 1296 0592 03       		.byte	0x3
+ 1297 0593 00000000 		.4byte	refl_init
+ 1298 0597 02       		.uleb128 0x2
+ 1299 0598 01       		.byte	0x1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 27
+
+
+ 1300 0599 02       		.byte	0x2
+ 1301 059a 92030000 		.4byte	.LASF38
+ 1302 059e 14       		.uleb128 0x14
+ 1303 059f 97050000 		.4byte	0x597
+ 1304 05a3 15       		.uleb128 0x15
+ 1305 05a4 E5040000 		.4byte	.LASF89
+ 1306 05a8 16       		.byte	0x16
+ 1307 05a9 1207     		.2byte	0x712
+ 1308 05ab AF050000 		.4byte	0x5af
+ 1309 05af 14       		.uleb128 0x14
+ 1310 05b0 AC000000 		.4byte	0xac
+ 1311 05b4 16       		.uleb128 0x16
+ 1312 05b5 70010000 		.4byte	.LASF39
+ 1313 05b9 70010000 		.4byte	.LASF39
+ 1314 05bd 06       		.byte	0x6
+ 1315 05be 5E       		.byte	0x5e
+ 1316 05bf 16       		.uleb128 0x16
+ 1317 05c0 E4000000 		.4byte	.LASF40
+ 1318 05c4 E4000000 		.4byte	.LASF40
+ 1319 05c8 07       		.byte	0x7
+ 1320 05c9 5E       		.byte	0x5e
+ 1321 05ca 16       		.uleb128 0x16
+ 1322 05cb 00010000 		.4byte	.LASF41
+ 1323 05cf 00010000 		.4byte	.LASF41
+ 1324 05d3 08       		.byte	0x8
+ 1325 05d4 5E       		.byte	0x5e
+ 1326 05d5 16       		.uleb128 0x16
+ 1327 05d6 80050000 		.4byte	.LASF42
+ 1328 05da 80050000 		.4byte	.LASF42
+ 1329 05de 09       		.byte	0x9
+ 1330 05df 5E       		.byte	0x5e
+ 1331 05e0 16       		.uleb128 0x16
+ 1332 05e1 23030000 		.4byte	.LASF43
+ 1333 05e5 23030000 		.4byte	.LASF43
+ 1334 05e9 0A       		.byte	0xa
+ 1335 05ea 5E       		.byte	0x5e
+ 1336 05eb 16       		.uleb128 0x16
+ 1337 05ec 34000000 		.4byte	.LASF44
+ 1338 05f0 34000000 		.4byte	.LASF44
+ 1339 05f4 0B       		.byte	0xb
+ 1340 05f5 5E       		.byte	0x5e
+ 1341 05f6 16       		.uleb128 0x16
+ 1342 05f7 41040000 		.4byte	.LASF45
+ 1343 05fb 41040000 		.4byte	.LASF45
+ 1344 05ff 06       		.byte	0x6
+ 1345 0600 67       		.byte	0x67
+ 1346 0601 16       		.uleb128 0x16
+ 1347 0602 1C010000 		.4byte	.LASF46
+ 1348 0606 1C010000 		.4byte	.LASF46
+ 1349 060a 06       		.byte	0x6
+ 1350 060b 6B       		.byte	0x6b
+ 1351 060c 16       		.uleb128 0x16
+ 1352 060d 1F000000 		.4byte	.LASF47
+ 1353 0611 1F000000 		.4byte	.LASF47
+ 1354 0615 06       		.byte	0x6
+ 1355 0616 69       		.byte	0x69
+ 1356 0617 16       		.uleb128 0x16
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 28
+
+
+ 1357 0618 AD030000 		.4byte	.LASF48
+ 1358 061c AD030000 		.4byte	.LASF48
+ 1359 0620 0B       		.byte	0xb
+ 1360 0621 67       		.byte	0x67
+ 1361 0622 16       		.uleb128 0x16
+ 1362 0623 3F030000 		.4byte	.LASF49
+ 1363 0627 3F030000 		.4byte	.LASF49
+ 1364 062b 0B       		.byte	0xb
+ 1365 062c 6B       		.byte	0x6b
+ 1366 062d 16       		.uleb128 0x16
+ 1367 062e 13020000 		.4byte	.LASF50
+ 1368 0632 13020000 		.4byte	.LASF50
+ 1369 0636 0B       		.byte	0xb
+ 1370 0637 69       		.byte	0x69
+ 1371 0638 16       		.uleb128 0x16
+ 1372 0639 5C010000 		.4byte	.LASF51
+ 1373 063d 5C010000 		.4byte	.LASF51
+ 1374 0641 07       		.byte	0x7
+ 1375 0642 67       		.byte	0x67
+ 1376 0643 16       		.uleb128 0x16
+ 1377 0644 C8020000 		.4byte	.LASF52
+ 1378 0648 C8020000 		.4byte	.LASF52
+ 1379 064c 07       		.byte	0x7
+ 1380 064d 6B       		.byte	0x6b
+ 1381 064e 16       		.uleb128 0x16
+ 1382 064f 8C010000 		.4byte	.LASF53
+ 1383 0653 8C010000 		.4byte	.LASF53
+ 1384 0657 07       		.byte	0x7
+ 1385 0658 69       		.byte	0x69
+ 1386 0659 16       		.uleb128 0x16
+ 1387 065a D9030000 		.4byte	.LASF54
+ 1388 065e D9030000 		.4byte	.LASF54
+ 1389 0662 0A       		.byte	0xa
+ 1390 0663 67       		.byte	0x67
+ 1391 0664 16       		.uleb128 0x16
+ 1392 0665 D0040000 		.4byte	.LASF55
+ 1393 0669 D0040000 		.4byte	.LASF55
+ 1394 066d 0A       		.byte	0xa
+ 1395 066e 6B       		.byte	0x6b
+ 1396 066f 16       		.uleb128 0x16
+ 1397 0670 BD000000 		.4byte	.LASF56
+ 1398 0674 BD000000 		.4byte	.LASF56
+ 1399 0678 0A       		.byte	0xa
+ 1400 0679 69       		.byte	0x69
+ 1401 067a 16       		.uleb128 0x16
+ 1402 067b C4010000 		.4byte	.LASF57
+ 1403 067f C4010000 		.4byte	.LASF57
+ 1404 0683 08       		.byte	0x8
+ 1405 0684 67       		.byte	0x67
+ 1406 0685 16       		.uleb128 0x16
+ 1407 0686 55040000 		.4byte	.LASF58
+ 1408 068a 55040000 		.4byte	.LASF58
+ 1409 068e 08       		.byte	0x8
+ 1410 068f 6B       		.byte	0x6b
+ 1411 0690 16       		.uleb128 0x16
+ 1412 0691 6C000000 		.4byte	.LASF59
+ 1413 0695 6C000000 		.4byte	.LASF59
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 29
+
+
+ 1414 0699 08       		.byte	0x8
+ 1415 069a 69       		.byte	0x69
+ 1416 069b 16       		.uleb128 0x16
+ 1417 069c 1C040000 		.4byte	.LASF60
+ 1418 06a0 1C040000 		.4byte	.LASF60
+ 1419 06a4 09       		.byte	0x9
+ 1420 06a5 67       		.byte	0x67
+ 1421 06a6 16       		.uleb128 0x16
+ 1422 06a7 98030000 		.4byte	.LASF61
+ 1423 06ab 98030000 		.4byte	.LASF61
+ 1424 06af 09       		.byte	0x9
+ 1425 06b0 6B       		.byte	0x6b
+ 1426 06b1 16       		.uleb128 0x16
+ 1427 06b2 4E020000 		.4byte	.LASF62
+ 1428 06b6 4E020000 		.4byte	.LASF62
+ 1429 06ba 09       		.byte	0x9
+ 1430 06bb 69       		.byte	0x69
+ 1431 06bc 16       		.uleb128 0x16
+ 1432 06bd FC020000 		.4byte	.LASF63
+ 1433 06c1 FC020000 		.4byte	.LASF63
+ 1434 06c5 0C       		.byte	0xc
+ 1435 06c6 2F       		.byte	0x2f
+ 1436 06c7 16       		.uleb128 0x16
+ 1437 06c8 63020000 		.4byte	.LASF64
+ 1438 06cc 63020000 		.4byte	.LASF64
+ 1439 06d0 0D       		.byte	0xd
+ 1440 06d1 27       		.byte	0x27
+ 1441 06d2 16       		.uleb128 0x16
+ 1442 06d3 F3020000 		.4byte	.LASF65
+ 1443 06d7 F3020000 		.4byte	.LASF65
+ 1444 06db 0D       		.byte	0xd
+ 1445 06dc 26       		.byte	0x26
+ 1446 06dd 16       		.uleb128 0x16
+ 1447 06de B0040000 		.4byte	.LASF66
+ 1448 06e2 B0040000 		.4byte	.LASF66
+ 1449 06e6 0E       		.byte	0xe
+ 1450 06e7 27       		.byte	0x27
+ 1451 06e8 16       		.uleb128 0x16
+ 1452 06e9 5A000000 		.4byte	.LASF67
+ 1453 06ed 5A000000 		.4byte	.LASF67
+ 1454 06f1 0E       		.byte	0xe
+ 1455 06f2 26       		.byte	0x26
+ 1456 06f3 16       		.uleb128 0x16
+ 1457 06f4 C3050000 		.4byte	.LASF68
+ 1458 06f8 C3050000 		.4byte	.LASF68
+ 1459 06fc 0F       		.byte	0xf
+ 1460 06fd 27       		.byte	0x27
+ 1461 06fe 16       		.uleb128 0x16
+ 1462 06ff 69030000 		.4byte	.LASF69
+ 1463 0703 69030000 		.4byte	.LASF69
+ 1464 0707 0F       		.byte	0xf
+ 1465 0708 26       		.byte	0x26
+ 1466 0709 16       		.uleb128 0x16
+ 1467 070a A2000000 		.4byte	.LASF70
+ 1468 070e A2000000 		.4byte	.LASF70
+ 1469 0712 10       		.byte	0x10
+ 1470 0713 27       		.byte	0x27
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 30
+
+
+ 1471 0714 16       		.uleb128 0x16
+ 1472 0715 ED030000 		.4byte	.LASF71
+ 1473 0719 ED030000 		.4byte	.LASF71
+ 1474 071d 10       		.byte	0x10
+ 1475 071e 26       		.byte	0x26
+ 1476 071f 16       		.uleb128 0x16
+ 1477 0720 C0040000 		.4byte	.LASF72
+ 1478 0724 C0040000 		.4byte	.LASF72
+ 1479 0728 11       		.byte	0x11
+ 1480 0729 27       		.byte	0x27
+ 1481 072a 16       		.uleb128 0x16
+ 1482 072b 43010000 		.4byte	.LASF73
+ 1483 072f 43010000 		.4byte	.LASF73
+ 1484 0733 11       		.byte	0x11
+ 1485 0734 26       		.byte	0x26
+ 1486 0735 16       		.uleb128 0x16
+ 1487 0736 28020000 		.4byte	.LASF74
+ 1488 073a 28020000 		.4byte	.LASF74
+ 1489 073e 12       		.byte	0x12
+ 1490 073f 27       		.byte	0x27
+ 1491 0740 16       		.uleb128 0x16
+ 1492 0741 02060000 		.4byte	.LASF75
+ 1493 0745 02060000 		.4byte	.LASF75
+ 1494 0749 12       		.byte	0x12
+ 1495 074a 26       		.byte	0x26
+ 1496 074b 16       		.uleb128 0x16
+ 1497 074c 44020000 		.4byte	.LASF76
+ 1498 0750 44020000 		.4byte	.LASF76
+ 1499 0754 13       		.byte	0x13
+ 1500 0755 77       		.byte	0x77
+ 1501 0756 16       		.uleb128 0x16
+ 1502 0757 9C050000 		.4byte	.LASF77
+ 1503 075b 9C050000 		.4byte	.LASF77
+ 1504 075f 14       		.byte	0x14
+ 1505 0760 26       		.byte	0x26
+ 1506 0761 16       		.uleb128 0x16
+ 1507 0762 F3050000 		.4byte	.LASF78
+ 1508 0766 F3050000 		.4byte	.LASF78
+ 1509 076a 06       		.byte	0x6
+ 1510 076b 5A       		.byte	0x5a
+ 1511 076c 16       		.uleb128 0x16
+ 1512 076d B0020000 		.4byte	.LASF79
+ 1513 0771 B0020000 		.4byte	.LASF79
+ 1514 0775 07       		.byte	0x7
+ 1515 0776 5A       		.byte	0x5a
+ 1516 0777 16       		.uleb128 0x16
+ 1517 0778 10000000 		.4byte	.LASF80
+ 1518 077c 10000000 		.4byte	.LASF80
+ 1519 0780 08       		.byte	0x8
+ 1520 0781 5A       		.byte	0x5a
+ 1521 0782 16       		.uleb128 0x16
+ 1522 0783 C1030000 		.4byte	.LASF81
+ 1523 0787 C1030000 		.4byte	.LASF81
+ 1524 078b 09       		.byte	0x9
+ 1525 078c 5A       		.byte	0x5a
+ 1526 078d 16       		.uleb128 0x16
+ 1527 078e E4050000 		.4byte	.LASF82
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 31
+
+
+ 1528 0792 E4050000 		.4byte	.LASF82
+ 1529 0796 0A       		.byte	0xa
+ 1530 0797 5A       		.byte	0x5a
+ 1531 0798 16       		.uleb128 0x16
+ 1532 0799 E8010000 		.4byte	.LASF83
+ 1533 079d E8010000 		.4byte	.LASF83
+ 1534 07a1 0B       		.byte	0xb
+ 1535 07a2 5A       		.byte	0x5a
+ 1536 07a3 16       		.uleb128 0x16
+ 1537 07a4 F7010000 		.4byte	.LASF84
+ 1538 07a8 F7010000 		.4byte	.LASF84
+ 1539 07ac 15       		.byte	0x15
+ 1540 07ad 07       		.byte	0x7
+ 1541 07ae 00       		.byte	0
+ 1542              		.section	.debug_abbrev,"",%progbits
+ 1543              	.Ldebug_abbrev0:
+ 1544 0000 01       		.uleb128 0x1
+ 1545 0001 11       		.uleb128 0x11
+ 1546 0002 01       		.byte	0x1
+ 1547 0003 25       		.uleb128 0x25
+ 1548 0004 0E       		.uleb128 0xe
+ 1549 0005 13       		.uleb128 0x13
+ 1550 0006 0B       		.uleb128 0xb
+ 1551 0007 03       		.uleb128 0x3
+ 1552 0008 0E       		.uleb128 0xe
+ 1553 0009 1B       		.uleb128 0x1b
+ 1554 000a 0E       		.uleb128 0xe
+ 1555 000b 55       		.uleb128 0x55
+ 1556 000c 17       		.uleb128 0x17
+ 1557 000d 11       		.uleb128 0x11
+ 1558 000e 01       		.uleb128 0x1
+ 1559 000f 10       		.uleb128 0x10
+ 1560 0010 17       		.uleb128 0x17
+ 1561 0011 00       		.byte	0
+ 1562 0012 00       		.byte	0
+ 1563 0013 02       		.uleb128 0x2
+ 1564 0014 24       		.uleb128 0x24
+ 1565 0015 00       		.byte	0
+ 1566 0016 0B       		.uleb128 0xb
+ 1567 0017 0B       		.uleb128 0xb
+ 1568 0018 3E       		.uleb128 0x3e
+ 1569 0019 0B       		.uleb128 0xb
+ 1570 001a 03       		.uleb128 0x3
+ 1571 001b 0E       		.uleb128 0xe
+ 1572 001c 00       		.byte	0
+ 1573 001d 00       		.byte	0
+ 1574 001e 03       		.uleb128 0x3
+ 1575 001f 16       		.uleb128 0x16
+ 1576 0020 00       		.byte	0
+ 1577 0021 03       		.uleb128 0x3
+ 1578 0022 0E       		.uleb128 0xe
+ 1579 0023 3A       		.uleb128 0x3a
+ 1580 0024 0B       		.uleb128 0xb
+ 1581 0025 3B       		.uleb128 0x3b
+ 1582 0026 0B       		.uleb128 0xb
+ 1583 0027 49       		.uleb128 0x49
+ 1584 0028 13       		.uleb128 0x13
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 32
+
+
+ 1585 0029 00       		.byte	0
+ 1586 002a 00       		.byte	0
+ 1587 002b 04       		.uleb128 0x4
+ 1588 002c 24       		.uleb128 0x24
+ 1589 002d 00       		.byte	0
+ 1590 002e 0B       		.uleb128 0xb
+ 1591 002f 0B       		.uleb128 0xb
+ 1592 0030 3E       		.uleb128 0x3e
+ 1593 0031 0B       		.uleb128 0xb
+ 1594 0032 03       		.uleb128 0x3
+ 1595 0033 08       		.uleb128 0x8
+ 1596 0034 00       		.byte	0
+ 1597 0035 00       		.byte	0
+ 1598 0036 05       		.uleb128 0x5
+ 1599 0037 16       		.uleb128 0x16
+ 1600 0038 00       		.byte	0
+ 1601 0039 03       		.uleb128 0x3
+ 1602 003a 0E       		.uleb128 0xe
+ 1603 003b 3A       		.uleb128 0x3a
+ 1604 003c 0B       		.uleb128 0xb
+ 1605 003d 3B       		.uleb128 0x3b
+ 1606 003e 05       		.uleb128 0x5
+ 1607 003f 49       		.uleb128 0x49
+ 1608 0040 13       		.uleb128 0x13
+ 1609 0041 00       		.byte	0
+ 1610 0042 00       		.byte	0
+ 1611 0043 06       		.uleb128 0x6
+ 1612 0044 13       		.uleb128 0x13
+ 1613 0045 01       		.byte	0x1
+ 1614 0046 03       		.uleb128 0x3
+ 1615 0047 0E       		.uleb128 0xe
+ 1616 0048 0B       		.uleb128 0xb
+ 1617 0049 0B       		.uleb128 0xb
+ 1618 004a 3A       		.uleb128 0x3a
+ 1619 004b 0B       		.uleb128 0xb
+ 1620 004c 3B       		.uleb128 0x3b
+ 1621 004d 0B       		.uleb128 0xb
+ 1622 004e 01       		.uleb128 0x1
+ 1623 004f 13       		.uleb128 0x13
+ 1624 0050 00       		.byte	0
+ 1625 0051 00       		.byte	0
+ 1626 0052 07       		.uleb128 0x7
+ 1627 0053 0D       		.uleb128 0xd
+ 1628 0054 00       		.byte	0
+ 1629 0055 03       		.uleb128 0x3
+ 1630 0056 08       		.uleb128 0x8
+ 1631 0057 3A       		.uleb128 0x3a
+ 1632 0058 0B       		.uleb128 0xb
+ 1633 0059 3B       		.uleb128 0x3b
+ 1634 005a 0B       		.uleb128 0xb
+ 1635 005b 49       		.uleb128 0x49
+ 1636 005c 13       		.uleb128 0x13
+ 1637 005d 38       		.uleb128 0x38
+ 1638 005e 0B       		.uleb128 0xb
+ 1639 005f 00       		.byte	0
+ 1640 0060 00       		.byte	0
+ 1641 0061 08       		.uleb128 0x8
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 33
+
+
+ 1642 0062 2E       		.uleb128 0x2e
+ 1643 0063 01       		.byte	0x1
+ 1644 0064 3F       		.uleb128 0x3f
+ 1645 0065 19       		.uleb128 0x19
+ 1646 0066 03       		.uleb128 0x3
+ 1647 0067 0E       		.uleb128 0xe
+ 1648 0068 3A       		.uleb128 0x3a
+ 1649 0069 0B       		.uleb128 0xb
+ 1650 006a 3B       		.uleb128 0x3b
+ 1651 006b 0B       		.uleb128 0xb
+ 1652 006c 27       		.uleb128 0x27
+ 1653 006d 19       		.uleb128 0x19
+ 1654 006e 11       		.uleb128 0x11
+ 1655 006f 01       		.uleb128 0x1
+ 1656 0070 12       		.uleb128 0x12
+ 1657 0071 06       		.uleb128 0x6
+ 1658 0072 40       		.uleb128 0x40
+ 1659 0073 18       		.uleb128 0x18
+ 1660 0074 9742     		.uleb128 0x2117
+ 1661 0076 19       		.uleb128 0x19
+ 1662 0077 01       		.uleb128 0x1
+ 1663 0078 13       		.uleb128 0x13
+ 1664 0079 00       		.byte	0
+ 1665 007a 00       		.byte	0
+ 1666 007b 09       		.uleb128 0x9
+ 1667 007c 34       		.uleb128 0x34
+ 1668 007d 00       		.byte	0
+ 1669 007e 03       		.uleb128 0x3
+ 1670 007f 0E       		.uleb128 0xe
+ 1671 0080 3A       		.uleb128 0x3a
+ 1672 0081 0B       		.uleb128 0xb
+ 1673 0082 3B       		.uleb128 0x3b
+ 1674 0083 0B       		.uleb128 0xb
+ 1675 0084 49       		.uleb128 0x49
+ 1676 0085 13       		.uleb128 0x13
+ 1677 0086 02       		.uleb128 0x2
+ 1678 0087 17       		.uleb128 0x17
+ 1679 0088 00       		.byte	0
+ 1680 0089 00       		.byte	0
+ 1681 008a 0A       		.uleb128 0xa
+ 1682 008b 898201   		.uleb128 0x4109
+ 1683 008e 00       		.byte	0
+ 1684 008f 11       		.uleb128 0x11
+ 1685 0090 01       		.uleb128 0x1
+ 1686 0091 31       		.uleb128 0x31
+ 1687 0092 13       		.uleb128 0x13
+ 1688 0093 00       		.byte	0
+ 1689 0094 00       		.byte	0
+ 1690 0095 0B       		.uleb128 0xb
+ 1691 0096 898201   		.uleb128 0x4109
+ 1692 0099 01       		.byte	0x1
+ 1693 009a 11       		.uleb128 0x11
+ 1694 009b 01       		.uleb128 0x1
+ 1695 009c 31       		.uleb128 0x31
+ 1696 009d 13       		.uleb128 0x13
+ 1697 009e 01       		.uleb128 0x1
+ 1698 009f 13       		.uleb128 0x13
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 34
+
+
+ 1699 00a0 00       		.byte	0
+ 1700 00a1 00       		.byte	0
+ 1701 00a2 0C       		.uleb128 0xc
+ 1702 00a3 8A8201   		.uleb128 0x410a
+ 1703 00a6 00       		.byte	0
+ 1704 00a7 02       		.uleb128 0x2
+ 1705 00a8 18       		.uleb128 0x18
+ 1706 00a9 9142     		.uleb128 0x2111
+ 1707 00ab 18       		.uleb128 0x18
+ 1708 00ac 00       		.byte	0
+ 1709 00ad 00       		.byte	0
+ 1710 00ae 0D       		.uleb128 0xd
+ 1711 00af 898201   		.uleb128 0x4109
+ 1712 00b2 01       		.byte	0x1
+ 1713 00b3 11       		.uleb128 0x11
+ 1714 00b4 01       		.uleb128 0x1
+ 1715 00b5 31       		.uleb128 0x31
+ 1716 00b6 13       		.uleb128 0x13
+ 1717 00b7 00       		.byte	0
+ 1718 00b8 00       		.byte	0
+ 1719 00b9 0E       		.uleb128 0xe
+ 1720 00ba 05       		.uleb128 0x5
+ 1721 00bb 00       		.byte	0
+ 1722 00bc 03       		.uleb128 0x3
+ 1723 00bd 0E       		.uleb128 0xe
+ 1724 00be 3A       		.uleb128 0x3a
+ 1725 00bf 0B       		.uleb128 0xb
+ 1726 00c0 3B       		.uleb128 0x3b
+ 1727 00c1 0B       		.uleb128 0xb
+ 1728 00c2 49       		.uleb128 0x49
+ 1729 00c3 13       		.uleb128 0x13
+ 1730 00c4 02       		.uleb128 0x2
+ 1731 00c5 17       		.uleb128 0x17
+ 1732 00c6 00       		.byte	0
+ 1733 00c7 00       		.byte	0
+ 1734 00c8 0F       		.uleb128 0xf
+ 1735 00c9 0F       		.uleb128 0xf
+ 1736 00ca 00       		.byte	0
+ 1737 00cb 0B       		.uleb128 0xb
+ 1738 00cc 0B       		.uleb128 0xb
+ 1739 00cd 49       		.uleb128 0x49
+ 1740 00ce 13       		.uleb128 0x13
+ 1741 00cf 00       		.byte	0
+ 1742 00d0 00       		.byte	0
+ 1743 00d1 10       		.uleb128 0x10
+ 1744 00d2 05       		.uleb128 0x5
+ 1745 00d3 00       		.byte	0
+ 1746 00d4 03       		.uleb128 0x3
+ 1747 00d5 0E       		.uleb128 0xe
+ 1748 00d6 3A       		.uleb128 0x3a
+ 1749 00d7 0B       		.uleb128 0xb
+ 1750 00d8 3B       		.uleb128 0x3b
+ 1751 00d9 0B       		.uleb128 0xb
+ 1752 00da 49       		.uleb128 0x49
+ 1753 00db 13       		.uleb128 0x13
+ 1754 00dc 02       		.uleb128 0x2
+ 1755 00dd 18       		.uleb128 0x18
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 35
+
+
+ 1756 00de 00       		.byte	0
+ 1757 00df 00       		.byte	0
+ 1758 00e0 11       		.uleb128 0x11
+ 1759 00e1 05       		.uleb128 0x5
+ 1760 00e2 00       		.byte	0
+ 1761 00e3 03       		.uleb128 0x3
+ 1762 00e4 08       		.uleb128 0x8
+ 1763 00e5 3A       		.uleb128 0x3a
+ 1764 00e6 0B       		.uleb128 0xb
+ 1765 00e7 3B       		.uleb128 0x3b
+ 1766 00e8 0B       		.uleb128 0xb
+ 1767 00e9 49       		.uleb128 0x49
+ 1768 00ea 13       		.uleb128 0x13
+ 1769 00eb 02       		.uleb128 0x2
+ 1770 00ec 18       		.uleb128 0x18
+ 1771 00ed 00       		.byte	0
+ 1772 00ee 00       		.byte	0
+ 1773 00ef 12       		.uleb128 0x12
+ 1774 00f0 05       		.uleb128 0x5
+ 1775 00f1 00       		.byte	0
+ 1776 00f2 03       		.uleb128 0x3
+ 1777 00f3 08       		.uleb128 0x8
+ 1778 00f4 3A       		.uleb128 0x3a
+ 1779 00f5 0B       		.uleb128 0xb
+ 1780 00f6 3B       		.uleb128 0x3b
+ 1781 00f7 0B       		.uleb128 0xb
+ 1782 00f8 49       		.uleb128 0x49
+ 1783 00f9 13       		.uleb128 0x13
+ 1784 00fa 02       		.uleb128 0x2
+ 1785 00fb 17       		.uleb128 0x17
+ 1786 00fc 00       		.byte	0
+ 1787 00fd 00       		.byte	0
+ 1788 00fe 13       		.uleb128 0x13
+ 1789 00ff 34       		.uleb128 0x34
+ 1790 0100 00       		.byte	0
+ 1791 0101 03       		.uleb128 0x3
+ 1792 0102 0E       		.uleb128 0xe
+ 1793 0103 3A       		.uleb128 0x3a
+ 1794 0104 0B       		.uleb128 0xb
+ 1795 0105 3B       		.uleb128 0x3b
+ 1796 0106 0B       		.uleb128 0xb
+ 1797 0107 49       		.uleb128 0x49
+ 1798 0108 13       		.uleb128 0x13
+ 1799 0109 02       		.uleb128 0x2
+ 1800 010a 18       		.uleb128 0x18
+ 1801 010b 00       		.byte	0
+ 1802 010c 00       		.byte	0
+ 1803 010d 14       		.uleb128 0x14
+ 1804 010e 35       		.uleb128 0x35
+ 1805 010f 00       		.byte	0
+ 1806 0110 49       		.uleb128 0x49
+ 1807 0111 13       		.uleb128 0x13
+ 1808 0112 00       		.byte	0
+ 1809 0113 00       		.byte	0
+ 1810 0114 15       		.uleb128 0x15
+ 1811 0115 34       		.uleb128 0x34
+ 1812 0116 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 36
+
+
+ 1813 0117 03       		.uleb128 0x3
+ 1814 0118 0E       		.uleb128 0xe
+ 1815 0119 3A       		.uleb128 0x3a
+ 1816 011a 0B       		.uleb128 0xb
+ 1817 011b 3B       		.uleb128 0x3b
+ 1818 011c 05       		.uleb128 0x5
+ 1819 011d 49       		.uleb128 0x49
+ 1820 011e 13       		.uleb128 0x13
+ 1821 011f 3F       		.uleb128 0x3f
+ 1822 0120 19       		.uleb128 0x19
+ 1823 0121 3C       		.uleb128 0x3c
+ 1824 0122 19       		.uleb128 0x19
+ 1825 0123 00       		.byte	0
+ 1826 0124 00       		.byte	0
+ 1827 0125 16       		.uleb128 0x16
+ 1828 0126 2E       		.uleb128 0x2e
+ 1829 0127 00       		.byte	0
+ 1830 0128 3F       		.uleb128 0x3f
+ 1831 0129 19       		.uleb128 0x19
+ 1832 012a 3C       		.uleb128 0x3c
+ 1833 012b 19       		.uleb128 0x19
+ 1834 012c 6E       		.uleb128 0x6e
+ 1835 012d 0E       		.uleb128 0xe
+ 1836 012e 03       		.uleb128 0x3
+ 1837 012f 0E       		.uleb128 0xe
+ 1838 0130 3A       		.uleb128 0x3a
+ 1839 0131 0B       		.uleb128 0xb
+ 1840 0132 3B       		.uleb128 0x3b
+ 1841 0133 0B       		.uleb128 0xb
+ 1842 0134 00       		.byte	0
+ 1843 0135 00       		.byte	0
+ 1844 0136 00       		.byte	0
+ 1845              		.section	.debug_loc,"",%progbits
+ 1846              	.Ldebug_loc0:
+ 1847              	.LLST0:
+ 1848 0000 16000000 		.4byte	.LVL1
+ 1849 0004 40000000 		.4byte	.LVL13
+ 1850 0008 0600     		.2byte	0x6
+ 1851 000a 74       		.byte	0x74
+ 1852 000b 00       		.sleb128 0
+ 1853 000c 08       		.byte	0x8
+ 1854 000d FF       		.byte	0xff
+ 1855 000e 1A       		.byte	0x1a
+ 1856 000f 9F       		.byte	0x9f
+ 1857 0010 4E000000 		.4byte	.LVL15
+ 1858 0014 54000000 		.4byte	.LVL17
+ 1859 0018 0600     		.2byte	0x6
+ 1860 001a 74       		.byte	0x74
+ 1861 001b 00       		.sleb128 0
+ 1862 001c 08       		.byte	0x8
+ 1863 001d FF       		.byte	0xff
+ 1864 001e 1A       		.byte	0x1a
+ 1865 001f 9F       		.byte	0x9f
+ 1866 0020 00000000 		.4byte	0
+ 1867 0024 00000000 		.4byte	0
+ 1868              	.LLST1:
+ 1869 0028 1C000000 		.4byte	.LVL3
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 37
+
+
+ 1870 002c BA010000 		.4byte	.LVL59
+ 1871 0030 0600     		.2byte	0x6
+ 1872 0032 78       		.byte	0x78
+ 1873 0033 00       		.sleb128 0
+ 1874 0034 08       		.byte	0x8
+ 1875 0035 FF       		.byte	0xff
+ 1876 0036 1A       		.byte	0x1a
+ 1877 0037 9F       		.byte	0x9f
+ 1878 0038 00000000 		.4byte	0
+ 1879 003c 00000000 		.4byte	0
+ 1880              	.LLST2:
+ 1881 0040 22000000 		.4byte	.LVL5
+ 1882 0044 BA010000 		.4byte	.LVL59
+ 1883 0048 0600     		.2byte	0x6
+ 1884 004a 76       		.byte	0x76
+ 1885 004b 00       		.sleb128 0
+ 1886 004c 08       		.byte	0x8
+ 1887 004d FF       		.byte	0xff
+ 1888 004e 1A       		.byte	0x1a
+ 1889 004f 9F       		.byte	0x9f
+ 1890 0050 00000000 		.4byte	0
+ 1891 0054 00000000 		.4byte	0
+ 1892              	.LLST3:
+ 1893 0058 28000000 		.4byte	.LVL7
+ 1894 005c BA010000 		.4byte	.LVL59
+ 1895 0060 0600     		.2byte	0x6
+ 1896 0062 75       		.byte	0x75
+ 1897 0063 00       		.sleb128 0
+ 1898 0064 08       		.byte	0x8
+ 1899 0065 FF       		.byte	0xff
+ 1900 0066 1A       		.byte	0x1a
+ 1901 0067 9F       		.byte	0x9f
+ 1902 0068 00000000 		.4byte	0
+ 1903 006c 00000000 		.4byte	0
+ 1904              	.LLST4:
+ 1905 0070 2E000000 		.4byte	.LVL9
+ 1906 0074 BA010000 		.4byte	.LVL59
+ 1907 0078 0600     		.2byte	0x6
+ 1908 007a 77       		.byte	0x77
+ 1909 007b 00       		.sleb128 0
+ 1910 007c 08       		.byte	0x8
+ 1911 007d FF       		.byte	0xff
+ 1912 007e 1A       		.byte	0x1a
+ 1913 007f 9F       		.byte	0x9f
+ 1914 0080 00000000 		.4byte	0
+ 1915 0084 00000000 		.4byte	0
+ 1916              	.LLST5:
+ 1917 0088 34000000 		.4byte	.LVL11
+ 1918 008c BA010000 		.4byte	.LVL59
+ 1919 0090 0600     		.2byte	0x6
+ 1920 0092 79       		.byte	0x79
+ 1921 0093 00       		.sleb128 0
+ 1922 0094 08       		.byte	0x8
+ 1923 0095 FF       		.byte	0xff
+ 1924 0096 1A       		.byte	0x1a
+ 1925 0097 9F       		.byte	0x9f
+ 1926 0098 00000000 		.4byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 38
+
+
+ 1927 009c 00000000 		.4byte	0
+ 1928              	.LLST6:
+ 1929 00a0 00000000 		.4byte	.LVL68
+ 1930 00a4 08000000 		.4byte	.LVL69
+ 1931 00a8 0100     		.2byte	0x1
+ 1932 00aa 50       		.byte	0x50
+ 1933 00ab 08000000 		.4byte	.LVL69
+ 1934 00af 10000000 		.4byte	.LVL70
+ 1935 00b3 0100     		.2byte	0x1
+ 1936 00b5 54       		.byte	0x54
+ 1937 00b6 10000000 		.4byte	.LVL70
+ 1938 00ba 18000000 		.4byte	.LFE66
+ 1939 00be 0400     		.2byte	0x4
+ 1940 00c0 F3       		.byte	0xf3
+ 1941 00c1 01       		.uleb128 0x1
+ 1942 00c2 50       		.byte	0x50
+ 1943 00c3 9F       		.byte	0x9f
+ 1944 00c4 00000000 		.4byte	0
+ 1945 00c8 00000000 		.4byte	0
+ 1946              	.LLST7:
+ 1947 00cc 00000000 		.4byte	.LVL72
+ 1948 00d0 0E000000 		.4byte	.LVL73
+ 1949 00d4 0100     		.2byte	0x1
+ 1950 00d6 52       		.byte	0x52
+ 1951 00d7 0E000000 		.4byte	.LVL73
+ 1952 00db 20000000 		.4byte	.LFE68
+ 1953 00df 0500     		.2byte	0x5
+ 1954 00e1 03       		.byte	0x3
+ 1955 00e2 04000000 		.4byte	threshold+4
+ 1956 00e6 00000000 		.4byte	0
+ 1957 00ea 00000000 		.4byte	0
+ 1958              	.LLST8:
+ 1959 00ee 00000000 		.4byte	.LVL72
+ 1960 00f2 1A000000 		.4byte	.LVL74
+ 1961 00f6 0200     		.2byte	0x2
+ 1962 00f8 91       		.byte	0x91
+ 1963 00f9 00       		.sleb128 0
+ 1964 00fa 1A000000 		.4byte	.LVL74
+ 1965 00fe 20000000 		.4byte	.LFE68
+ 1966 0102 0200     		.2byte	0x2
+ 1967 0104 7D       		.byte	0x7d
+ 1968 0105 00       		.sleb128 0
+ 1969 0106 00000000 		.4byte	0
+ 1970 010a 00000000 		.4byte	0
+ 1971              	.LLST9:
+ 1972 010e 00000000 		.4byte	.LVL72
+ 1973 0112 1A000000 		.4byte	.LVL74
+ 1974 0116 0200     		.2byte	0x2
+ 1975 0118 91       		.byte	0x91
+ 1976 0119 04       		.sleb128 4
+ 1977 011a 1A000000 		.4byte	.LVL74
+ 1978 011e 20000000 		.4byte	.LFE68
+ 1979 0122 0200     		.2byte	0x2
+ 1980 0124 7D       		.byte	0x7d
+ 1981 0125 04       		.sleb128 4
+ 1982 0126 00000000 		.4byte	0
+ 1983 012a 00000000 		.4byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 39
+
+
+ 1984              		.section	.debug_aranges,"",%progbits
+ 1985 0000 3C000000 		.4byte	0x3c
+ 1986 0004 0200     		.2byte	0x2
+ 1987 0006 00000000 		.4byte	.Ldebug_info0
+ 1988 000a 04       		.byte	0x4
+ 1989 000b 00       		.byte	0
+ 1990 000c 0000     		.2byte	0
+ 1991 000e 0000     		.2byte	0
+ 1992 0010 00000000 		.4byte	.LFB64
+ 1993 0014 C4010000 		.4byte	.LFE64-.LFB64
+ 1994 0018 00000000 		.4byte	.LFB65
+ 1995 001c 30000000 		.4byte	.LFE65-.LFB65
+ 1996 0020 00000000 		.4byte	.LFB66
+ 1997 0024 18000000 		.4byte	.LFE66-.LFB66
+ 1998 0028 00000000 		.4byte	.LFB67
+ 1999 002c 9C000000 		.4byte	.LFE67-.LFB67
+ 2000 0030 00000000 		.4byte	.LFB68
+ 2001 0034 20000000 		.4byte	.LFE68-.LFB68
+ 2002 0038 00000000 		.4byte	0
+ 2003 003c 00000000 		.4byte	0
+ 2004              		.section	.debug_ranges,"",%progbits
+ 2005              	.Ldebug_ranges0:
+ 2006 0000 00000000 		.4byte	.LFB64
+ 2007 0004 C4010000 		.4byte	.LFE64
+ 2008 0008 00000000 		.4byte	.LFB65
+ 2009 000c 30000000 		.4byte	.LFE65
+ 2010 0010 00000000 		.4byte	.LFB66
+ 2011 0014 18000000 		.4byte	.LFE66
+ 2012 0018 00000000 		.4byte	.LFB67
+ 2013 001c 9C000000 		.4byte	.LFE67
+ 2014 0020 00000000 		.4byte	.LFB68
+ 2015 0024 20000000 		.4byte	.LFE68
+ 2016 0028 00000000 		.4byte	0
+ 2017 002c 00000000 		.4byte	0
+ 2018              		.section	.debug_line,"",%progbits
+ 2019              	.Ldebug_line0:
+ 2020 0000 D2020000 		.section	.debug_str,"MS",%progbits,1
+ 2020      02002B02 
+ 2020      00000201 
+ 2020      FB0E0D00 
+ 2020      01010101 
+ 2021              	.LASF23:
+ 2022 0000 73746174 		.ascii	"statusR3\000"
+ 2022      75735233 
+ 2022      00
+ 2023              	.LASF20:
+ 2024 0009 646F7562 		.ascii	"double\000"
+ 2024      6C6500
+ 2025              	.LASF80:
+ 2026 0010 54696D65 		.ascii	"Timer_R3_Start\000"
+ 2026      725F5233 
+ 2026      5F537461 
+ 2026      727400
+ 2027              	.LASF47:
+ 2028 001f 54696D65 		.ascii	"Timer_R1_ReadCounter\000"
+ 2028      725F5231 
+ 2028      5F526561 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 40
+
+
+ 2028      64436F75 
+ 2028      6E746572 
+ 2029              	.LASF44:
+ 2030 0034 54696D65 		.ascii	"Timer_L1_ReadStatusRegister\000"
+ 2030      725F4C31 
+ 2030      5F526561 
+ 2030      64537461 
+ 2030      74757352 
+ 2031              	.LASF2:
+ 2032 0050 73686F72 		.ascii	"short int\000"
+ 2032      7420696E 
+ 2032      7400
+ 2033              	.LASF67:
+ 2034 005a 52325F57 		.ascii	"R2_Write\000"
+ 2034      72697465 
+ 2034      00
+ 2035              	.LASF13:
+ 2036 0063 73697A65 		.ascii	"sizetype\000"
+ 2036      74797065 
+ 2036      00
+ 2037              	.LASF59:
+ 2038 006c 54696D65 		.ascii	"Timer_R3_ReadCounter\000"
+ 2038      725F5233 
+ 2038      5F526561 
+ 2038      64436F75 
+ 2038      6E746572 
+ 2039              	.LASF34:
+ 2040 0081 73656E73 		.ascii	"sensors\000"
+ 2040      6F727300 
+ 2041              	.LASF9:
+ 2042 0089 6C6F6E67 		.ascii	"long long int\000"
+ 2042      206C6F6E 
+ 2042      6720696E 
+ 2042      7400
+ 2043              	.LASF7:
+ 2044 0097 5F5F7569 		.ascii	"__uint32_t\000"
+ 2044      6E743332 
+ 2044      5F7400
+ 2045              	.LASF70:
+ 2046 00a2 4C335F53 		.ascii	"L3_SetDriveMode\000"
+ 2046      65744472 
+ 2046      6976654D 
+ 2046      6F646500 
+ 2047              	.LASF4:
+ 2048 00b2 5F5F7569 		.ascii	"__uint16_t\000"
+ 2048      6E743136 
+ 2048      5F7400
+ 2049              	.LASF56:
+ 2050 00bd 54696D65 		.ascii	"Timer_L2_ReadCounter\000"
+ 2050      725F4C32 
+ 2050      5F526561 
+ 2050      64436F75 
+ 2050      6E746572 
+ 2051              	.LASF21:
+ 2052 00d2 73746174 		.ascii	"statusR1\000"
+ 2052      75735231 
+ 2052      00
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 41
+
+
+ 2053              	.LASF22:
+ 2054 00db 73746174 		.ascii	"statusR2\000"
+ 2054      75735232 
+ 2054      00
+ 2055              	.LASF40:
+ 2056 00e4 54696D65 		.ascii	"Timer_R2_ReadStatusRegister\000"
+ 2056      725F5232 
+ 2056      5F526561 
+ 2056      64537461 
+ 2056      74757352 
+ 2057              	.LASF41:
+ 2058 0100 54696D65 		.ascii	"Timer_R3_ReadStatusRegister\000"
+ 2058      725F5233 
+ 2058      5F526561 
+ 2058      64537461 
+ 2058      74757352 
+ 2059              	.LASF46:
+ 2060 011c 54696D65 		.ascii	"Timer_R1_ReadCapture\000"
+ 2060      725F5231 
+ 2060      5F526561 
+ 2060      64436170 
+ 2060      74757265 
+ 2061              	.LASF28:
+ 2062 0131 7265666C 		.ascii	"reflectance_start\000"
+ 2062      65637461 
+ 2062      6E63655F 
+ 2062      73746172 
+ 2062      7400
+ 2063              	.LASF73:
+ 2064 0143 4C325F57 		.ascii	"L2_Write\000"
+ 2064      72697465 
+ 2064      00
+ 2065              	.LASF19:
+ 2066 014c 666C6F61 		.ascii	"float\000"
+ 2066      7400
+ 2067              	.LASF37:
+ 2068 0152 7265666C 		.ascii	"refl_init\000"
+ 2068      5F696E69 
+ 2068      7400
+ 2069              	.LASF51:
+ 2070 015c 54696D65 		.ascii	"Timer_R2_ReadPeriod\000"
+ 2070      725F5232 
+ 2070      5F526561 
+ 2070      64506572 
+ 2070      696F6400 
+ 2071              	.LASF39:
+ 2072 0170 54696D65 		.ascii	"Timer_R1_ReadStatusRegister\000"
+ 2072      725F5231 
+ 2072      5F526561 
+ 2072      64537461 
+ 2072      74757352 
+ 2073              	.LASF53:
+ 2074 018c 54696D65 		.ascii	"Timer_R2_ReadCounter\000"
+ 2074      725F5232 
+ 2074      5F526561 
+ 2074      64436F75 
+ 2074      6E746572 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 42
+
+
+ 2075              	.LASF30:
+ 2076 01a1 7265666C 		.ascii	"reflectance_digital\000"
+ 2076      65637461 
+ 2076      6E63655F 
+ 2076      64696769 
+ 2076      74616C00 
+ 2077              	.LASF36:
+ 2078 01b5 74687265 		.ascii	"threshold\000"
+ 2078      73686F6C 
+ 2078      6400
+ 2079              	.LASF14:
+ 2080 01bf 63686172 		.ascii	"char\000"
+ 2080      00
+ 2081              	.LASF57:
+ 2082 01c4 54696D65 		.ascii	"Timer_R3_ReadPeriod\000"
+ 2082      725F5233 
+ 2082      5F526561 
+ 2082      64506572 
+ 2082      696F6400 
+ 2083              	.LASF6:
+ 2084 01d8 6C6F6E67 		.ascii	"long int\000"
+ 2084      20696E74 
+ 2084      00
+ 2085              	.LASF31:
+ 2086 01e1 76616C75 		.ascii	"values\000"
+ 2086      657300
+ 2087              	.LASF83:
+ 2088 01e8 54696D65 		.ascii	"Timer_L1_Start\000"
+ 2088      725F4C31 
+ 2088      5F537461 
+ 2088      727400
+ 2089              	.LASF84:
+ 2090 01f7 53797374 		.ascii	"Systick_Start\000"
+ 2090      69636B5F 
+ 2090      53746172 
+ 2090      7400
+ 2091              	.LASF1:
+ 2092 0205 756E7369 		.ascii	"unsigned char\000"
+ 2092      676E6564 
+ 2092      20636861 
+ 2092      7200
+ 2093              	.LASF50:
+ 2094 0213 54696D65 		.ascii	"Timer_L1_ReadCounter\000"
+ 2094      725F4C31 
+ 2094      5F526561 
+ 2094      64436F75 
+ 2094      6E746572 
+ 2095              	.LASF74:
+ 2096 0228 4C315F53 		.ascii	"L1_SetDriveMode\000"
+ 2096      65744472 
+ 2096      6976654D 
+ 2096      6F646500 
+ 2097              	.LASF12:
+ 2098 0238 6C6F6E67 		.ascii	"long double\000"
+ 2098      20646F75 
+ 2098      626C6500 
+ 2099              	.LASF76:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 43
+
+
+ 2100 0244 43794465 		.ascii	"CyDelayUs\000"
+ 2100      6C617955 
+ 2100      7300
+ 2101              	.LASF62:
+ 2102 024e 54696D65 		.ascii	"Timer_L3_ReadCounter\000"
+ 2102      725F4C33 
+ 2102      5F526561 
+ 2102      64436F75 
+ 2102      6E746572 
+ 2103              	.LASF64:
+ 2104 0263 52315F53 		.ascii	"R1_SetDriveMode\000"
+ 2104      65744472 
+ 2104      6976654D 
+ 2104      6F646500 
+ 2105              	.LASF33:
+ 2106 0273 7265666C 		.ascii	"reflectance_set_threshold\000"
+ 2106      65637461 
+ 2106      6E63655F 
+ 2106      7365745F 
+ 2106      74687265 
+ 2107              	.LASF0:
+ 2108 028d 7369676E 		.ascii	"signed char\000"
+ 2108      65642063 
+ 2108      68617200 
+ 2109              	.LASF10:
+ 2110 0299 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2110      206C6F6E 
+ 2110      6720756E 
+ 2110      7369676E 
+ 2110      65642069 
+ 2111              	.LASF79:
+ 2112 02b0 54696D65 		.ascii	"Timer_R2_Start\000"
+ 2112      725F5232 
+ 2112      5F537461 
+ 2112      727400
+ 2113              	.LASF17:
+ 2114 02bf 75696E74 		.ascii	"uint32_t\000"
+ 2114      33325F74 
+ 2114      00
+ 2115              	.LASF52:
+ 2116 02c8 54696D65 		.ascii	"Timer_R2_ReadCapture\000"
+ 2116      725F5232 
+ 2116      5F526561 
+ 2116      64436170 
+ 2116      74757265 
+ 2117              	.LASF11:
+ 2118 02dd 756E7369 		.ascii	"unsigned int\000"
+ 2118      676E6564 
+ 2118      20696E74 
+ 2118      00
+ 2119              	.LASF15:
+ 2120 02ea 75696E74 		.ascii	"uint16_t\000"
+ 2120      31365F74 
+ 2120      00
+ 2121              	.LASF65:
+ 2122 02f3 52315F57 		.ascii	"R1_Write\000"
+ 2122      72697465 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 44
+
+
+ 2122      00
+ 2123              	.LASF63:
+ 2124 02fc 436F6E74 		.ascii	"Control_Reg_1_Write\000"
+ 2124      726F6C5F 
+ 2124      5265675F 
+ 2124      315F5772 
+ 2124      69746500 
+ 2125              	.LASF3:
+ 2126 0310 73686F72 		.ascii	"short unsigned int\000"
+ 2126      7420756E 
+ 2126      7369676E 
+ 2126      65642069 
+ 2126      6E7400
+ 2127              	.LASF43:
+ 2128 0323 54696D65 		.ascii	"Timer_L2_ReadStatusRegister\000"
+ 2128      725F4C32 
+ 2128      5F526561 
+ 2128      64537461 
+ 2128      74757352 
+ 2129              	.LASF49:
+ 2130 033f 54696D65 		.ascii	"Timer_L1_ReadCapture\000"
+ 2130      725F4C31 
+ 2130      5F526561 
+ 2130      64436170 
+ 2130      74757265 
+ 2131              	.LASF35:
+ 2132 0354 64696769 		.ascii	"digital_sensor_value\000"
+ 2132      74616C5F 
+ 2132      73656E73 
+ 2132      6F725F76 
+ 2132      616C7565 
+ 2133              	.LASF69:
+ 2134 0369 52335F57 		.ascii	"R3_Write\000"
+ 2134      72697465 
+ 2134      00
+ 2135              	.LASF25:
+ 2136 0372 73746174 		.ascii	"statusL2\000"
+ 2136      75734C32 
+ 2136      00
+ 2137              	.LASF24:
+ 2138 037b 73746174 		.ascii	"statusL3\000"
+ 2138      75734C33 
+ 2138      00
+ 2139              	.LASF16:
+ 2140 0384 696E7433 		.ascii	"int32_t\000"
+ 2140      325F7400 
+ 2141              	.LASF18:
+ 2142 038c 75696E74 		.ascii	"uint8\000"
+ 2142      3800
+ 2143              	.LASF38:
+ 2144 0392 5F426F6F 		.ascii	"_Bool\000"
+ 2144      6C00
+ 2145              	.LASF61:
+ 2146 0398 54696D65 		.ascii	"Timer_L3_ReadCapture\000"
+ 2146      725F4C33 
+ 2146      5F526561 
+ 2146      64436170 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 45
+
+
+ 2146      74757265 
+ 2147              	.LASF48:
+ 2148 03ad 54696D65 		.ascii	"Timer_L1_ReadPeriod\000"
+ 2148      725F4C31 
+ 2148      5F526561 
+ 2148      64506572 
+ 2148      696F6400 
+ 2149              	.LASF81:
+ 2150 03c1 54696D65 		.ascii	"Timer_L3_Start\000"
+ 2150      725F4C33 
+ 2150      5F537461 
+ 2150      727400
+ 2151              	.LASF88:
+ 2152 03d0 73656E73 		.ascii	"sensors_\000"
+ 2152      6F72735F 
+ 2152      00
+ 2153              	.LASF54:
+ 2154 03d9 54696D65 		.ascii	"Timer_L2_ReadPeriod\000"
+ 2154      725F4C32 
+ 2154      5F526561 
+ 2154      64506572 
+ 2154      696F6400 
+ 2155              	.LASF71:
+ 2156 03ed 4C335F57 		.ascii	"L3_Write\000"
+ 2156      72697465 
+ 2156      00
+ 2157              	.LASF27:
+ 2158 03f6 7265666C 		.ascii	"reflectance_handler\000"
+ 2158      65637461 
+ 2158      6E63655F 
+ 2158      68616E64 
+ 2158      6C657200 
+ 2159              	.LASF8:
+ 2160 040a 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2160      20756E73 
+ 2160      69676E65 
+ 2160      6420696E 
+ 2160      7400
+ 2161              	.LASF60:
+ 2162 041c 54696D65 		.ascii	"Timer_L3_ReadPeriod\000"
+ 2162      725F4C33 
+ 2162      5F526561 
+ 2162      64506572 
+ 2162      696F6400 
+ 2163              	.LASF26:
+ 2164 0430 73746174 		.ascii	"statusL1\000"
+ 2164      75734C31 
+ 2164      00
+ 2165              	.LASF32:
+ 2166 0439 64696769 		.ascii	"digital\000"
+ 2166      74616C00 
+ 2167              	.LASF45:
+ 2168 0441 54696D65 		.ascii	"Timer_R1_ReadPeriod\000"
+ 2168      725F5231 
+ 2168      5F526561 
+ 2168      64506572 
+ 2168      696F6400 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 46
+
+
+ 2169              	.LASF58:
+ 2170 0455 54696D65 		.ascii	"Timer_R3_ReadCapture\000"
+ 2170      725F5233 
+ 2170      5F526561 
+ 2170      64436170 
+ 2170      74757265 
+ 2171              	.LASF5:
+ 2172 046a 5F5F696E 		.ascii	"__int32_t\000"
+ 2172      7433325F 
+ 2172      7400
+ 2173              	.LASF87:
+ 2174 0474 433A5C55 		.ascii	"C:\\Users\\manuelfu\\Documents\\PSoC Creator\\zumo\\"
+ 2174      73657273 
+ 2174      5C6D616E 
+ 2174      75656C66 
+ 2174      755C446F 
+ 2175 04a2 5A756D6F 		.ascii	"ZumoBot.cydsn\000"
+ 2175      426F742E 
+ 2175      63796473 
+ 2175      6E00
+ 2176              	.LASF66:
+ 2177 04b0 52325F53 		.ascii	"R2_SetDriveMode\000"
+ 2177      65744472 
+ 2177      6976654D 
+ 2177      6F646500 
+ 2178              	.LASF72:
+ 2179 04c0 4C325F53 		.ascii	"L2_SetDriveMode\000"
+ 2179      65744472 
+ 2179      6976654D 
+ 2179      6F646500 
+ 2180              	.LASF55:
+ 2181 04d0 54696D65 		.ascii	"Timer_L2_ReadCapture\000"
+ 2181      725F4C32 
+ 2181      5F526561 
+ 2181      64436170 
+ 2181      74757265 
+ 2182              	.LASF89:
+ 2183 04e5 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2183      52784275 
+ 2183      66666572 
+ 2183      00
+ 2184              	.LASF85:
+ 2185 04f2 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2185      43313120 
+ 2185      352E342E 
+ 2185      31203230 
+ 2185      31363036 
+ 2186 0525 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2186      20726576 
+ 2186      6973696F 
+ 2186      6E203233 
+ 2186      37373135 
+ 2187 0558 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2187      66756E63 
+ 2187      74696F6E 
+ 2187      2D736563 
+ 2187      74696F6E 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 47
+
+
+ 2188              	.LASF42:
+ 2189 0580 54696D65 		.ascii	"Timer_L3_ReadStatusRegister\000"
+ 2189      725F4C33 
+ 2189      5F526561 
+ 2189      64537461 
+ 2189      74757352 
+ 2190              	.LASF77:
+ 2191 059c 49525F6C 		.ascii	"IR_led_Write\000"
+ 2191      65645F57 
+ 2191      72697465 
+ 2191      00
+ 2192              	.LASF86:
+ 2193 05a9 5A756D6F 		.ascii	"ZumoLibrary\\Reflectance.c\000"
+ 2193      4C696272 
+ 2193      6172795C 
+ 2193      5265666C 
+ 2193      65637461 
+ 2194              	.LASF68:
+ 2195 05c3 52335F53 		.ascii	"R3_SetDriveMode\000"
+ 2195      65744472 
+ 2195      6976654D 
+ 2195      6F646500 
+ 2196              	.LASF29:
+ 2197 05d3 7265666C 		.ascii	"reflectance_read\000"
+ 2197      65637461 
+ 2197      6E63655F 
+ 2197      72656164 
+ 2197      00
+ 2198              	.LASF82:
+ 2199 05e4 54696D65 		.ascii	"Timer_L2_Start\000"
+ 2199      725F4C32 
+ 2199      5F537461 
+ 2199      727400
+ 2200              	.LASF78:
+ 2201 05f3 54696D65 		.ascii	"Timer_R1_Start\000"
+ 2201      725F5231 
+ 2201      5F537461 
+ 2201      727400
+ 2202              	.LASF75:
+ 2203 0602 4C315F57 		.ascii	"L1_Write\000"
+ 2203      72697465 
+ 2203      00
+ 2204              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

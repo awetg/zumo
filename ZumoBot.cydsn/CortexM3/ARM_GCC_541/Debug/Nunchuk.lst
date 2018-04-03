@@ -1,0 +1,1100 @@
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Nunchuk.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.nunchuk_start,"ax",%progbits
+  20              		.align	2
+  21              		.global	nunchuk_start
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	nunchuk_start, %function
+  25              	nunchuk_start:
+  26              	.LFB64:
+  27              		.file 1 "ZumoLibrary\\Nunchuk.c"
+   1:ZumoLibrary/Nunchuk.c **** /**
+   2:ZumoLibrary/Nunchuk.c ****  * @file    Nunchuk.c
+   3:ZumoLibrary/Nunchuk.c ****  * @brief   Basic methods for operating wii nunchuck. For more details, please refer to Nunchuk.h f
+   4:ZumoLibrary/Nunchuk.c ****  * @details 
+   5:ZumoLibrary/Nunchuk.c **** */
+   6:ZumoLibrary/Nunchuk.c **** #include "Nunchuk.h"
+   7:ZumoLibrary/Nunchuk.c **** 
+   8:ZumoLibrary/Nunchuk.c **** static int x,y,z;
+   9:ZumoLibrary/Nunchuk.c **** 
+  10:ZumoLibrary/Nunchuk.c **** /**
+  11:ZumoLibrary/Nunchuk.c **** * @brief    Start Nunchuk
+  12:ZumoLibrary/Nunchuk.c **** * @details
+  13:ZumoLibrary/Nunchuk.c **** */
+  14:ZumoLibrary/Nunchuk.c **** void nunchuk_start()
+  15:ZumoLibrary/Nunchuk.c **** {
+  28              		.loc 1 15 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  16:ZumoLibrary/Nunchuk.c ****     I2C_Start();
+  36              		.loc 1 16 0
+  37 0002 FFF7FEFF 		bl	I2C_Start
+  38              	.LVL0:
+  39 0006 08BD     		pop	{r3, pc}
+  40              		.cfi_endproc
+  41              	.LFE64:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 2
+
+
+  42              		.size	nunchuk_start, .-nunchuk_start
+  43              		.section	.text.nunchuk_init,"ax",%progbits
+  44              		.align	2
+  45              		.global	nunchuk_init
+  46              		.thumb
+  47              		.thumb_func
+  48              		.type	nunchuk_init, %function
+  49              	nunchuk_init:
+  50              	.LFB65:
+  17:ZumoLibrary/Nunchuk.c **** }
+  18:ZumoLibrary/Nunchuk.c **** 
+  19:ZumoLibrary/Nunchuk.c **** 
+  20:ZumoLibrary/Nunchuk.c **** /**
+  21:ZumoLibrary/Nunchuk.c **** * @brief    Initializing Nunchuk
+  22:ZumoLibrary/Nunchuk.c **** * @details  write value(0x00) to register(address - 0x40) to initialize nunchuk
+  23:ZumoLibrary/Nunchuk.c **** */
+  24:ZumoLibrary/Nunchuk.c **** void nunchuk_init()
+  25:ZumoLibrary/Nunchuk.c **** {
+  51              		.loc 1 25 0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 8
+  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  55 0000 10B5     		push	{r4, lr}
+  56              		.cfi_def_cfa_offset 8
+  57              		.cfi_offset 4, -8
+  58              		.cfi_offset 14, -4
+  59 0002 82B0     		sub	sp, sp, #8
+  60              		.cfi_def_cfa_offset 16
+  26:ZumoLibrary/Nunchuk.c ****     uint8_t buf[2] = { 0x40, 0x00 };
+  61              		.loc 1 26 0
+  62 0004 4023     		movs	r3, #64
+  63 0006 8DF80430 		strb	r3, [sp, #4]
+  64 000a 0024     		movs	r4, #0
+  65 000c 8DF80540 		strb	r4, [sp, #5]
+  27:ZumoLibrary/Nunchuk.c ****     uint8_t status;
+  28:ZumoLibrary/Nunchuk.c ****     I2C_MasterClearStatus();
+  66              		.loc 1 28 0
+  67 0010 FFF7FEFF 		bl	I2C_MasterClearStatus
+  68              	.LVL1:
+  29:ZumoLibrary/Nunchuk.c ****     CyDelay(100);
+  69              		.loc 1 29 0
+  70 0014 6420     		movs	r0, #100
+  71 0016 FFF7FEFF 		bl	CyDelay
+  72              	.LVL2:
+  30:ZumoLibrary/Nunchuk.c ****     status = I2C_MasterWriteBuf(0x52, buf, 2, I2C_MODE_COMPLETE_XFER);
+  73              		.loc 1 30 0
+  74 001a 2346     		mov	r3, r4
+  75 001c 0222     		movs	r2, #2
+  76 001e 01A9     		add	r1, sp, #4
+  77 0020 5220     		movs	r0, #82
+  78 0022 FFF7FEFF 		bl	I2C_MasterWriteBuf
+  79              	.LVL3:
+  80              	.L4:
+  31:ZumoLibrary/Nunchuk.c ****     while(((status = I2C_MasterStatus()) & I2C_MSTAT_WR_CMPLT) == 0);
+  81              		.loc 1 31 0 discriminator 1
+  82 0026 FFF7FEFF 		bl	I2C_MasterStatus
+  83              	.LVL4:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 3
+
+
+  84 002a 10F0020F 		tst	r0, #2
+  85 002e FAD0     		beq	.L4
+  32:ZumoLibrary/Nunchuk.c ****     CyDelay(100);
+  86              		.loc 1 32 0
+  87 0030 6420     		movs	r0, #100
+  88              	.LVL5:
+  89 0032 FFF7FEFF 		bl	CyDelay
+  90              	.LVL6:
+  33:ZumoLibrary/Nunchuk.c **** }    
+  91              		.loc 1 33 0
+  92 0036 02B0     		add	sp, sp, #8
+  93              		.cfi_def_cfa_offset 8
+  94              		@ sp needed
+  95 0038 10BD     		pop	{r4, pc}
+  96              		.cfi_endproc
+  97              	.LFE65:
+  98              		.size	nunchuk_init, .-nunchuk_init
+  99 003a 00BF     		.section	.text.nunchuk_read,"ax",%progbits
+ 100              		.align	2
+ 101              		.global	nunchuk_read
+ 102              		.thumb
+ 103              		.thumb_func
+ 104              		.type	nunchuk_read, %function
+ 105              	nunchuk_read:
+ 106              	.LFB66:
+  34:ZumoLibrary/Nunchuk.c **** 
+  35:ZumoLibrary/Nunchuk.c **** 
+  36:ZumoLibrary/Nunchuk.c **** /**
+  37:ZumoLibrary/Nunchuk.c **** * @brief    Reading Nunchuk value
+  38:ZumoLibrary/Nunchuk.c **** * @details  Reading nunchuk value and getting joystick and accelerometer values
+  39:ZumoLibrary/Nunchuk.c **** */
+  40:ZumoLibrary/Nunchuk.c **** void nunchuk_read()
+  41:ZumoLibrary/Nunchuk.c **** {
+ 107              		.loc 1 41 0
+ 108              		.cfi_startproc
+ 109              		@ args = 0, pretend = 0, frame = 8
+ 110              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111 0000 00B5     		push	{lr}
+ 112              		.cfi_def_cfa_offset 4
+ 113              		.cfi_offset 14, -4
+ 114 0002 83B0     		sub	sp, sp, #12
+ 115              		.cfi_def_cfa_offset 16
+  42:ZumoLibrary/Nunchuk.c ****     uint8_t status;
+  43:ZumoLibrary/Nunchuk.c ****     uint8_t buf[6];
+  44:ZumoLibrary/Nunchuk.c ****     
+  45:ZumoLibrary/Nunchuk.c ****     // send conversion command    buf[0] = 0x00;
+  46:ZumoLibrary/Nunchuk.c ****     I2C_MasterClearStatus();
+ 116              		.loc 1 46 0
+ 117 0004 FFF7FEFF 		bl	I2C_MasterClearStatus
+ 118              	.LVL7:
+  47:ZumoLibrary/Nunchuk.c ****     status = I2C_MasterWriteBuf(0x52, buf, 1, I2C_MODE_COMPLETE_XFER);
+ 119              		.loc 1 47 0
+ 120 0008 0023     		movs	r3, #0
+ 121 000a 0122     		movs	r2, #1
+ 122 000c 6946     		mov	r1, sp
+ 123 000e 5220     		movs	r0, #82
+ 124 0010 FFF7FEFF 		bl	I2C_MasterWriteBuf
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 4
+
+
+ 125              	.LVL8:
+ 126              	.L7:
+  48:ZumoLibrary/Nunchuk.c ****     while(((status = I2C_MasterStatus()) & I2C_MSTAT_WR_CMPLT) == 0);
+ 127              		.loc 1 48 0 discriminator 1
+ 128 0014 FFF7FEFF 		bl	I2C_MasterStatus
+ 129              	.LVL9:
+ 130 0018 10F0020F 		tst	r0, #2
+ 131 001c FAD0     		beq	.L7
+  49:ZumoLibrary/Nunchuk.c ****     
+  50:ZumoLibrary/Nunchuk.c ****     // wait for conversion to complete
+  51:ZumoLibrary/Nunchuk.c ****     CyDelay(50); // todo: check if shorter wait would work
+ 132              		.loc 1 51 0
+ 133 001e 3220     		movs	r0, #50
+ 134              	.LVL10:
+ 135 0020 FFF7FEFF 		bl	CyDelay
+ 136              	.LVL11:
+  52:ZumoLibrary/Nunchuk.c ****    
+  53:ZumoLibrary/Nunchuk.c ****     // read values
+  54:ZumoLibrary/Nunchuk.c ****     I2C_MasterClearStatus();
+ 137              		.loc 1 54 0
+ 138 0024 FFF7FEFF 		bl	I2C_MasterClearStatus
+ 139              	.LVL12:
+  55:ZumoLibrary/Nunchuk.c ****     status = I2C_MasterReadBuf(0x52, buf, 6, I2C_MODE_COMPLETE_XFER);
+ 140              		.loc 1 55 0
+ 141 0028 0023     		movs	r3, #0
+ 142 002a 0622     		movs	r2, #6
+ 143 002c 6946     		mov	r1, sp
+ 144 002e 5220     		movs	r0, #82
+ 145 0030 FFF7FEFF 		bl	I2C_MasterReadBuf
+ 146              	.LVL13:
+ 147              	.L8:
+  56:ZumoLibrary/Nunchuk.c ****     while(((status = I2C_MasterStatus()) & I2C_MSTAT_RD_CMPLT) == 0);
+ 148              		.loc 1 56 0 discriminator 1
+ 149 0034 FFF7FEFF 		bl	I2C_MasterStatus
+ 150              	.LVL14:
+ 151 0038 10F0010F 		tst	r0, #1
+ 152 003c FAD0     		beq	.L8
+ 153 003e 0023     		movs	r3, #0
+ 154 0040 00E0     		b	.L9
+ 155              	.LVL15:
+ 156              	.L10:
+  57:ZumoLibrary/Nunchuk.c ****     
+  58:ZumoLibrary/Nunchuk.c ****     int i;
+  59:ZumoLibrary/Nunchuk.c ****     // decrypt data
+  60:ZumoLibrary/Nunchuk.c ****     for(i = 0; i < 6; i++) buf[i] = (buf[i] ^ 0x17) + 0x17;
+ 157              		.loc 1 60 0 discriminator 3
+ 158 0042 0133     		adds	r3, r3, #1
+ 159              	.LVL16:
+ 160              	.L9:
+ 161              		.loc 1 60 0 is_stmt 0 discriminator 1
+ 162 0044 052B     		cmp	r3, #5
+ 163 0046 FCDD     		ble	.L10
+  61:ZumoLibrary/Nunchuk.c ****     // accelerometer values
+  62:ZumoLibrary/Nunchuk.c ****     x = (buf[2] << 2) | ((buf[5] >> 2) & 0x03);
+  63:ZumoLibrary/Nunchuk.c ****     y = (buf[3] << 2) | ((buf[5] >> 4) & 0x03);
+  64:ZumoLibrary/Nunchuk.c ****     z = (buf[4] << 2) | ((buf[5] >> 6) & 0x03);
+  65:ZumoLibrary/Nunchuk.c ****     
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 5
+
+
+  66:ZumoLibrary/Nunchuk.c ****     //If you want to print out the value  
+  67:ZumoLibrary/Nunchuk.c ****     //printf("%3d %3d, %d, %d, %4d %4d %4d\r\n", buf[0], buf[1], (buf[5] >> 1) & 1, buf[5] & 1, x, 
+  68:ZumoLibrary/Nunchuk.c **** }
+ 164              		.loc 1 68 0 is_stmt 1
+ 165 0048 03B0     		add	sp, sp, #12
+ 166              		.cfi_def_cfa_offset 4
+ 167              		@ sp needed
+ 168 004a 5DF804FB 		ldr	pc, [sp], #4
+ 169              		.cfi_endproc
+ 170              	.LFE66:
+ 171              		.size	nunchuk_read, .-nunchuk_read
+ 172 004e 00BF     		.text
+ 173              	.Letext0:
+ 174              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 175              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 176              		.file 4 "Generated_Source\\PSoC5/I2C.h"
+ 177              		.file 5 "Generated_Source\\PSoC5/CyLib.h"
+ 178              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 179              		.section	.debug_info,"",%progbits
+ 180              	.Ldebug_info0:
+ 181 0000 B0020000 		.4byte	0x2b0
+ 182 0004 0400     		.2byte	0x4
+ 183 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 184 000a 04       		.byte	0x4
+ 185 000b 01       		.uleb128 0x1
+ 186 000c 22010000 		.4byte	.LASF28
+ 187 0010 0C       		.byte	0xc
+ 188 0011 05020000 		.4byte	.LASF29
+ 189 0015 B3000000 		.4byte	.LASF30
+ 190 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 191 001d 00000000 		.4byte	0
+ 192 0021 00000000 		.4byte	.Ldebug_line0
+ 193 0025 02       		.uleb128 0x2
+ 194 0026 01       		.byte	0x1
+ 195 0027 06       		.byte	0x6
+ 196 0028 27020000 		.4byte	.LASF0
+ 197 002c 03       		.uleb128 0x3
+ 198 002d 00000000 		.4byte	.LASF4
+ 199 0031 02       		.byte	0x2
+ 200 0032 1D       		.byte	0x1d
+ 201 0033 37000000 		.4byte	0x37
+ 202 0037 02       		.uleb128 0x2
+ 203 0038 01       		.byte	0x1
+ 204 0039 08       		.byte	0x8
+ 205 003a 66000000 		.4byte	.LASF1
+ 206 003e 02       		.uleb128 0x2
+ 207 003f 02       		.byte	0x2
+ 208 0040 05       		.byte	0x5
+ 209 0041 F2010000 		.4byte	.LASF2
+ 210 0045 02       		.uleb128 0x2
+ 211 0046 02       		.byte	0x2
+ 212 0047 07       		.byte	0x7
+ 213 0048 14000000 		.4byte	.LASF3
+ 214 004c 03       		.uleb128 0x3
+ 215 004d 0A000000 		.4byte	.LASF5
+ 216 0051 02       		.byte	0x2
+ 217 0052 3F       		.byte	0x3f
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 6
+
+
+ 218 0053 57000000 		.4byte	0x57
+ 219 0057 02       		.uleb128 0x2
+ 220 0058 04       		.byte	0x4
+ 221 0059 05       		.byte	0x5
+ 222 005a FC010000 		.4byte	.LASF6
+ 223 005e 02       		.uleb128 0x2
+ 224 005f 04       		.byte	0x4
+ 225 0060 07       		.byte	0x7
+ 226 0061 94000000 		.4byte	.LASF7
+ 227 0065 02       		.uleb128 0x2
+ 228 0066 08       		.byte	0x8
+ 229 0067 05       		.byte	0x5
+ 230 0068 C1010000 		.4byte	.LASF8
+ 231 006c 02       		.uleb128 0x2
+ 232 006d 08       		.byte	0x8
+ 233 006e 07       		.byte	0x7
+ 234 006f 03010000 		.4byte	.LASF9
+ 235 0073 04       		.uleb128 0x4
+ 236 0074 04       		.byte	0x4
+ 237 0075 05       		.byte	0x5
+ 238 0076 696E7400 		.ascii	"int\000"
+ 239 007a 02       		.uleb128 0x2
+ 240 007b 04       		.byte	0x4
+ 241 007c 07       		.byte	0x7
+ 242 007d F6000000 		.4byte	.LASF10
+ 243 0081 03       		.uleb128 0x3
+ 244 0082 1A010000 		.4byte	.LASF11
+ 245 0086 03       		.byte	0x3
+ 246 0087 18       		.byte	0x18
+ 247 0088 2C000000 		.4byte	0x2c
+ 248 008c 03       		.uleb128 0x3
+ 249 008d B0010000 		.4byte	.LASF12
+ 250 0091 03       		.byte	0x3
+ 251 0092 2C       		.byte	0x2c
+ 252 0093 4C000000 		.4byte	0x4c
+ 253 0097 02       		.uleb128 0x2
+ 254 0098 04       		.byte	0x4
+ 255 0099 04       		.byte	0x4
+ 256 009a 4E000000 		.4byte	.LASF13
+ 257 009e 02       		.uleb128 0x2
+ 258 009f 08       		.byte	0x8
+ 259 00a0 04       		.byte	0x4
+ 260 00a1 EF000000 		.4byte	.LASF14
+ 261 00a5 02       		.uleb128 0x2
+ 262 00a6 01       		.byte	0x1
+ 263 00a7 08       		.byte	0x8
+ 264 00a8 CF010000 		.4byte	.LASF15
+ 265 00ac 02       		.uleb128 0x2
+ 266 00ad 08       		.byte	0x8
+ 267 00ae 04       		.byte	0x4
+ 268 00af 1B020000 		.4byte	.LASF16
+ 269 00b3 02       		.uleb128 0x2
+ 270 00b4 04       		.byte	0x4
+ 271 00b5 07       		.byte	0x7
+ 272 00b6 B8010000 		.4byte	.LASF17
+ 273 00ba 05       		.uleb128 0x5
+ 274 00bb 33020000 		.4byte	.LASF18
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 7
+
+
+ 275 00bf 01       		.byte	0x1
+ 276 00c0 0E       		.byte	0xe
+ 277 00c1 00000000 		.4byte	.LFB64
+ 278 00c5 08000000 		.4byte	.LFE64-.LFB64
+ 279 00c9 01       		.uleb128 0x1
+ 280 00ca 9C       		.byte	0x9c
+ 281 00cb D9000000 		.4byte	0xd9
+ 282 00cf 06       		.uleb128 0x6
+ 283 00d0 06000000 		.4byte	.LVL0
+ 284 00d4 71020000 		.4byte	0x271
+ 285 00d8 00       		.byte	0
+ 286 00d9 05       		.uleb128 0x5
+ 287 00da 87000000 		.4byte	.LASF19
+ 288 00de 01       		.byte	0x1
+ 289 00df 18       		.byte	0x18
+ 290 00e0 00000000 		.4byte	.LFB65
+ 291 00e4 3A000000 		.4byte	.LFE65-.LFB65
+ 292 00e8 01       		.uleb128 0x1
+ 293 00e9 9C       		.byte	0x9c
+ 294 00ea 67010000 		.4byte	0x167
+ 295 00ee 07       		.uleb128 0x7
+ 296 00ef 62756600 		.ascii	"buf\000"
+ 297 00f3 01       		.byte	0x1
+ 298 00f4 1A       		.byte	0x1a
+ 299 00f5 67010000 		.4byte	0x167
+ 300 00f9 02       		.uleb128 0x2
+ 301 00fa 91       		.byte	0x91
+ 302 00fb 74       		.sleb128 -12
+ 303 00fc 08       		.uleb128 0x8
+ 304 00fd 3D000000 		.4byte	.LASF20
+ 305 0101 01       		.byte	0x1
+ 306 0102 1B       		.byte	0x1b
+ 307 0103 81000000 		.4byte	0x81
+ 308 0107 00000000 		.4byte	.LLST0
+ 309 010b 06       		.uleb128 0x6
+ 310 010c 14000000 		.4byte	.LVL1
+ 311 0110 7C020000 		.4byte	0x27c
+ 312 0114 09       		.uleb128 0x9
+ 313 0115 1A000000 		.4byte	.LVL2
+ 314 0119 87020000 		.4byte	0x287
+ 315 011d 28010000 		.4byte	0x128
+ 316 0121 0A       		.uleb128 0xa
+ 317 0122 01       		.uleb128 0x1
+ 318 0123 50       		.byte	0x50
+ 319 0124 02       		.uleb128 0x2
+ 320 0125 08       		.byte	0x8
+ 321 0126 64       		.byte	0x64
+ 322 0127 00       		.byte	0
+ 323 0128 09       		.uleb128 0x9
+ 324 0129 26000000 		.4byte	.LVL3
+ 325 012d 92020000 		.4byte	0x292
+ 326 0131 4D010000 		.4byte	0x14d
+ 327 0135 0A       		.uleb128 0xa
+ 328 0136 01       		.uleb128 0x1
+ 329 0137 50       		.byte	0x50
+ 330 0138 02       		.uleb128 0x2
+ 331 0139 08       		.byte	0x8
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 8
+
+
+ 332 013a 52       		.byte	0x52
+ 333 013b 0A       		.uleb128 0xa
+ 334 013c 01       		.uleb128 0x1
+ 335 013d 51       		.byte	0x51
+ 336 013e 02       		.uleb128 0x2
+ 337 013f 91       		.byte	0x91
+ 338 0140 74       		.sleb128 -12
+ 339 0141 0A       		.uleb128 0xa
+ 340 0142 01       		.uleb128 0x1
+ 341 0143 52       		.byte	0x52
+ 342 0144 01       		.uleb128 0x1
+ 343 0145 32       		.byte	0x32
+ 344 0146 0A       		.uleb128 0xa
+ 345 0147 01       		.uleb128 0x1
+ 346 0148 53       		.byte	0x53
+ 347 0149 02       		.uleb128 0x2
+ 348 014a 74       		.byte	0x74
+ 349 014b 00       		.sleb128 0
+ 350 014c 00       		.byte	0
+ 351 014d 06       		.uleb128 0x6
+ 352 014e 2A000000 		.4byte	.LVL4
+ 353 0152 9D020000 		.4byte	0x29d
+ 354 0156 0B       		.uleb128 0xb
+ 355 0157 36000000 		.4byte	.LVL6
+ 356 015b 87020000 		.4byte	0x287
+ 357 015f 0A       		.uleb128 0xa
+ 358 0160 01       		.uleb128 0x1
+ 359 0161 50       		.byte	0x50
+ 360 0162 02       		.uleb128 0x2
+ 361 0163 08       		.byte	0x8
+ 362 0164 64       		.byte	0x64
+ 363 0165 00       		.byte	0
+ 364 0166 00       		.byte	0
+ 365 0167 0C       		.uleb128 0xc
+ 366 0168 81000000 		.4byte	0x81
+ 367 016c 77010000 		.4byte	0x177
+ 368 0170 0D       		.uleb128 0xd
+ 369 0171 B3000000 		.4byte	0xb3
+ 370 0175 01       		.byte	0x1
+ 371 0176 00       		.byte	0
+ 372 0177 05       		.uleb128 0x5
+ 373 0178 E5010000 		.4byte	.LASF21
+ 374 017c 01       		.byte	0x1
+ 375 017d 28       		.byte	0x28
+ 376 017e 00000000 		.4byte	.LFB66
+ 377 0182 4E000000 		.4byte	.LFE66-.LFB66
+ 378 0186 01       		.uleb128 0x1
+ 379 0187 9C       		.byte	0x9c
+ 380 0188 35020000 		.4byte	0x235
+ 381 018c 08       		.uleb128 0x8
+ 382 018d 3D000000 		.4byte	.LASF20
+ 383 0191 01       		.byte	0x1
+ 384 0192 2A       		.byte	0x2a
+ 385 0193 81000000 		.4byte	0x81
+ 386 0197 13000000 		.4byte	.LLST1
+ 387 019b 07       		.uleb128 0x7
+ 388 019c 62756600 		.ascii	"buf\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 9
+
+
+ 389 01a0 01       		.byte	0x1
+ 390 01a1 2B       		.byte	0x2b
+ 391 01a2 35020000 		.4byte	0x235
+ 392 01a6 02       		.uleb128 0x2
+ 393 01a7 91       		.byte	0x91
+ 394 01a8 70       		.sleb128 -16
+ 395 01a9 07       		.uleb128 0x7
+ 396 01aa 6900     		.ascii	"i\000"
+ 397 01ac 01       		.byte	0x1
+ 398 01ad 3A       		.byte	0x3a
+ 399 01ae 73000000 		.4byte	0x73
+ 400 01b2 01       		.uleb128 0x1
+ 401 01b3 53       		.byte	0x53
+ 402 01b4 06       		.uleb128 0x6
+ 403 01b5 08000000 		.4byte	.LVL7
+ 404 01b9 7C020000 		.4byte	0x27c
+ 405 01bd 09       		.uleb128 0x9
+ 406 01be 14000000 		.4byte	.LVL8
+ 407 01c2 92020000 		.4byte	0x292
+ 408 01c6 E1010000 		.4byte	0x1e1
+ 409 01ca 0A       		.uleb128 0xa
+ 410 01cb 01       		.uleb128 0x1
+ 411 01cc 50       		.byte	0x50
+ 412 01cd 02       		.uleb128 0x2
+ 413 01ce 08       		.byte	0x8
+ 414 01cf 52       		.byte	0x52
+ 415 01d0 0A       		.uleb128 0xa
+ 416 01d1 01       		.uleb128 0x1
+ 417 01d2 51       		.byte	0x51
+ 418 01d3 02       		.uleb128 0x2
+ 419 01d4 7D       		.byte	0x7d
+ 420 01d5 00       		.sleb128 0
+ 421 01d6 0A       		.uleb128 0xa
+ 422 01d7 01       		.uleb128 0x1
+ 423 01d8 52       		.byte	0x52
+ 424 01d9 01       		.uleb128 0x1
+ 425 01da 31       		.byte	0x31
+ 426 01db 0A       		.uleb128 0xa
+ 427 01dc 01       		.uleb128 0x1
+ 428 01dd 53       		.byte	0x53
+ 429 01de 01       		.uleb128 0x1
+ 430 01df 30       		.byte	0x30
+ 431 01e0 00       		.byte	0
+ 432 01e1 06       		.uleb128 0x6
+ 433 01e2 18000000 		.4byte	.LVL9
+ 434 01e6 9D020000 		.4byte	0x29d
+ 435 01ea 09       		.uleb128 0x9
+ 436 01eb 24000000 		.4byte	.LVL11
+ 437 01ef 87020000 		.4byte	0x287
+ 438 01f3 FE010000 		.4byte	0x1fe
+ 439 01f7 0A       		.uleb128 0xa
+ 440 01f8 01       		.uleb128 0x1
+ 441 01f9 50       		.byte	0x50
+ 442 01fa 02       		.uleb128 0x2
+ 443 01fb 08       		.byte	0x8
+ 444 01fc 32       		.byte	0x32
+ 445 01fd 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 10
+
+
+ 446 01fe 06       		.uleb128 0x6
+ 447 01ff 28000000 		.4byte	.LVL12
+ 448 0203 7C020000 		.4byte	0x27c
+ 449 0207 09       		.uleb128 0x9
+ 450 0208 34000000 		.4byte	.LVL13
+ 451 020c A8020000 		.4byte	0x2a8
+ 452 0210 2B020000 		.4byte	0x22b
+ 453 0214 0A       		.uleb128 0xa
+ 454 0215 01       		.uleb128 0x1
+ 455 0216 50       		.byte	0x50
+ 456 0217 02       		.uleb128 0x2
+ 457 0218 08       		.byte	0x8
+ 458 0219 52       		.byte	0x52
+ 459 021a 0A       		.uleb128 0xa
+ 460 021b 01       		.uleb128 0x1
+ 461 021c 51       		.byte	0x51
+ 462 021d 02       		.uleb128 0x2
+ 463 021e 7D       		.byte	0x7d
+ 464 021f 00       		.sleb128 0
+ 465 0220 0A       		.uleb128 0xa
+ 466 0221 01       		.uleb128 0x1
+ 467 0222 52       		.byte	0x52
+ 468 0223 01       		.uleb128 0x1
+ 469 0224 36       		.byte	0x36
+ 470 0225 0A       		.uleb128 0xa
+ 471 0226 01       		.uleb128 0x1
+ 472 0227 53       		.byte	0x53
+ 473 0228 01       		.uleb128 0x1
+ 474 0229 30       		.byte	0x30
+ 475 022a 00       		.byte	0
+ 476 022b 06       		.uleb128 0x6
+ 477 022c 38000000 		.4byte	.LVL14
+ 478 0230 9D020000 		.4byte	0x29d
+ 479 0234 00       		.byte	0
+ 480 0235 0C       		.uleb128 0xc
+ 481 0236 81000000 		.4byte	0x81
+ 482 023a 45020000 		.4byte	0x245
+ 483 023e 0D       		.uleb128 0xd
+ 484 023f B3000000 		.4byte	0xb3
+ 485 0243 05       		.byte	0x5
+ 486 0244 00       		.byte	0
+ 487 0245 0E       		.uleb128 0xe
+ 488 0246 7800     		.ascii	"x\000"
+ 489 0248 01       		.byte	0x1
+ 490 0249 08       		.byte	0x8
+ 491 024a 73000000 		.4byte	0x73
+ 492 024e 0E       		.uleb128 0xe
+ 493 024f 7900     		.ascii	"y\000"
+ 494 0251 01       		.byte	0x1
+ 495 0252 08       		.byte	0x8
+ 496 0253 73000000 		.4byte	0x73
+ 497 0257 0E       		.uleb128 0xe
+ 498 0258 7A00     		.ascii	"z\000"
+ 499 025a 01       		.byte	0x1
+ 500 025b 08       		.byte	0x8
+ 501 025c 73000000 		.4byte	0x73
+ 502 0260 0F       		.uleb128 0xf
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 11
+
+
+ 503 0261 A6000000 		.4byte	.LASF31
+ 504 0265 06       		.byte	0x6
+ 505 0266 1207     		.2byte	0x712
+ 506 0268 6C020000 		.4byte	0x26c
+ 507 026c 10       		.uleb128 0x10
+ 508 026d 8C000000 		.4byte	0x8c
+ 509 0271 11       		.uleb128 0x11
+ 510 0272 44000000 		.4byte	.LASF22
+ 511 0276 44000000 		.4byte	.LASF22
+ 512 027a 04       		.byte	0x4
+ 513 027b 93       		.byte	0x93
+ 514 027c 11       		.uleb128 0x11
+ 515 027d 27000000 		.4byte	.LASF23
+ 516 0281 27000000 		.4byte	.LASF23
+ 517 0285 04       		.byte	0x4
+ 518 0286 A4       		.byte	0xa4
+ 519 0287 11       		.uleb128 0x11
+ 520 0288 41020000 		.4byte	.LASF24
+ 521 028c 41020000 		.4byte	.LASF24
+ 522 0290 05       		.byte	0x5
+ 523 0291 76       		.byte	0x76
+ 524 0292 11       		.uleb128 0x11
+ 525 0293 74000000 		.4byte	.LASF25
+ 526 0297 74000000 		.4byte	.LASF25
+ 527 029b 04       		.byte	0x4
+ 528 029c A7       		.byte	0xa7
+ 529 029d 11       		.uleb128 0x11
+ 530 029e D4010000 		.4byte	.LASF26
+ 531 02a2 D4010000 		.4byte	.LASF26
+ 532 02a6 04       		.byte	0x4
+ 533 02a7 A3       		.byte	0xa3
+ 534 02a8 11       		.uleb128 0x11
+ 535 02a9 54000000 		.4byte	.LASF27
+ 536 02ad 54000000 		.4byte	.LASF27
+ 537 02b1 04       		.byte	0x4
+ 538 02b2 A9       		.byte	0xa9
+ 539 02b3 00       		.byte	0
+ 540              		.section	.debug_abbrev,"",%progbits
+ 541              	.Ldebug_abbrev0:
+ 542 0000 01       		.uleb128 0x1
+ 543 0001 11       		.uleb128 0x11
+ 544 0002 01       		.byte	0x1
+ 545 0003 25       		.uleb128 0x25
+ 546 0004 0E       		.uleb128 0xe
+ 547 0005 13       		.uleb128 0x13
+ 548 0006 0B       		.uleb128 0xb
+ 549 0007 03       		.uleb128 0x3
+ 550 0008 0E       		.uleb128 0xe
+ 551 0009 1B       		.uleb128 0x1b
+ 552 000a 0E       		.uleb128 0xe
+ 553 000b 55       		.uleb128 0x55
+ 554 000c 17       		.uleb128 0x17
+ 555 000d 11       		.uleb128 0x11
+ 556 000e 01       		.uleb128 0x1
+ 557 000f 10       		.uleb128 0x10
+ 558 0010 17       		.uleb128 0x17
+ 559 0011 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 12
+
+
+ 560 0012 00       		.byte	0
+ 561 0013 02       		.uleb128 0x2
+ 562 0014 24       		.uleb128 0x24
+ 563 0015 00       		.byte	0
+ 564 0016 0B       		.uleb128 0xb
+ 565 0017 0B       		.uleb128 0xb
+ 566 0018 3E       		.uleb128 0x3e
+ 567 0019 0B       		.uleb128 0xb
+ 568 001a 03       		.uleb128 0x3
+ 569 001b 0E       		.uleb128 0xe
+ 570 001c 00       		.byte	0
+ 571 001d 00       		.byte	0
+ 572 001e 03       		.uleb128 0x3
+ 573 001f 16       		.uleb128 0x16
+ 574 0020 00       		.byte	0
+ 575 0021 03       		.uleb128 0x3
+ 576 0022 0E       		.uleb128 0xe
+ 577 0023 3A       		.uleb128 0x3a
+ 578 0024 0B       		.uleb128 0xb
+ 579 0025 3B       		.uleb128 0x3b
+ 580 0026 0B       		.uleb128 0xb
+ 581 0027 49       		.uleb128 0x49
+ 582 0028 13       		.uleb128 0x13
+ 583 0029 00       		.byte	0
+ 584 002a 00       		.byte	0
+ 585 002b 04       		.uleb128 0x4
+ 586 002c 24       		.uleb128 0x24
+ 587 002d 00       		.byte	0
+ 588 002e 0B       		.uleb128 0xb
+ 589 002f 0B       		.uleb128 0xb
+ 590 0030 3E       		.uleb128 0x3e
+ 591 0031 0B       		.uleb128 0xb
+ 592 0032 03       		.uleb128 0x3
+ 593 0033 08       		.uleb128 0x8
+ 594 0034 00       		.byte	0
+ 595 0035 00       		.byte	0
+ 596 0036 05       		.uleb128 0x5
+ 597 0037 2E       		.uleb128 0x2e
+ 598 0038 01       		.byte	0x1
+ 599 0039 3F       		.uleb128 0x3f
+ 600 003a 19       		.uleb128 0x19
+ 601 003b 03       		.uleb128 0x3
+ 602 003c 0E       		.uleb128 0xe
+ 603 003d 3A       		.uleb128 0x3a
+ 604 003e 0B       		.uleb128 0xb
+ 605 003f 3B       		.uleb128 0x3b
+ 606 0040 0B       		.uleb128 0xb
+ 607 0041 11       		.uleb128 0x11
+ 608 0042 01       		.uleb128 0x1
+ 609 0043 12       		.uleb128 0x12
+ 610 0044 06       		.uleb128 0x6
+ 611 0045 40       		.uleb128 0x40
+ 612 0046 18       		.uleb128 0x18
+ 613 0047 9742     		.uleb128 0x2117
+ 614 0049 19       		.uleb128 0x19
+ 615 004a 01       		.uleb128 0x1
+ 616 004b 13       		.uleb128 0x13
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 13
+
+
+ 617 004c 00       		.byte	0
+ 618 004d 00       		.byte	0
+ 619 004e 06       		.uleb128 0x6
+ 620 004f 898201   		.uleb128 0x4109
+ 621 0052 00       		.byte	0
+ 622 0053 11       		.uleb128 0x11
+ 623 0054 01       		.uleb128 0x1
+ 624 0055 31       		.uleb128 0x31
+ 625 0056 13       		.uleb128 0x13
+ 626 0057 00       		.byte	0
+ 627 0058 00       		.byte	0
+ 628 0059 07       		.uleb128 0x7
+ 629 005a 34       		.uleb128 0x34
+ 630 005b 00       		.byte	0
+ 631 005c 03       		.uleb128 0x3
+ 632 005d 08       		.uleb128 0x8
+ 633 005e 3A       		.uleb128 0x3a
+ 634 005f 0B       		.uleb128 0xb
+ 635 0060 3B       		.uleb128 0x3b
+ 636 0061 0B       		.uleb128 0xb
+ 637 0062 49       		.uleb128 0x49
+ 638 0063 13       		.uleb128 0x13
+ 639 0064 02       		.uleb128 0x2
+ 640 0065 18       		.uleb128 0x18
+ 641 0066 00       		.byte	0
+ 642 0067 00       		.byte	0
+ 643 0068 08       		.uleb128 0x8
+ 644 0069 34       		.uleb128 0x34
+ 645 006a 00       		.byte	0
+ 646 006b 03       		.uleb128 0x3
+ 647 006c 0E       		.uleb128 0xe
+ 648 006d 3A       		.uleb128 0x3a
+ 649 006e 0B       		.uleb128 0xb
+ 650 006f 3B       		.uleb128 0x3b
+ 651 0070 0B       		.uleb128 0xb
+ 652 0071 49       		.uleb128 0x49
+ 653 0072 13       		.uleb128 0x13
+ 654 0073 02       		.uleb128 0x2
+ 655 0074 17       		.uleb128 0x17
+ 656 0075 00       		.byte	0
+ 657 0076 00       		.byte	0
+ 658 0077 09       		.uleb128 0x9
+ 659 0078 898201   		.uleb128 0x4109
+ 660 007b 01       		.byte	0x1
+ 661 007c 11       		.uleb128 0x11
+ 662 007d 01       		.uleb128 0x1
+ 663 007e 31       		.uleb128 0x31
+ 664 007f 13       		.uleb128 0x13
+ 665 0080 01       		.uleb128 0x1
+ 666 0081 13       		.uleb128 0x13
+ 667 0082 00       		.byte	0
+ 668 0083 00       		.byte	0
+ 669 0084 0A       		.uleb128 0xa
+ 670 0085 8A8201   		.uleb128 0x410a
+ 671 0088 00       		.byte	0
+ 672 0089 02       		.uleb128 0x2
+ 673 008a 18       		.uleb128 0x18
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 14
+
+
+ 674 008b 9142     		.uleb128 0x2111
+ 675 008d 18       		.uleb128 0x18
+ 676 008e 00       		.byte	0
+ 677 008f 00       		.byte	0
+ 678 0090 0B       		.uleb128 0xb
+ 679 0091 898201   		.uleb128 0x4109
+ 680 0094 01       		.byte	0x1
+ 681 0095 11       		.uleb128 0x11
+ 682 0096 01       		.uleb128 0x1
+ 683 0097 31       		.uleb128 0x31
+ 684 0098 13       		.uleb128 0x13
+ 685 0099 00       		.byte	0
+ 686 009a 00       		.byte	0
+ 687 009b 0C       		.uleb128 0xc
+ 688 009c 01       		.uleb128 0x1
+ 689 009d 01       		.byte	0x1
+ 690 009e 49       		.uleb128 0x49
+ 691 009f 13       		.uleb128 0x13
+ 692 00a0 01       		.uleb128 0x1
+ 693 00a1 13       		.uleb128 0x13
+ 694 00a2 00       		.byte	0
+ 695 00a3 00       		.byte	0
+ 696 00a4 0D       		.uleb128 0xd
+ 697 00a5 21       		.uleb128 0x21
+ 698 00a6 00       		.byte	0
+ 699 00a7 49       		.uleb128 0x49
+ 700 00a8 13       		.uleb128 0x13
+ 701 00a9 2F       		.uleb128 0x2f
+ 702 00aa 0B       		.uleb128 0xb
+ 703 00ab 00       		.byte	0
+ 704 00ac 00       		.byte	0
+ 705 00ad 0E       		.uleb128 0xe
+ 706 00ae 34       		.uleb128 0x34
+ 707 00af 00       		.byte	0
+ 708 00b0 03       		.uleb128 0x3
+ 709 00b1 08       		.uleb128 0x8
+ 710 00b2 3A       		.uleb128 0x3a
+ 711 00b3 0B       		.uleb128 0xb
+ 712 00b4 3B       		.uleb128 0x3b
+ 713 00b5 0B       		.uleb128 0xb
+ 714 00b6 49       		.uleb128 0x49
+ 715 00b7 13       		.uleb128 0x13
+ 716 00b8 00       		.byte	0
+ 717 00b9 00       		.byte	0
+ 718 00ba 0F       		.uleb128 0xf
+ 719 00bb 34       		.uleb128 0x34
+ 720 00bc 00       		.byte	0
+ 721 00bd 03       		.uleb128 0x3
+ 722 00be 0E       		.uleb128 0xe
+ 723 00bf 3A       		.uleb128 0x3a
+ 724 00c0 0B       		.uleb128 0xb
+ 725 00c1 3B       		.uleb128 0x3b
+ 726 00c2 05       		.uleb128 0x5
+ 727 00c3 49       		.uleb128 0x49
+ 728 00c4 13       		.uleb128 0x13
+ 729 00c5 3F       		.uleb128 0x3f
+ 730 00c6 19       		.uleb128 0x19
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 15
+
+
+ 731 00c7 3C       		.uleb128 0x3c
+ 732 00c8 19       		.uleb128 0x19
+ 733 00c9 00       		.byte	0
+ 734 00ca 00       		.byte	0
+ 735 00cb 10       		.uleb128 0x10
+ 736 00cc 35       		.uleb128 0x35
+ 737 00cd 00       		.byte	0
+ 738 00ce 49       		.uleb128 0x49
+ 739 00cf 13       		.uleb128 0x13
+ 740 00d0 00       		.byte	0
+ 741 00d1 00       		.byte	0
+ 742 00d2 11       		.uleb128 0x11
+ 743 00d3 2E       		.uleb128 0x2e
+ 744 00d4 00       		.byte	0
+ 745 00d5 3F       		.uleb128 0x3f
+ 746 00d6 19       		.uleb128 0x19
+ 747 00d7 3C       		.uleb128 0x3c
+ 748 00d8 19       		.uleb128 0x19
+ 749 00d9 6E       		.uleb128 0x6e
+ 750 00da 0E       		.uleb128 0xe
+ 751 00db 03       		.uleb128 0x3
+ 752 00dc 0E       		.uleb128 0xe
+ 753 00dd 3A       		.uleb128 0x3a
+ 754 00de 0B       		.uleb128 0xb
+ 755 00df 3B       		.uleb128 0x3b
+ 756 00e0 0B       		.uleb128 0xb
+ 757 00e1 00       		.byte	0
+ 758 00e2 00       		.byte	0
+ 759 00e3 00       		.byte	0
+ 760              		.section	.debug_loc,"",%progbits
+ 761              	.Ldebug_loc0:
+ 762              	.LLST0:
+ 763 0000 2A000000 		.4byte	.LVL4
+ 764 0004 32000000 		.4byte	.LVL5
+ 765 0008 0100     		.2byte	0x1
+ 766 000a 50       		.byte	0x50
+ 767 000b 00000000 		.4byte	0
+ 768 000f 00000000 		.4byte	0
+ 769              	.LLST1:
+ 770 0013 18000000 		.4byte	.LVL9
+ 771 0017 20000000 		.4byte	.LVL10
+ 772 001b 0100     		.2byte	0x1
+ 773 001d 50       		.byte	0x50
+ 774 001e 38000000 		.4byte	.LVL14
+ 775 0022 4E000000 		.4byte	.LFE66
+ 776 0026 0100     		.2byte	0x1
+ 777 0028 50       		.byte	0x50
+ 778 0029 00000000 		.4byte	0
+ 779 002d 00000000 		.4byte	0
+ 780              		.section	.debug_aranges,"",%progbits
+ 781 0000 2C000000 		.4byte	0x2c
+ 782 0004 0200     		.2byte	0x2
+ 783 0006 00000000 		.4byte	.Ldebug_info0
+ 784 000a 04       		.byte	0x4
+ 785 000b 00       		.byte	0
+ 786 000c 0000     		.2byte	0
+ 787 000e 0000     		.2byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 16
+
+
+ 788 0010 00000000 		.4byte	.LFB64
+ 789 0014 08000000 		.4byte	.LFE64-.LFB64
+ 790 0018 00000000 		.4byte	.LFB65
+ 791 001c 3A000000 		.4byte	.LFE65-.LFB65
+ 792 0020 00000000 		.4byte	.LFB66
+ 793 0024 4E000000 		.4byte	.LFE66-.LFB66
+ 794 0028 00000000 		.4byte	0
+ 795 002c 00000000 		.4byte	0
+ 796              		.section	.debug_ranges,"",%progbits
+ 797              	.Ldebug_ranges0:
+ 798 0000 00000000 		.4byte	.LFB64
+ 799 0004 08000000 		.4byte	.LFE64
+ 800 0008 00000000 		.4byte	.LFB65
+ 801 000c 3A000000 		.4byte	.LFE65
+ 802 0010 00000000 		.4byte	.LFB66
+ 803 0014 4E000000 		.4byte	.LFE66
+ 804 0018 00000000 		.4byte	0
+ 805 001c 00000000 		.4byte	0
+ 806              		.section	.debug_line,"",%progbits
+ 807              	.Ldebug_line0:
+ 808 0000 BD010000 		.section	.debug_str,"MS",%progbits,1
+ 808      02006201 
+ 808      00000201 
+ 808      FB0E0D00 
+ 808      01010101 
+ 809              	.LASF4:
+ 810 0000 5F5F7569 		.ascii	"__uint8_t\000"
+ 810      6E74385F 
+ 810      7400
+ 811              	.LASF5:
+ 812 000a 5F5F696E 		.ascii	"__int32_t\000"
+ 812      7433325F 
+ 812      7400
+ 813              	.LASF3:
+ 814 0014 73686F72 		.ascii	"short unsigned int\000"
+ 814      7420756E 
+ 814      7369676E 
+ 814      65642069 
+ 814      6E7400
+ 815              	.LASF23:
+ 816 0027 4932435F 		.ascii	"I2C_MasterClearStatus\000"
+ 816      4D617374 
+ 816      6572436C 
+ 816      65617253 
+ 816      74617475 
+ 817              	.LASF20:
+ 818 003d 73746174 		.ascii	"status\000"
+ 818      757300
+ 819              	.LASF22:
+ 820 0044 4932435F 		.ascii	"I2C_Start\000"
+ 820      53746172 
+ 820      7400
+ 821              	.LASF13:
+ 822 004e 666C6F61 		.ascii	"float\000"
+ 822      7400
+ 823              	.LASF27:
+ 824 0054 4932435F 		.ascii	"I2C_MasterReadBuf\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 17
+
+
+ 824      4D617374 
+ 824      65725265 
+ 824      61644275 
+ 824      6600
+ 825              	.LASF1:
+ 826 0066 756E7369 		.ascii	"unsigned char\000"
+ 826      676E6564 
+ 826      20636861 
+ 826      7200
+ 827              	.LASF25:
+ 828 0074 4932435F 		.ascii	"I2C_MasterWriteBuf\000"
+ 828      4D617374 
+ 828      65725772 
+ 828      69746542 
+ 828      756600
+ 829              	.LASF19:
+ 830 0087 6E756E63 		.ascii	"nunchuk_init\000"
+ 830      68756B5F 
+ 830      696E6974 
+ 830      00
+ 831              	.LASF7:
+ 832 0094 6C6F6E67 		.ascii	"long unsigned int\000"
+ 832      20756E73 
+ 832      69676E65 
+ 832      6420696E 
+ 832      7400
+ 833              	.LASF31:
+ 834 00a6 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 834      52784275 
+ 834      66666572 
+ 834      00
+ 835              	.LASF30:
+ 836 00b3 433A5C55 		.ascii	"C:\\Users\\manuelfu\\Documents\\PSoC Creator\\zumo\\"
+ 836      73657273 
+ 836      5C6D616E 
+ 836      75656C66 
+ 836      755C446F 
+ 837 00e1 5A756D6F 		.ascii	"ZumoBot.cydsn\000"
+ 837      426F742E 
+ 837      63796473 
+ 837      6E00
+ 838              	.LASF14:
+ 839 00ef 646F7562 		.ascii	"double\000"
+ 839      6C6500
+ 840              	.LASF10:
+ 841 00f6 756E7369 		.ascii	"unsigned int\000"
+ 841      676E6564 
+ 841      20696E74 
+ 841      00
+ 842              	.LASF9:
+ 843 0103 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 843      206C6F6E 
+ 843      6720756E 
+ 843      7369676E 
+ 843      65642069 
+ 844              	.LASF11:
+ 845 011a 75696E74 		.ascii	"uint8_t\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 18
+
+
+ 845      385F7400 
+ 846              	.LASF28:
+ 847 0122 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 847      43313120 
+ 847      352E342E 
+ 847      31203230 
+ 847      31363036 
+ 848 0155 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 848      20726576 
+ 848      6973696F 
+ 848      6E203233 
+ 848      37373135 
+ 849 0188 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 849      66756E63 
+ 849      74696F6E 
+ 849      2D736563 
+ 849      74696F6E 
+ 850              	.LASF12:
+ 851 01b0 696E7433 		.ascii	"int32_t\000"
+ 851      325F7400 
+ 852              	.LASF17:
+ 853 01b8 73697A65 		.ascii	"sizetype\000"
+ 853      74797065 
+ 853      00
+ 854              	.LASF8:
+ 855 01c1 6C6F6E67 		.ascii	"long long int\000"
+ 855      206C6F6E 
+ 855      6720696E 
+ 855      7400
+ 856              	.LASF15:
+ 857 01cf 63686172 		.ascii	"char\000"
+ 857      00
+ 858              	.LASF26:
+ 859 01d4 4932435F 		.ascii	"I2C_MasterStatus\000"
+ 859      4D617374 
+ 859      65725374 
+ 859      61747573 
+ 859      00
+ 860              	.LASF21:
+ 861 01e5 6E756E63 		.ascii	"nunchuk_read\000"
+ 861      68756B5F 
+ 861      72656164 
+ 861      00
+ 862              	.LASF2:
+ 863 01f2 73686F72 		.ascii	"short int\000"
+ 863      7420696E 
+ 863      7400
+ 864              	.LASF6:
+ 865 01fc 6C6F6E67 		.ascii	"long int\000"
+ 865      20696E74 
+ 865      00
+ 866              	.LASF29:
+ 867 0205 5A756D6F 		.ascii	"ZumoLibrary\\Nunchuk.c\000"
+ 867      4C696272 
+ 867      6172795C 
+ 867      4E756E63 
+ 867      68756B2E 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccyR58fD.s 			page 19
+
+
+ 868              	.LASF16:
+ 869 021b 6C6F6E67 		.ascii	"long double\000"
+ 869      20646F75 
+ 869      626C6500 
+ 870              	.LASF0:
+ 871 0227 7369676E 		.ascii	"signed char\000"
+ 871      65642063 
+ 871      68617200 
+ 872              	.LASF18:
+ 873 0233 6E756E63 		.ascii	"nunchuk_start\000"
+ 873      68756B5F 
+ 873      73746172 
+ 873      7400
+ 874              	.LASF24:
+ 875 0241 43794465 		.ascii	"CyDelay\000"
+ 875      6C617900 
+ 876              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
