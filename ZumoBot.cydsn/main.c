@@ -44,6 +44,8 @@
 #include "Beep.h"
 #include <time.h>
 #include <sys/time.h>
+
+#include "music.h"
 int rread(void);
 
 /**
@@ -77,6 +79,12 @@ int main()
     // SW1_Read() returns zero when button is pressed
     // SW1_Read() returns one when button is not pressed
 
+    play_music("2 C D D e F F e D C b b C D .D -C oC", 300);
+    play_music("3 E =EeEeEBDC A =S 2 =CE 3 =A B =S 2 =E 3 =aB C 2 E", 500);   
+    
+    play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
+                         "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
+    
     for(;;)
     {
         
