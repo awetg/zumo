@@ -302,7 +302,7 @@ void play_note(Note note){
         Beep16(note.duration, (uint16) pwm);
 
 }
-
+/*
 void play_note_and_base(Note note, Note base){
    
     //a A b B C d D e E F g G
@@ -328,4 +328,4 @@ void play_note_and_base(Note note, Note base){
         Beep16(note.duration, (uint8) pwm);
     else
         Beep16B(note.duration, (uint8) pwm, (uint8) pwm_base);
-}
+}*/

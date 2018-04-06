@@ -44,8 +44,10 @@
 #include "Beep.h"
 #include <time.h>
 #include <sys/time.h>
-
 #include "music.h"
+#include "custom_motor.h"
+#include "drive.h"
+
 int rread(void);
 
 /**
@@ -58,32 +60,93 @@ int rread(void);
 //battery level//
 int main()
 {
+    bool lighton = false;
     CyGlobalIntEnable; 
     UART_1_Start();
     Systick_Start();
     
     ADC_Battery_Start();        
 
-    int16 adcresult =0;
+    uint16 adcresult =0;
     float volts = 0.0;
     const float divider_ratio = 1.5f;
     const float adc_max_voltage = 5.0f;
     const float bits_max = 4095.0f;
 
     printf("\nBoot\n");
+    
+    struct sensors_ data;
+    
+ /*
+    play_music("2 C D D e F F e D C b b C D .D -C oC", 300);
+    play_music("3 E =EeEeEBDC A =S 2 =CE 3 =A B =S 2 =E 3 =aB C 2 E", 500);   
 
-    //BatteryLed_Write(1); // Switch led on 
+    play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
+                         "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
+
+*/
+   
+    //play_music("1 A A A A 0-.F1 =C A 0-.F1 =C A", 500);
+     
+    //play_music_with_base("2 -.A =S -.A =S -.A =S -.A =S 1-.F2 =C A 1-.F2 =C oA"
+  //      , "1 A A A A a A a oA", 500);
+    
     BatteryLed_Write(0); // Switch led off 
     //uint8 button;
     //button = SW1_Read(); // read SW1 on pSoC board
     // SW1_Read() returns zero when button is pressed
     // SW1_Read() returns one when button is not pressed
-
-    play_music("2 C D D e F F e D C b b C D .D -C oC", 300);
-    play_music("3 E =EeEeEBDC A =S 2 =CE 3 =A B =S 2 =E 3 =aB C 2 E", 500);   
     
-    play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
-                         "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
+    DriveState dstate;
+    
+    /*
+    float lCoefficients[NCOEFF] =
+    {
+        1, 0.8, 2, //r1, r2, r3
+        -1, -0.8, -2, //l1, l2, l3
+        0, 0.0, 0, //derivatives r1, r2, r3
+        -25, 0, 0, //derivatives l1, l2, l3
+        0, 0, 0, //integrals r1, r2, r3
+        0.001, 0, 0 //integrals l1, l2, l3
+    };
+    
+    float rCoefficients[NCOEFF] =
+    {
+        -1, -0.8, -2, //r1, r2, r3
+        1, 0.8, 2, //l1, l2, l3
+        -25, 0, 0, //derivatives r1, r2, r3
+        0, 0.00, 0,      //derivatives l1, l2, l3
+        0.001, 0, 0, //integrals r1, r2, r3
+        0, 0, 0 //integrals l1, l2, l3
+    };
+    */
+    
+float lCoefficients[NCOEFF] =
+    {
+        1, 0.8, 2, //r1, r2, r3
+        0, -0.8, -2, //l1, l2, l3
+        0, 0, 0, //derivatives r1, r2, r3
+        0, 0, 0, //derivatives l1, l2, l3
+        0, 0, 0, //integrals r1, r2, r3
+        0, 0, 0 //integrals l1, l2, l3
+    };
+    
+    float rCoefficients[NCOEFF] =
+    {
+        0, -0.8, -2, //r1, r2, r3
+        1, 0.8, 2, //l1, l2, l3
+        0, 0, 0, //derivatives r1, r2, r3
+        0, 0, 0, //derivatives l1, l2, l3
+        0, 0, 0, //integrals r1, r2, r3
+        0, 0, 0 //integrals l1, l2, l3
+    };
+    
+    
+    
+    driveStart(&dstate, 6000, 10000);
+    //reflectance_start();
+    
+    int counter = 0;
     
     for(;;)
     {
@@ -96,10 +159,44 @@ int main()
             
             volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
             
+            //reflectance_read(&data);
+            
+            driveFetchData(&dstate);
+            driveUpdateSpeed(&dstate, 0.6f, rCoefficients, lCoefficients);
+            
+            if (counter % 10 == 0)
+                driveResetIntegral(&dstate);
+                
+            counter++;
+            
+            printf("L1: %f\n", dstate.current.l1);
+            printf("L2: %f\n", dstate.current.l2);
+            printf("L3: %f\n", dstate.current.l3);
+            printf("R1: %f\n", dstate.current.r1);
+            printf("R2: %f\n", dstate.current.r2);
+            printf("R3: %f\n", dstate.current.r3);
+            
+            printf("DL1: %f\n", dstate.integral.l1);
+            printf("DL2: %f\n", dstate.integral.l2);
+            printf("DL3: %f\n", dstate.integral.l3);
+            printf("DR1: %f\n", dstate.integral.r1);
+            printf("DR2: %f\n", dstate.integral.r2);
+            printf("DR3: %f\n", dstate.integral.r3);
+            
             // Print both ADC results and converted value
             printf("%d %f\r\n",adcresult, volts);
+            
+            if(volts<4.2)
+            {
+                lighton = !lighton; 
+                BatteryLed_Write(lighton?1:0); // Switch led on
+                ShieldLed_Write(lighton?1:0);
+                //Beep(1000, 150);
+            }
         }
-        CyDelay(500);
+        CyDelay(20);
+        
+       
         
     }
  }   

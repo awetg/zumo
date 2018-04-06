@@ -22,7 +22,7 @@ typedef struct note {
 } Note;
     
 void play_note(Note note);
-void play_note_and_base(Note note, Note base);
+//void play_note_and_base(Note note, Note base);
 void play_music(char* music, float base_duration);
 void play_music_with_base(char* music, char* baseline, float base_duration);
 #endif

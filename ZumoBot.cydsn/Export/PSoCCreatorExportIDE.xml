@@ -50,6 +50,12 @@
           <File BuildType="BUILD" Toolchain="">ZumoLibrary\Ultra.c</File>
           <File BuildType="BUILD" Toolchain="">ZumoLibrary\Systick.c</File>
           <File BuildType="BUILD" Toolchain="">ZumoLibrary\Retarget.c</File>
+          <File BuildType="BUILD" Toolchain="">music.c</File>
+          <File BuildType="BUILD" Toolchain="">music.h</File>
+          <File BuildType="BUILD" Toolchain="">drive.c</File>
+          <File BuildType="BUILD" Toolchain="">drive.h</File>
+          <File BuildType="BUILD" Toolchain="">custom_motor.c</File>
+          <File BuildType="BUILD" Toolchain="">custom_motor.h</File>
           <File BuildType="BUILD" Toolchain="">ZumoLibrary\Accel_magnet.h</File>
           <File BuildType="BUILD" Toolchain="">ZumoLibrary\Ambient.h</File>
           <File BuildType="BUILD" Toolchain="">ZumoLibrary\Beep.h</File>

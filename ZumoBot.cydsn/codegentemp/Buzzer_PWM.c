@@ -400,10 +400,10 @@ void Buzzer_PWM_Stop(void)
     *  The PWM Period will be reloaded when a counter value will be a zero
     *
     *******************************************************************************/
-    void Buzzer_PWM_WriteCounter(uint8 counter) \
+    void Buzzer_PWM_WriteCounter(uint16 counter) \
                                        
     {
-        CY_SET_REG8(Buzzer_PWM_COUNTER_LSB_PTR, counter);
+        CY_SET_REG16(Buzzer_PWM_COUNTER_LSB_PTR, counter);
     }
 
 
@@ -422,7 +422,7 @@ void Buzzer_PWM_Stop(void)
     *  The current value of the counter.
     *
     *******************************************************************************/
-    uint8 Buzzer_PWM_ReadCounter(void) 
+    uint16 Buzzer_PWM_ReadCounter(void) 
     {
         /* Force capture by reading Accumulator */
         /* Must first do a software capture to be able to read the counter */
@@ -430,7 +430,7 @@ void Buzzer_PWM_Stop(void)
           (void)CY_GET_REG8(Buzzer_PWM_COUNTERCAP_LSB_PTR_8BIT);
 
         /* Read the data from the FIFO */
-        return (CY_GET_REG8(Buzzer_PWM_CAPTURE_LSB_PTR));
+        return (CY_GET_REG16(Buzzer_PWM_CAPTURE_LSB_PTR));
     }
 
     #if (Buzzer_PWM_UseStatus)
@@ -479,12 +479,12 @@ void Buzzer_PWM_Stop(void)
 *  None
 *
 *******************************************************************************/
-void Buzzer_PWM_WritePeriod(uint8 period) 
+void Buzzer_PWM_WritePeriod(uint16 period) 
 {
     #if(Buzzer_PWM_UsingFixedFunction)
         CY_SET_REG16(Buzzer_PWM_PERIOD_LSB_PTR, (uint16)period);
     #else
-        CY_SET_REG8(Buzzer_PWM_PERIOD_LSB_PTR, period);
+        CY_SET_REG16(Buzzer_PWM_PERIOD_LSB_PTR, period);
     #endif /* (Buzzer_PWM_UsingFixedFunction) */
 }
 
@@ -513,20 +513,20 @@ void Buzzer_PWM_WritePeriod(uint8 period)
     *  Dither Mode, Center Aligned Mode or One Output Mode
     *
     *******************************************************************************/
-    void Buzzer_PWM_WriteCompare(uint8 compare) \
+    void Buzzer_PWM_WriteCompare(uint16 compare) \
                                        
     {
         #if(Buzzer_PWM_UsingFixedFunction)
             CY_SET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR, (uint16)compare);
         #else
-            CY_SET_REG8(Buzzer_PWM_COMPARE1_LSB_PTR, compare);
+            CY_SET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR, compare);
         #endif /* (Buzzer_PWM_UsingFixedFunction) */
 
         #if (Buzzer_PWM_PWMMode == Buzzer_PWM__B_PWM__DITHER)
             #if(Buzzer_PWM_UsingFixedFunction)
                 CY_SET_REG16(Buzzer_PWM_COMPARE2_LSB_PTR, (uint16)(compare + 1u));
             #else
-                CY_SET_REG8(Buzzer_PWM_COMPARE2_LSB_PTR, (compare + 1u));
+                CY_SET_REG16(Buzzer_PWM_COMPARE2_LSB_PTR, (compare + 1u));
             #endif /* (Buzzer_PWM_UsingFixedFunction) */
         #endif /* (Buzzer_PWM_PWMMode == Buzzer_PWM__B_PWM__DITHER) */
     }
@@ -552,13 +552,13 @@ void Buzzer_PWM_WritePeriod(uint8 period)
     *  None
     *
     *******************************************************************************/
-    void Buzzer_PWM_WriteCompare1(uint8 compare) \
+    void Buzzer_PWM_WriteCompare1(uint16 compare) \
                                         
     {
         #if(Buzzer_PWM_UsingFixedFunction)
             CY_SET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR, (uint16)compare);
         #else
-            CY_SET_REG8(Buzzer_PWM_COMPARE1_LSB_PTR, compare);
+            CY_SET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR, compare);
         #endif /* (Buzzer_PWM_UsingFixedFunction) */
     }
 
@@ -581,13 +581,13 @@ void Buzzer_PWM_WritePeriod(uint8 period)
     *  None
     *
     *******************************************************************************/
-    void Buzzer_PWM_WriteCompare2(uint8 compare) \
+    void Buzzer_PWM_WriteCompare2(uint16 compare) \
                                         
     {
         #if(Buzzer_PWM_UsingFixedFunction)
             CY_SET_REG16(Buzzer_PWM_COMPARE2_LSB_PTR, compare);
         #else
-            CY_SET_REG8(Buzzer_PWM_COMPARE2_LSB_PTR, compare);
+            CY_SET_REG16(Buzzer_PWM_COMPARE2_LSB_PTR, compare);
         #endif /* (Buzzer_PWM_UsingFixedFunction) */
     }
 #endif /* UseOneCompareMode */
@@ -787,9 +787,9 @@ void Buzzer_PWM_WritePeriod(uint8 period)
     *  uint8/uint16: The current capture value
     *
     *******************************************************************************/
-    uint8 Buzzer_PWM_ReadCapture(void) 
+    uint16 Buzzer_PWM_ReadCapture(void) 
     {
-        return (CY_GET_REG8(Buzzer_PWM_CAPTURE_LSB_PTR));
+        return (CY_GET_REG16(Buzzer_PWM_CAPTURE_LSB_PTR));
     }
 
 #endif /* (!Buzzer_PWM_UsingFixedFunction) */
@@ -813,12 +813,12 @@ void Buzzer_PWM_WritePeriod(uint8 period)
     *  uint8/uint16: Current compare value
     *
     *******************************************************************************/
-    uint8 Buzzer_PWM_ReadCompare(void) 
+    uint16 Buzzer_PWM_ReadCompare(void) 
     {
         #if(Buzzer_PWM_UsingFixedFunction)
-            return ((uint8)CY_GET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR));
+            return ((uint16)CY_GET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR));
         #else
-            return (CY_GET_REG8(Buzzer_PWM_COMPARE1_LSB_PTR));
+            return (CY_GET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR));
         #endif /* (Buzzer_PWM_UsingFixedFunction) */
     }
 
@@ -839,9 +839,9 @@ void Buzzer_PWM_WritePeriod(uint8 period)
     *  uint8/uint16: Current compare value.
     *
     *******************************************************************************/
-    uint8 Buzzer_PWM_ReadCompare1(void) 
+    uint16 Buzzer_PWM_ReadCompare1(void) 
     {
-        return (CY_GET_REG8(Buzzer_PWM_COMPARE1_LSB_PTR));
+        return (CY_GET_REG16(Buzzer_PWM_COMPARE1_LSB_PTR));
     }
 
 
@@ -859,9 +859,9 @@ void Buzzer_PWM_WritePeriod(uint8 period)
     *  uint8/uint16: Current compare value.
     *
     *******************************************************************************/
-    uint8 Buzzer_PWM_ReadCompare2(void) 
+    uint16 Buzzer_PWM_ReadCompare2(void) 
     {
-        return (CY_GET_REG8(Buzzer_PWM_COMPARE2_LSB_PTR));
+        return (CY_GET_REG16(Buzzer_PWM_COMPARE2_LSB_PTR));
     }
 
 #endif /* (Buzzer_PWM_UseOneCompareMode) */
@@ -881,12 +881,12 @@ void Buzzer_PWM_WritePeriod(uint8 period)
 *  uint8/16: Period value
 *
 *******************************************************************************/
-uint8 Buzzer_PWM_ReadPeriod(void) 
+uint16 Buzzer_PWM_ReadPeriod(void) 
 {
     #if(Buzzer_PWM_UsingFixedFunction)
-        return ((uint8)CY_GET_REG16(Buzzer_PWM_PERIOD_LSB_PTR));
+        return ((uint16)CY_GET_REG16(Buzzer_PWM_PERIOD_LSB_PTR));
     #else
-        return (CY_GET_REG8(Buzzer_PWM_PERIOD_LSB_PTR));
+        return (CY_GET_REG16(Buzzer_PWM_PERIOD_LSB_PTR));
     #endif /* (Buzzer_PWM_UsingFixedFunction) */
 }
 

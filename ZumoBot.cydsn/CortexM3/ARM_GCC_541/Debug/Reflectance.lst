@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 1
 
 
    1              		.syntax unified
@@ -49,7 +49,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
   19:ZumoLibrary/Reflectance.c **** * @brief    Reflectance Sensor Interrupt Handler
   20:ZumoLibrary/Reflectance.c **** * @details  Measuring each sensors' time to recognition of white or black
   21:ZumoLibrary/Reflectance.c **** */
-  22:ZumoLibrary/Reflectance.c **** //CY_ISR(sensor_isr_handler)
+  22:ZumoLibrary/Reflectance.c **** 
   23:ZumoLibrary/Reflectance.c **** void reflectance_handler(void)
   24:ZumoLibrary/Reflectance.c **** {
   28              		.loc 1 24 0
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
   33              		.cfi_def_cfa_offset 32
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 2
 
 
   34              		.cfi_offset 3, -32
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
   78 0034 14F0400F 		tst	r4, #64
   79 0038 09D0     		beq	.L3
   35:ZumoLibrary/Reflectance.c ****         sensors.r1 = Timer_R1_ReadPeriod() - Timer_R1_ReadCapture();
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 3
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 3
 
 
   80              		.loc 1 35 0
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  124 007e 0446     		mov	r4, r0
  125 0080 FFF7FEFF 		bl	Timer_L1_ReadCounter
  126              	.LVL22:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 4
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 4
 
 
  127 0084 201A     		subs	r0, r4, r0
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  170 00ce D880     		strh	r0, [r3, #6]	@ movhi
  171 00d0 08E0     		b	.L10
  172              	.L9:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 5
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 5
 
 
   57:ZumoLibrary/Reflectance.c ****     }
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  213              		.loc 1 70 0
  214 0116 FFF7FEFF 		bl	Timer_L3_ReadPeriod
  215              	.LVL35:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 6
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 6
 
 
  216 011a 0446     		mov	r4, r0
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  257 015a 0C20     		movs	r0, #12
  258 015c FFF7FEFF 		bl	R3_SetDriveMode
  259              	.LVL44:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 7
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 7
 
 
   84:ZumoLibrary/Reflectance.c ****     R3_Write(1);
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  302 019e FFF7FEFF 		bl	R2_SetDriveMode
  303              	.LVL55:
   96:ZumoLibrary/Reflectance.c ****     R3_SetDriveMode(PIN_DM_DIG_HIZ);
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 8
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 8
 
 
  304              		.loc 1 96 0
@@ -457,16 +457,17 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  334              		.type	reflectance_start, %function
  335              	reflectance_start:
  336              	.LFB65:
- 100:ZumoLibrary/Reflectance.c **** }
- 101:ZumoLibrary/Reflectance.c **** 
+ 100:ZumoLibrary/Reflectance.c **** 
+ 101:ZumoLibrary/Reflectance.c **** }
  102:ZumoLibrary/Reflectance.c **** 
- 103:ZumoLibrary/Reflectance.c **** /**
- 104:ZumoLibrary/Reflectance.c **** * @brief    Starting Reflectance Sensor
- 105:ZumoLibrary/Reflectance.c **** * @details 
- 106:ZumoLibrary/Reflectance.c **** */
- 107:ZumoLibrary/Reflectance.c **** void reflectance_start()
- 108:ZumoLibrary/Reflectance.c **** {
- 337              		.loc 1 108 0
+ 103:ZumoLibrary/Reflectance.c **** 
+ 104:ZumoLibrary/Reflectance.c **** /**
+ 105:ZumoLibrary/Reflectance.c **** * @brief    Starting Reflectance Sensor
+ 106:ZumoLibrary/Reflectance.c **** * @details 
+ 107:ZumoLibrary/Reflectance.c **** */
+ 108:ZumoLibrary/Reflectance.c **** void reflectance_start()
+ 109:ZumoLibrary/Reflectance.c **** {
+ 337              		.loc 1 109 0
  338              		.cfi_startproc
  339              		@ args = 0, pretend = 0, frame = 0
  340              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -474,46 +475,46 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  342              		.cfi_def_cfa_offset 8
  343              		.cfi_offset 3, -8
  344              		.cfi_offset 14, -4
- 109:ZumoLibrary/Reflectance.c ****     IR_led_Write(1);
- 345              		.loc 1 109 0
+ 110:ZumoLibrary/Reflectance.c ****     IR_led_Write(1);
+ 345              		.loc 1 110 0
  346 0002 0120     		movs	r0, #1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 9
+
+
  347 0004 FFF7FEFF 		bl	IR_led_Write
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 9
-
-
  348              	.LVL60:
- 110:ZumoLibrary/Reflectance.c ****     //sensor_isr_StartEx(sensor_isr_handler);
- 111:ZumoLibrary/Reflectance.c ****     Timer_R1_Start();
- 349              		.loc 1 111 0
+ 111:ZumoLibrary/Reflectance.c ****     //sensor_isr_StartEx(sensor_isr_handler);
+ 112:ZumoLibrary/Reflectance.c ****     Timer_R1_Start();
+ 349              		.loc 1 112 0
  350 0008 FFF7FEFF 		bl	Timer_R1_Start
  351              	.LVL61:
- 112:ZumoLibrary/Reflectance.c ****     Timer_R2_Start();
- 352              		.loc 1 112 0
+ 113:ZumoLibrary/Reflectance.c ****     Timer_R2_Start();
+ 352              		.loc 1 113 0
  353 000c FFF7FEFF 		bl	Timer_R2_Start
  354              	.LVL62:
- 113:ZumoLibrary/Reflectance.c ****     Timer_R3_Start();
- 355              		.loc 1 113 0
+ 114:ZumoLibrary/Reflectance.c ****     Timer_R3_Start();
+ 355              		.loc 1 114 0
  356 0010 FFF7FEFF 		bl	Timer_R3_Start
  357              	.LVL63:
- 114:ZumoLibrary/Reflectance.c ****     Timer_L3_Start();
- 358              		.loc 1 114 0
+ 115:ZumoLibrary/Reflectance.c ****     Timer_L3_Start();
+ 358              		.loc 1 115 0
  359 0014 FFF7FEFF 		bl	Timer_L3_Start
  360              	.LVL64:
- 115:ZumoLibrary/Reflectance.c ****     Timer_L2_Start();
- 361              		.loc 1 115 0
+ 116:ZumoLibrary/Reflectance.c ****     Timer_L2_Start();
+ 361              		.loc 1 116 0
  362 0018 FFF7FEFF 		bl	Timer_L2_Start
  363              	.LVL65:
- 116:ZumoLibrary/Reflectance.c ****     Timer_L1_Start();
- 364              		.loc 1 116 0
+ 117:ZumoLibrary/Reflectance.c ****     Timer_L1_Start();
+ 364              		.loc 1 117 0
  365 001c FFF7FEFF 		bl	Timer_L1_Start
  366              	.LVL66:
- 117:ZumoLibrary/Reflectance.c ****     refl_init = true;
- 367              		.loc 1 117 0
+ 118:ZumoLibrary/Reflectance.c ****     refl_init = true;
+ 367              		.loc 1 118 0
  368 0020 0122     		movs	r2, #1
  369 0022 024B     		ldr	r3, .L20
  370 0024 1A70     		strb	r2, [r3]
- 118:ZumoLibrary/Reflectance.c ****     Systick_Start();
- 371              		.loc 1 118 0
+ 119:ZumoLibrary/Reflectance.c ****     Systick_Start();
+ 371              		.loc 1 119 0
  372 0026 FFF7FEFF 		bl	Systick_Start
  373              	.LVL67:
  374 002a 08BD     		pop	{r3, pc}
@@ -532,19 +533,19 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  387              		.type	reflectance_read, %function
  388              	reflectance_read:
  389              	.LFB66:
- 119:ZumoLibrary/Reflectance.c **** }
- 120:ZumoLibrary/Reflectance.c **** 
+ 120:ZumoLibrary/Reflectance.c **** }
  121:ZumoLibrary/Reflectance.c **** 
- 122:ZumoLibrary/Reflectance.c **** /**
- 123:ZumoLibrary/Reflectance.c **** * @brief    Read reflectance sensor values
- 124:ZumoLibrary/Reflectance.c **** * @details
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 10
+ 122:ZumoLibrary/Reflectance.c **** 
+ 123:ZumoLibrary/Reflectance.c **** /**
+ 124:ZumoLibrary/Reflectance.c **** * @brief    Read reflectance sensor values
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 10
 
 
- 125:ZumoLibrary/Reflectance.c **** */
- 126:ZumoLibrary/Reflectance.c **** void reflectance_read(struct sensors_ *values)
- 127:ZumoLibrary/Reflectance.c **** {
- 390              		.loc 1 127 0
+ 125:ZumoLibrary/Reflectance.c **** * @details
+ 126:ZumoLibrary/Reflectance.c **** */
+ 127:ZumoLibrary/Reflectance.c **** void reflectance_read(struct sensors_ *values)
+ 128:ZumoLibrary/Reflectance.c **** {
+ 390              		.loc 1 128 0
  391              		.cfi_startproc
  392              		@ args = 0, pretend = 0, frame = 0
  393              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -554,16 +555,16 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  397              		.cfi_def_cfa_offset 4
  398              		.cfi_offset 4, -4
  399 0002 0446     		mov	r4, r0
- 128:ZumoLibrary/Reflectance.c ****     *values = sensors;
- 400              		.loc 1 128 0
+ 129:ZumoLibrary/Reflectance.c ****     *values = sensors;
+ 400              		.loc 1 129 0
  401 0004 034B     		ldr	r3, .L24
  402 0006 07CB     		ldmia	r3!, {r0, r1, r2}
  403              	.LVL69:
  404 0008 2060     		str	r0, [r4]	@ unaligned
  405 000a 6160     		str	r1, [r4, #4]	@ unaligned
  406 000c A260     		str	r2, [r4, #8]	@ unaligned
- 129:ZumoLibrary/Reflectance.c **** }
- 407              		.loc 1 129 0
+ 130:ZumoLibrary/Reflectance.c **** }
+ 407              		.loc 1 130 0
  408 000e 10BC     		pop	{r4}
  409              		.cfi_restore 4
  410              		.cfi_def_cfa_offset 0
@@ -584,26 +585,26 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  425              		.type	reflectance_digital, %function
  426              	reflectance_digital:
  427              	.LFB67:
- 130:ZumoLibrary/Reflectance.c **** 
  131:ZumoLibrary/Reflectance.c **** 
- 132:ZumoLibrary/Reflectance.c **** /**
- 133:ZumoLibrary/Reflectance.c **** * @brief    Making Reflectance Sensor's period to digital
- 134:ZumoLibrary/Reflectance.c **** * @details
- 135:ZumoLibrary/Reflectance.c **** */
- 136:ZumoLibrary/Reflectance.c **** void reflectance_digital(struct sensors_ *digital)
- 137:ZumoLibrary/Reflectance.c **** {
- 428              		.loc 1 137 0
+ 132:ZumoLibrary/Reflectance.c **** 
+ 133:ZumoLibrary/Reflectance.c **** /**
+ 134:ZumoLibrary/Reflectance.c **** * @brief    Making Reflectance Sensor's period to digital
+ 135:ZumoLibrary/Reflectance.c **** * @details
+ 136:ZumoLibrary/Reflectance.c **** */
+ 137:ZumoLibrary/Reflectance.c **** void reflectance_digital(struct sensors_ *digital)
+ 138:ZumoLibrary/Reflectance.c **** {
+ 428              		.loc 1 138 0
  429              		.cfi_startproc
  430              		@ args = 0, pretend = 0, frame = 0
  431              		@ frame_needed = 0, uses_anonymous_args = 0
  432              		@ link register save eliminated.
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 11
+
+
  433              	.LVL71:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 11
-
-
- 138:ZumoLibrary/Reflectance.c ****     //if the results of reflectance_period function is over threshold, set digital_sensor_value to 
- 139:ZumoLibrary/Reflectance.c ****     if(sensors.l3 < threshold.l3)
- 434              		.loc 1 139 0
+ 139:ZumoLibrary/Reflectance.c ****     //if the results of reflectance_period function is over threshold, set digital_sensor_value to 
+ 140:ZumoLibrary/Reflectance.c ****     if(sensors.l3 < threshold.l3)
+ 434              		.loc 1 140 0
  435 0000 244B     		ldr	r3, .L39
  436 0002 9B88     		ldrh	r3, [r3, #4]
  437 0004 9BB2     		uxth	r3, r3
@@ -611,21 +612,21 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  439 0008 1288     		ldrh	r2, [r2]
  440 000a 9342     		cmp	r3, r2
  441 000c 02D2     		bcs	.L27
- 140:ZumoLibrary/Reflectance.c ****         digital->l3 = 0;
- 442              		.loc 1 140 0
+ 141:ZumoLibrary/Reflectance.c ****         digital->l3 = 0;
+ 442              		.loc 1 141 0
  443 000e 0023     		movs	r3, #0
  444 0010 0380     		strh	r3, [r0]	@ movhi
  445 0012 01E0     		b	.L28
  446              	.L27:
- 141:ZumoLibrary/Reflectance.c ****     else
- 142:ZumoLibrary/Reflectance.c ****         digital->l3 = 1;
- 447              		.loc 1 142 0
+ 142:ZumoLibrary/Reflectance.c ****     else
+ 143:ZumoLibrary/Reflectance.c ****         digital->l3 = 1;
+ 447              		.loc 1 143 0
  448 0014 0123     		movs	r3, #1
  449 0016 0380     		strh	r3, [r0]	@ movhi
  450              	.L28:
- 143:ZumoLibrary/Reflectance.c ****     
- 144:ZumoLibrary/Reflectance.c ****     if(sensors.l2 < threshold.l2)
- 451              		.loc 1 144 0
+ 144:ZumoLibrary/Reflectance.c ****     
+ 145:ZumoLibrary/Reflectance.c ****     if(sensors.l2 < threshold.l2)
+ 451              		.loc 1 145 0
  452 0018 1E4B     		ldr	r3, .L39
  453 001a DB88     		ldrh	r3, [r3, #6]
  454 001c 9BB2     		uxth	r3, r3
@@ -633,21 +634,21 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  456 0020 5288     		ldrh	r2, [r2, #2]
  457 0022 9342     		cmp	r3, r2
  458 0024 02D2     		bcs	.L29
- 145:ZumoLibrary/Reflectance.c ****         digital->l2 = 0;
- 459              		.loc 1 145 0
+ 146:ZumoLibrary/Reflectance.c ****         digital->l2 = 0;
+ 459              		.loc 1 146 0
  460 0026 0023     		movs	r3, #0
  461 0028 4380     		strh	r3, [r0, #2]	@ movhi
  462 002a 01E0     		b	.L30
  463              	.L29:
- 146:ZumoLibrary/Reflectance.c ****     else
- 147:ZumoLibrary/Reflectance.c ****         digital->l2 = 1;
- 464              		.loc 1 147 0
+ 147:ZumoLibrary/Reflectance.c ****     else
+ 148:ZumoLibrary/Reflectance.c ****         digital->l2 = 1;
+ 464              		.loc 1 148 0
  465 002c 0123     		movs	r3, #1
  466 002e 4380     		strh	r3, [r0, #2]	@ movhi
  467              	.L30:
- 148:ZumoLibrary/Reflectance.c ****     
- 149:ZumoLibrary/Reflectance.c ****     if(sensors.l1 < threshold.l1)
- 468              		.loc 1 149 0
+ 149:ZumoLibrary/Reflectance.c ****     
+ 150:ZumoLibrary/Reflectance.c ****     if(sensors.l1 < threshold.l1)
+ 468              		.loc 1 150 0
  469 0030 184B     		ldr	r3, .L39
  470 0032 1B89     		ldrh	r3, [r3, #8]
  471 0034 9BB2     		uxth	r3, r3
@@ -655,24 +656,24 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  473 0038 9288     		ldrh	r2, [r2, #4]
  474 003a 9342     		cmp	r3, r2
  475 003c 02D2     		bcs	.L31
- 150:ZumoLibrary/Reflectance.c ****         digital->l1 = 0;
- 476              		.loc 1 150 0
+ 151:ZumoLibrary/Reflectance.c ****         digital->l1 = 0;
+ 476              		.loc 1 151 0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 12
+
+
  477 003e 0023     		movs	r3, #0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 12
-
-
  478 0040 8380     		strh	r3, [r0, #4]	@ movhi
  479 0042 01E0     		b	.L32
  480              	.L31:
- 151:ZumoLibrary/Reflectance.c ****     else
- 152:ZumoLibrary/Reflectance.c ****         digital->l1 = 1;
- 481              		.loc 1 152 0
+ 152:ZumoLibrary/Reflectance.c ****     else
+ 153:ZumoLibrary/Reflectance.c ****         digital->l1 = 1;
+ 481              		.loc 1 153 0
  482 0044 0123     		movs	r3, #1
  483 0046 8380     		strh	r3, [r0, #4]	@ movhi
  484              	.L32:
- 153:ZumoLibrary/Reflectance.c ****     
- 154:ZumoLibrary/Reflectance.c ****     if(sensors.r1 < threshold.r1)
- 485              		.loc 1 154 0
+ 154:ZumoLibrary/Reflectance.c ****     
+ 155:ZumoLibrary/Reflectance.c ****     if(sensors.r1 < threshold.r1)
+ 485              		.loc 1 155 0
  486 0048 124B     		ldr	r3, .L39
  487 004a 5B89     		ldrh	r3, [r3, #10]
  488 004c 9BB2     		uxth	r3, r3
@@ -680,21 +681,21 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  490 0050 D288     		ldrh	r2, [r2, #6]
  491 0052 9342     		cmp	r3, r2
  492 0054 02D2     		bcs	.L33
- 155:ZumoLibrary/Reflectance.c ****         digital->r1 = 0;
- 493              		.loc 1 155 0
+ 156:ZumoLibrary/Reflectance.c ****         digital->r1 = 0;
+ 493              		.loc 1 156 0
  494 0056 0023     		movs	r3, #0
  495 0058 C380     		strh	r3, [r0, #6]	@ movhi
  496 005a 01E0     		b	.L34
  497              	.L33:
- 156:ZumoLibrary/Reflectance.c ****     else
- 157:ZumoLibrary/Reflectance.c ****         digital->r1 = 1;
- 498              		.loc 1 157 0
+ 157:ZumoLibrary/Reflectance.c ****     else
+ 158:ZumoLibrary/Reflectance.c ****         digital->r1 = 1;
+ 498              		.loc 1 158 0
  499 005c 0123     		movs	r3, #1
  500 005e C380     		strh	r3, [r0, #6]	@ movhi
  501              	.L34:
- 158:ZumoLibrary/Reflectance.c ****     
- 159:ZumoLibrary/Reflectance.c ****     if(sensors.r2 < threshold.r2)
- 502              		.loc 1 159 0
+ 159:ZumoLibrary/Reflectance.c ****     
+ 160:ZumoLibrary/Reflectance.c ****     if(sensors.r2 < threshold.r2)
+ 502              		.loc 1 160 0
  503 0060 0C4B     		ldr	r3, .L39
  504 0062 9B89     		ldrh	r3, [r3, #12]
  505 0064 9BB2     		uxth	r3, r3
@@ -702,40 +703,40 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  507 0068 1289     		ldrh	r2, [r2, #8]
  508 006a 9342     		cmp	r3, r2
  509 006c 02D2     		bcs	.L35
- 160:ZumoLibrary/Reflectance.c ****         digital->r2 = 0;
- 510              		.loc 1 160 0
+ 161:ZumoLibrary/Reflectance.c ****         digital->r2 = 0;
+ 510              		.loc 1 161 0
  511 006e 0023     		movs	r3, #0
  512 0070 0381     		strh	r3, [r0, #8]	@ movhi
  513 0072 01E0     		b	.L36
  514              	.L35:
- 161:ZumoLibrary/Reflectance.c ****     else
- 162:ZumoLibrary/Reflectance.c ****         digital->r2 = 1;
- 515              		.loc 1 162 0
+ 162:ZumoLibrary/Reflectance.c ****     else
+ 163:ZumoLibrary/Reflectance.c ****         digital->r2 = 1;
+ 515              		.loc 1 163 0
  516 0074 0123     		movs	r3, #1
  517 0076 0381     		strh	r3, [r0, #8]	@ movhi
  518              	.L36:
- 163:ZumoLibrary/Reflectance.c ****     
- 164:ZumoLibrary/Reflectance.c ****     if(sensors.r3 < threshold.r3)
- 519              		.loc 1 164 0
+ 164:ZumoLibrary/Reflectance.c ****     
+ 165:ZumoLibrary/Reflectance.c ****     if(sensors.r3 < threshold.r3)
+ 519              		.loc 1 165 0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 13
+
+
  520 0078 064B     		ldr	r3, .L39
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 13
-
-
  521 007a DB89     		ldrh	r3, [r3, #14]
  522 007c 9BB2     		uxth	r3, r3
  523 007e 064A     		ldr	r2, .L39+4
  524 0080 5289     		ldrh	r2, [r2, #10]
  525 0082 9342     		cmp	r3, r2
  526 0084 02D2     		bcs	.L37
- 165:ZumoLibrary/Reflectance.c ****         digital->r3 = 0;
- 527              		.loc 1 165 0
+ 166:ZumoLibrary/Reflectance.c ****         digital->r3 = 0;
+ 527              		.loc 1 166 0
  528 0086 0023     		movs	r3, #0
  529 0088 4381     		strh	r3, [r0, #10]	@ movhi
  530 008a 7047     		bx	lr
  531              	.L37:
- 166:ZumoLibrary/Reflectance.c ****     else
- 167:ZumoLibrary/Reflectance.c ****         digital->r3 = 1;
- 532              		.loc 1 167 0
+ 167:ZumoLibrary/Reflectance.c ****     else
+ 168:ZumoLibrary/Reflectance.c ****         digital->r3 = 1;
+ 532              		.loc 1 168 0
  533 008c 0123     		movs	r3, #1
  534 008e 4381     		strh	r3, [r0, #10]	@ movhi
  535 0090 7047     		bx	lr
@@ -755,12 +756,12 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  549              		.type	reflectance_set_threshold, %function
  550              	reflectance_set_threshold:
  551              	.LFB68:
- 168:ZumoLibrary/Reflectance.c ****         
- 169:ZumoLibrary/Reflectance.c **** }
- 170:ZumoLibrary/Reflectance.c **** 
- 171:ZumoLibrary/Reflectance.c **** void reflectance_set_threshold(uint16_t l3, uint16_t l2, uint16_t l1, uint16_t r1, uint16_t r2, uin
- 172:ZumoLibrary/Reflectance.c **** {
- 552              		.loc 1 172 0
+ 169:ZumoLibrary/Reflectance.c ****         
+ 170:ZumoLibrary/Reflectance.c **** }
+ 171:ZumoLibrary/Reflectance.c **** 
+ 172:ZumoLibrary/Reflectance.c **** void reflectance_set_threshold(uint16_t l3, uint16_t l2, uint16_t l1, uint16_t r1, uint16_t r2, uin
+ 173:ZumoLibrary/Reflectance.c **** {
+ 552              		.loc 1 173 0
  553              		.cfi_startproc
  554              		@ args = 8, pretend = 0, frame = 0
  555              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -769,33 +770,33 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  558 0000 10B4     		push	{r4}
  559              		.cfi_def_cfa_offset 4
  560              		.cfi_offset 4, -4
- 173:ZumoLibrary/Reflectance.c ****     threshold.l3 = l3;
- 561              		.loc 1 173 0
+ 174:ZumoLibrary/Reflectance.c ****     threshold.l3 = l3;
+ 561              		.loc 1 174 0
  562 0002 064C     		ldr	r4, .L43
  563 0004 2080     		strh	r0, [r4]	@ movhi
- 174:ZumoLibrary/Reflectance.c ****     threshold.l2 = l2;
- 564              		.loc 1 174 0
+ 175:ZumoLibrary/Reflectance.c ****     threshold.l2 = l2;
+ 564              		.loc 1 175 0
  565 0006 6180     		strh	r1, [r4, #2]	@ movhi
- 175:ZumoLibrary/Reflectance.c ****     threshold.l1 = l1;
- 566              		.loc 1 175 0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 14
+ 176:ZumoLibrary/Reflectance.c ****     threshold.l1 = l1;
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 14
 
 
+ 566              		.loc 1 176 0
  567 0008 A280     		strh	r2, [r4, #4]	@ movhi
- 176:ZumoLibrary/Reflectance.c ****     threshold.r3 = r3;
- 568              		.loc 1 176 0
+ 177:ZumoLibrary/Reflectance.c ****     threshold.r3 = r3;
+ 568              		.loc 1 177 0
  569 000a BDF80820 		ldrh	r2, [sp, #8]
  570              	.LVL73:
  571 000e 6281     		strh	r2, [r4, #10]	@ movhi
- 177:ZumoLibrary/Reflectance.c ****     threshold.r2 = r2;
- 572              		.loc 1 177 0
+ 178:ZumoLibrary/Reflectance.c ****     threshold.r2 = r2;
+ 572              		.loc 1 178 0
  573 0010 BDF80420 		ldrh	r2, [sp, #4]
  574 0014 2281     		strh	r2, [r4, #8]	@ movhi
- 178:ZumoLibrary/Reflectance.c ****     threshold.r1 = r1;
- 575              		.loc 1 178 0
+ 179:ZumoLibrary/Reflectance.c ****     threshold.r1 = r1;
+ 575              		.loc 1 179 0
  576 0016 E380     		strh	r3, [r4, #6]	@ movhi
- 179:ZumoLibrary/Reflectance.c **** }
- 577              		.loc 1 179 0
+ 180:ZumoLibrary/Reflectance.c **** }
+ 577              		.loc 1 180 0
  578 0018 10BC     		pop	{r4}
  579              		.cfi_restore 4
  580              		.cfi_def_cfa_offset 0
@@ -837,10 +838,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  614              		.type	digital_sensor_value, %object
  615              		.size	digital_sensor_value, 12
  616              	digital_sensor_value:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 15
+
+
  617 0010 00000000 		.space	12
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 15
-
-
  617      00000000 
  617      00000000 
  618              		.text
@@ -897,10 +898,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  669 003f 02       		.byte	0x2
  670 0040 2B       		.byte	0x2b
  671 0041 45000000 		.4byte	0x45
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 16
+
+
  672 0045 02       		.uleb128 0x2
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 16
-
-
  673 0046 02       		.byte	0x2
  674 0047 07       		.byte	0x7
  675 0048 10030000 		.4byte	.LASF3
@@ -957,10 +958,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  726 00a8 3A000000 		.4byte	0x3a
  727 00ac 03       		.uleb128 0x3
  728 00ad 84030000 		.4byte	.LASF16
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 17
+
+
  729 00b1 03       		.byte	0x3
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 17
-
-
  730 00b2 2C       		.byte	0x2c
  731 00b3 4C000000 		.4byte	0x4c
  732 00b7 03       		.uleb128 0x3
@@ -1017,10 +1018,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  783 0119 13       		.byte	0x13
  784 011a A1000000 		.4byte	0xa1
  785 011e 08       		.byte	0x8
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 18
+
+
  786 011f 07       		.uleb128 0x7
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 18
-
-
  787 0120 723300   		.ascii	"r3\000"
  788 0123 05       		.byte	0x5
  789 0124 14       		.byte	0x14
@@ -1077,10 +1078,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  840 019f B4050000 		.4byte	0x5b4
  841 01a3 0A       		.uleb128 0xa
  842 01a4 1A000000 		.4byte	.LVL2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 19
+
+
  843 01a8 BF050000 		.4byte	0x5bf
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 19
-
-
  844 01ac 0A       		.uleb128 0xa
  845 01ad 20000000 		.4byte	.LVL4
  846 01b1 CA050000 		.4byte	0x5ca
@@ -1137,10 +1138,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  897 024a 64060000 		.4byte	0x664
  898 024e 0A       		.uleb128 0xa
  899 024f D6000000 		.4byte	.LVL29
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 20
+
+
  900 0253 59060000 		.4byte	0x659
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 20
-
-
  901 0257 0A       		.uleb128 0xa
  902 0258 DC000000 		.4byte	.LVL30
  903 025c 6F060000 		.4byte	0x66f
@@ -1197,10 +1198,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  954 02dd 50       		.byte	0x50
  955 02de 01       		.uleb128 0x1
  956 02df 31       		.byte	0x31
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 21
+
+
  957 02e0 00       		.byte	0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 21
-
-
  958 02e1 0B       		.uleb128 0xb
  959 02e2 54010000 		.4byte	.LVL42
  960 02e6 DD060000 		.4byte	0x6dd
@@ -1257,10 +1258,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1011 0349 53030000 		.4byte	0x353
  1012 034d 0C       		.uleb128 0xc
  1013 034e 01       		.uleb128 0x1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 22
+
+
  1014 034f 50       		.byte	0x50
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 22
-
-
  1015 0350 01       		.uleb128 0x1
  1016 0351 31       		.byte	0x31
  1017 0352 00       		.byte	0
@@ -1317,10 +1318,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1068 03b2 0B       		.uleb128 0xb
  1069 03b3 96010000 		.4byte	.LVL53
  1070 03b7 4B070000 		.4byte	0x74b
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 23
+
+
  1071 03bb C5030000 		.4byte	0x3c5
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 23
-
-
  1072 03bf 0C       		.uleb128 0xc
  1073 03c0 01       		.uleb128 0x1
  1074 03c1 50       		.byte	0x50
@@ -1377,10 +1378,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1125 0421 01       		.uleb128 0x1
  1126 0422 32       		.byte	0x32
  1127 0423 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 24
+
+
  1128 0424 0D       		.uleb128 0xd
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 24
-
-
  1129 0425 BA010000 		.4byte	.LVL59
  1130 0429 35070000 		.4byte	0x735
  1131 042d 0C       		.uleb128 0xc
@@ -1393,7 +1394,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1138 0434 08       		.uleb128 0x8
  1139 0435 31010000 		.4byte	.LASF28
  1140 0439 01       		.byte	0x1
- 1141 043a 6B       		.byte	0x6b
+ 1141 043a 6C       		.byte	0x6c
  1142 043b 00000000 		.4byte	.LFB65
  1143 043f 30000000 		.4byte	.LFE65-.LFB65
  1144 0443 01       		.uleb128 0x1
@@ -1434,19 +1435,19 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1179 049c 08       		.uleb128 0x8
  1180 049d D3050000 		.4byte	.LASF29
  1181 04a1 01       		.byte	0x1
- 1182 04a2 7E       		.byte	0x7e
+ 1182 04a2 7F       		.byte	0x7f
  1183 04a3 00000000 		.4byte	.LFB66
  1184 04a7 18000000 		.4byte	.LFE66-.LFB66
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 25
+
+
  1185 04ab 01       		.uleb128 0x1
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 25
-
-
  1186 04ac 9C       		.byte	0x9c
  1187 04ad C1040000 		.4byte	0x4c1
  1188 04b1 0E       		.uleb128 0xe
  1189 04b2 E1010000 		.4byte	.LASF31
  1190 04b6 01       		.byte	0x1
- 1191 04b7 7E       		.byte	0x7e
+ 1191 04b7 7F       		.byte	0x7f
  1192 04b8 C1040000 		.4byte	0x4c1
  1193 04bc A0000000 		.4byte	.LLST6
  1194 04c0 00       		.byte	0
@@ -1456,7 +1457,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1198 04c7 08       		.uleb128 0x8
  1199 04c8 A1010000 		.4byte	.LASF30
  1200 04cc 01       		.byte	0x1
- 1201 04cd 88       		.byte	0x88
+ 1201 04cd 89       		.byte	0x89
  1202 04ce 00000000 		.4byte	.LFB67
  1203 04d2 9C000000 		.4byte	.LFE67-.LFB67
  1204 04d6 01       		.uleb128 0x1
@@ -1465,7 +1466,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1207 04dc 10       		.uleb128 0x10
  1208 04dd 39040000 		.4byte	.LASF32
  1209 04e1 01       		.byte	0x1
- 1210 04e2 88       		.byte	0x88
+ 1210 04e2 89       		.byte	0x89
  1211 04e3 C1040000 		.4byte	0x4c1
  1212 04e7 01       		.uleb128 0x1
  1213 04e8 50       		.byte	0x50
@@ -1473,7 +1474,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1215 04ea 08       		.uleb128 0x8
  1216 04eb 73020000 		.4byte	.LASF33
  1217 04ef 01       		.byte	0x1
- 1218 04f0 AB       		.byte	0xab
+ 1218 04f0 AC       		.byte	0xac
  1219 04f1 00000000 		.4byte	.LFB68
  1220 04f5 20000000 		.4byte	.LFE68-.LFB68
  1221 04f9 01       		.uleb128 0x1
@@ -1482,43 +1483,43 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1224 04ff 11       		.uleb128 0x11
  1225 0500 6C3300   		.ascii	"l3\000"
  1226 0503 01       		.byte	0x1
- 1227 0504 AB       		.byte	0xab
+ 1227 0504 AC       		.byte	0xac
  1228 0505 A1000000 		.4byte	0xa1
  1229 0509 01       		.uleb128 0x1
  1230 050a 50       		.byte	0x50
  1231 050b 11       		.uleb128 0x11
  1232 050c 6C3200   		.ascii	"l2\000"
  1233 050f 01       		.byte	0x1
- 1234 0510 AB       		.byte	0xab
+ 1234 0510 AC       		.byte	0xac
  1235 0511 A1000000 		.4byte	0xa1
  1236 0515 01       		.uleb128 0x1
  1237 0516 51       		.byte	0x51
  1238 0517 12       		.uleb128 0x12
  1239 0518 6C3100   		.ascii	"l1\000"
  1240 051b 01       		.byte	0x1
- 1241 051c AB       		.byte	0xab
+ 1241 051c AC       		.byte	0xac
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 26
+
+
  1242 051d A1000000 		.4byte	0xa1
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 26
-
-
  1243 0521 CC000000 		.4byte	.LLST7
  1244 0525 11       		.uleb128 0x11
  1245 0526 723100   		.ascii	"r1\000"
  1246 0529 01       		.byte	0x1
- 1247 052a AB       		.byte	0xab
+ 1247 052a AC       		.byte	0xac
  1248 052b A1000000 		.4byte	0xa1
  1249 052f 01       		.uleb128 0x1
  1250 0530 53       		.byte	0x53
  1251 0531 12       		.uleb128 0x12
  1252 0532 723200   		.ascii	"r2\000"
  1253 0535 01       		.byte	0x1
- 1254 0536 AB       		.byte	0xab
+ 1254 0536 AC       		.byte	0xac
  1255 0537 A1000000 		.4byte	0xa1
  1256 053b EE000000 		.4byte	.LLST8
  1257 053f 12       		.uleb128 0x12
  1258 0540 723300   		.ascii	"r3\000"
  1259 0543 01       		.byte	0x1
- 1260 0544 AB       		.byte	0xab
+ 1260 0544 AC       		.byte	0xac
  1261 0545 A1000000 		.4byte	0xa1
  1262 0549 0E010000 		.4byte	.LLST9
  1263 054d 00       		.byte	0
@@ -1557,10 +1558,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1296 0592 03       		.byte	0x3
  1297 0593 00000000 		.4byte	refl_init
  1298 0597 02       		.uleb128 0x2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 27
+
+
  1299 0598 01       		.byte	0x1
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 27
-
-
  1300 0599 02       		.byte	0x2
  1301 059a 92030000 		.4byte	.LASF38
  1302 059e 14       		.uleb128 0x14
@@ -1617,10 +1618,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1353 0611 1F000000 		.4byte	.LASF47
  1354 0615 06       		.byte	0x6
  1355 0616 69       		.byte	0x69
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 28
+
+
  1356 0617 16       		.uleb128 0x16
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 28
-
-
  1357 0618 AD030000 		.4byte	.LASF48
  1358 061c AD030000 		.4byte	.LASF48
  1359 0620 0B       		.byte	0xb
@@ -1677,10 +1678,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1410 068f 6B       		.byte	0x6b
  1411 0690 16       		.uleb128 0x16
  1412 0691 6C000000 		.4byte	.LASF59
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 29
+
+
  1413 0695 6C000000 		.4byte	.LASF59
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 29
-
-
  1414 0699 08       		.byte	0x8
  1415 069a 69       		.byte	0x69
  1416 069b 16       		.uleb128 0x16
@@ -1737,10 +1738,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1467 070a A2000000 		.4byte	.LASF70
  1468 070e A2000000 		.4byte	.LASF70
  1469 0712 10       		.byte	0x10
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 30
+
+
  1470 0713 27       		.byte	0x27
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 30
-
-
  1471 0714 16       		.uleb128 0x16
  1472 0715 ED030000 		.4byte	.LASF71
  1473 0719 ED030000 		.4byte	.LASF71
@@ -1797,10 +1798,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1524 078b 09       		.byte	0x9
  1525 078c 5A       		.byte	0x5a
  1526 078d 16       		.uleb128 0x16
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 31
+
+
  1527 078e E4050000 		.4byte	.LASF82
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 31
-
-
  1528 0792 E4050000 		.4byte	.LASF82
  1529 0796 0A       		.byte	0xa
  1530 0797 5A       		.byte	0x5a
@@ -1857,10 +1858,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1581 0025 3B       		.uleb128 0x3b
  1582 0026 0B       		.uleb128 0xb
  1583 0027 49       		.uleb128 0x49
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 32
+
+
  1584 0028 13       		.uleb128 0x13
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 32
-
-
  1585 0029 00       		.byte	0
  1586 002a 00       		.byte	0
  1587 002b 04       		.uleb128 0x4
@@ -1917,10 +1918,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1638 005e 0B       		.uleb128 0xb
  1639 005f 00       		.byte	0
  1640 0060 00       		.byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 33
+
+
  1641 0061 08       		.uleb128 0x8
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 33
-
-
  1642 0062 2E       		.uleb128 0x2e
  1643 0063 01       		.byte	0x1
  1644 0064 3F       		.uleb128 0x3f
@@ -1977,10 +1978,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1695 009c 31       		.uleb128 0x31
  1696 009d 13       		.uleb128 0x13
  1697 009e 01       		.uleb128 0x1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 34
+
+
  1698 009f 13       		.uleb128 0x13
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 34
-
-
  1699 00a0 00       		.byte	0
  1700 00a1 00       		.byte	0
  1701 00a2 0C       		.uleb128 0xc
@@ -2037,10 +2038,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1752 00da 49       		.uleb128 0x49
  1753 00db 13       		.uleb128 0x13
  1754 00dc 02       		.uleb128 0x2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 35
+
+
  1755 00dd 18       		.uleb128 0x18
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 35
-
-
  1756 00de 00       		.byte	0
  1757 00df 00       		.byte	0
  1758 00e0 11       		.uleb128 0x11
@@ -2097,10 +2098,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1809 0113 00       		.byte	0
  1810 0114 15       		.uleb128 0x15
  1811 0115 34       		.uleb128 0x34
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 36
+
+
  1812 0116 00       		.byte	0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 36
-
-
  1813 0117 03       		.uleb128 0x3
  1814 0118 0E       		.uleb128 0xe
  1815 0119 3A       		.uleb128 0x3a
@@ -2157,10 +2158,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1866 0020 00000000 		.4byte	0
  1867 0024 00000000 		.4byte	0
  1868              	.LLST1:
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 37
+
+
  1869 0028 1C000000 		.4byte	.LVL3
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 37
-
-
  1870 002c BA010000 		.4byte	.LVL59
  1871 0030 0600     		.2byte	0x6
  1872 0032 78       		.byte	0x78
@@ -2217,10 +2218,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1923 0095 FF       		.byte	0xff
  1924 0096 1A       		.byte	0x1a
  1925 0097 9F       		.byte	0x9f
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 38
+
+
  1926 0098 00000000 		.4byte	0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 38
-
-
  1927 009c 00000000 		.4byte	0
  1928              	.LLST6:
  1929 00a0 00000000 		.4byte	.LVL68
@@ -2277,10 +2278,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  1980 0124 7D       		.byte	0x7d
  1981 0125 04       		.sleb128 4
  1982 0126 00000000 		.4byte	0
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 39
+
+
  1983 012a 00000000 		.4byte	0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 39
-
-
  1984              		.section	.debug_aranges,"",%progbits
  1985 0000 3C000000 		.4byte	0x3c
  1986 0004 0200     		.2byte	0x2
@@ -2337,10 +2338,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2027              	.LASF47:
  2028 001f 54696D65 		.ascii	"Timer_R1_ReadCounter\000"
  2028      725F5231 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 40
+
+
  2028      5F526561 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 40
-
-
  2028      64436F75 
  2028      6E746572 
  2029              	.LASF44:
@@ -2397,10 +2398,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2051              	.LASF21:
  2052 00d2 73746174 		.ascii	"statusR1\000"
  2052      75735231 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 41
+
+
  2052      00
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 41
-
-
  2053              	.LASF22:
  2054 00db 73746174 		.ascii	"statusR2\000"
  2054      75735232 
@@ -2457,10 +2458,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2074      725F5232 
  2074      5F526561 
  2074      64436F75 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 42
+
+
  2074      6E746572 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 42
-
-
  2075              	.LASF30:
  2076 01a1 7265666C 		.ascii	"reflectance_digital\000"
  2076      65637461 
@@ -2517,10 +2518,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2098 0238 6C6F6E67 		.ascii	"long double\000"
  2098      20646F75 
  2098      626C6500 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 43
+
+
  2099              	.LASF76:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 43
-
-
  2100 0244 43794465 		.ascii	"CyDelayUs\000"
  2100      6C617955 
  2100      7300
@@ -2577,10 +2578,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2120      00
  2121              	.LASF65:
  2122 02f3 52315F57 		.ascii	"R1_Write\000"
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 44
+
+
  2122      72697465 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 44
-
-
  2122      00
  2123              	.LASF63:
  2124 02fc 436F6E74 		.ascii	"Control_Reg_1_Write\000"
@@ -2637,10 +2638,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2146 0398 54696D65 		.ascii	"Timer_L3_ReadCapture\000"
  2146      725F4C33 
  2146      5F526561 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 45
+
+
  2146      64436170 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 45
-
-
  2146      74757265 
  2147              	.LASF48:
  2148 03ad 54696D65 		.ascii	"Timer_L1_ReadPeriod\000"
@@ -2697,10 +2698,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2168      725F5231 
  2168      5F526561 
  2168      64506572 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 46
+
+
  2168      696F6400 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 46
-
-
  2169              	.LASF58:
  2170 0455 54696D65 		.ascii	"Timer_R3_ReadCapture\000"
  2170      725F5233 
@@ -2757,10 +2758,10 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 1
  2187      66756E63 
  2187      74696F6E 
  2187      2D736563 
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccM8kfjR.s 			page 47
+
+
  2187      74696F6E 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\ccJoERJv.s 			page 47
-
-
  2188              	.LASF42:
  2189 0580 54696D65 		.ascii	"Timer_L3_ReadStatusRegister\000"
  2189      725F4C33 

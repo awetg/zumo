@@ -57,17 +57,17 @@
 <v>Zumo\ZumoBot\Source Files\Library\Retarget.c</v>
 <v>Zumo\ZumoBot\Source Files\Library\Systick.c</v>
 <v>Zumo\ZumoBot\Source Files\Library\Ultra.c</v>
+<v>Zumo\ZumoBot\Source Files\custom_motor.c</v>
+<v>Zumo\ZumoBot\Source Files\custom_motor.h</v>
+<v>Zumo\ZumoBot\Source Files\drive.c</v>
+<v>Zumo\ZumoBot\Source Files\drive.h</v>
 <v>Zumo\ZumoBot\Source Files\main.c</v>
+<v>Zumo\ZumoBot\Source Files\music.c</v>
+<v>Zumo\ZumoBot\Source Files\music.h</v>
 <v>Zumo\ZumoBot\Generated_Source</v>
 <v>Zumo\ZumoBot\Generated_Source\PSoC5</v>
 </ExpandedNodeIds>
 <VisibleNodeIds>
-<v>Zumo\ZumoBot\ZumoBot.cydwr\System</v>
-<v>Zumo\ZumoBot\ZumoBot.cydwr\Directives</v>
-<v>Zumo\ZumoBot\ZumoBot.cydwr\Flash Security</v>
-<v>Zumo\ZumoBot\ZumoBot.cydwr\EEPROM</v>
-<v>Zumo\ZumoBot\Header Files</v>
-<v>Zumo\ZumoBot\Header Files\Library</v>
 <v>Zumo\ZumoBot\Header Files\Library\Accel_magnet.h</v>
 <v>Zumo\ZumoBot\Header Files\Library\Ambient.h</v>
 <v>Zumo\ZumoBot\Header Files\Library\Beep.h</v>
@@ -95,7 +95,13 @@
 <v>Zumo\ZumoBot\Source Files\Library\Retarget.c</v>
 <v>Zumo\ZumoBot\Source Files\Library\Systick.c</v>
 <v>Zumo\ZumoBot\Source Files\Library\Ultra.c</v>
+<v>Zumo\ZumoBot\Source Files\custom_motor.c</v>
+<v>Zumo\ZumoBot\Source Files\custom_motor.h</v>
+<v>Zumo\ZumoBot\Source Files\drive.c</v>
+<v>Zumo\ZumoBot\Source Files\drive.h</v>
 <v>Zumo\ZumoBot\Source Files\main.c</v>
+<v>Zumo\ZumoBot\Source Files\music.c</v>
+<v>Zumo\ZumoBot\Source Files\music.h</v>
 <v>Zumo\ZumoBot\Generated_Source</v>
 <v>Zumo\ZumoBot\Generated_Source\PSoC5</v>
 <v>Zumo\ZumoBot\Generated_Source\PSoC5\ADC_Battery</v>
@@ -144,6 +150,7 @@
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Control_Reg_1.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Control_Reg_1_PM.lst</v>
+<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\custom_motor.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
@@ -154,6 +161,7 @@
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\drive.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Echo.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Gyro.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\I2C.lst</v>
@@ -177,6 +185,7 @@
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\MotorDirRight.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\MotorPwmLeft.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\MotorPwmRight.lst</v>
+<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\music.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Nunchuk.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\PWM.lst</v>
 <v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\PWM_PM.lst</v>
@@ -228,42 +237,6 @@
 <VisibleNodeIds>
 <v>Zumo</v>
 <v>Zumo\ZumoBot</v>
-<v>Zumo\ZumoBot\CortexM3</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Accel.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\ADC_Battery.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\ADC_Battery_Bypass.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\ADC_Battery_INT.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\ADC_Battery_IRQ.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\ADC_Battery_PM.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\ADC_Battery_theACLK.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Ambient.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Battery_pin.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\BatteryLed.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Beep.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Buzzer.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Buzzer_PWM.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Buzzer_PWM_PM.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Clock_2.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Clock_3.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Control_Reg_1.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Control_Reg_1_PM.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Echo.lst</v>
-<v>Zumo\ZumoBot\CortexM3\ARM_GCC_541\Debug\Listing Files\Gyro.lst</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 </TreeStates>
@@ -335,7 +308,24 @@
 </userData>
 </CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
 <Unloaded />
-<OpenDocs />
+<OpenDocs>
+<name v=".\ZumoBot.cydsn\TopDesign\TopDesign.cysch" />
+<name v=".\ZumoBot.cydsn\ZumoLibrary\Beep.h" />
+<name v=".\ZumoBot.cydsn\ZumoLibrary\Beep.c" />
+<name v=".\ZumoBot.cydsn\main.c" />
+<name v=".\ZumoBot.cydsn\music.c" />
+<name v=".\ZumoBot.cydsn\music.h" />
+<name v=".\ZumoBot.cydsn\ZumoLibrary\Reflectance.h" />
+<name v=".\ZumoBot.cydsn\ZumoLibrary\Reflectance.c" />
+<name v=".\ZumoBot.cydsn\ZumoLibrary\Systick.c" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="638, 522" SelectedTabbedMdiWindow="e20de49c-3296-44fb-b060-cef592d8b18a"><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\TopDesign\TopDesign.cysch" Guid="90b065d4-68de-490c-af33-d4edb40431a5" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\ZumoLibrary\Beep.h" Guid="9f7fdd14-285e-4544-bb2e-e0fa3216fc70" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\ZumoLibrary\Beep.c" Guid="8ace3ce9-dfa9-4fb8-8167-8d8d25a5acea" /><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="762436cf-d69d-4984-add6-25c68ce982ec" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\main.c" Guid="00dcac26-8d54-4056-a200-fd3079ae1e22" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\music.c" Guid="148aff95-a9d3-43f7-91ee-67ab3b7de497" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\music.h" Guid="ab62382f-b50a-427f-9244-8af5b733bcf3" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\ZumoLibrary\Reflectance.h" Guid="8a0e038f-a502-4e70-adef-137bd9bc27f6" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\ZumoLibrary\Reflectance.c" Guid="e20de49c-3296-44fb-b060-cef592d8b18a" /><DocumentWindow Key="C:\Users\manuelfu\Documents\PSoC Creator\zumo\ZumoBot.cydsn\ZumoLibrary\Systick.c" Guid="7050b0a2-6f69-4cd4-ad2e-016d4bd46560" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
 <config v="" />
 <AutoUpdate v="true" />
 </CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>

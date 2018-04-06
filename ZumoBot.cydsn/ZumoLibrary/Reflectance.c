@@ -19,7 +19,7 @@ static volatile bool refl_init = false;
 * @brief    Reflectance Sensor Interrupt Handler
 * @details  Measuring each sensors' time to recognition of white or black
 */
-//CY_ISR(sensor_isr_handler)
+
 void reflectance_handler(void)
 {
     if(!refl_init) return;
@@ -97,6 +97,7 @@ void reflectance_handler(void)
     L3_SetDriveMode(PIN_DM_DIG_HIZ);
     L2_SetDriveMode(PIN_DM_DIG_HIZ);
     L1_SetDriveMode(PIN_DM_DIG_HIZ);
+
 }
 
 

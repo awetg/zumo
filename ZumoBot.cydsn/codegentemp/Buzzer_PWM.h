@@ -28,7 +28,7 @@ extern uint8 Buzzer_PWM_initVar;
 /***************************************
 * Conditional Compilation Parameters
 ***************************************/
-#define Buzzer_PWM_Resolution                     (8u)
+#define Buzzer_PWM_Resolution                     (16u)
 #define Buzzer_PWM_UsingFixedFunction             (0u)
 #define Buzzer_PWM_DeadBandMode                   (0u)
 #define Buzzer_PWM_KillModeMinTime                (0u)
@@ -110,9 +110,9 @@ typedef struct
     uint8 PWMEnableState;
 
     #if(!Buzzer_PWM_UsingFixedFunction)
-        uint8 PWMUdb;               /* PWM Current Counter value  */
+        uint16 PWMUdb;               /* PWM Current Counter value  */
         #if(!Buzzer_PWM_PWMModeIsCenterAligned)
-            uint8 PWMPeriod;
+            uint16 PWMPeriod;
         #endif /* (!Buzzer_PWM_PWMModeIsCenterAligned) */
         #if (Buzzer_PWM_UseStatus)
             uint8 InterruptMaskValue;   /* PWM Current Interrupt Mask */
@@ -176,32 +176,32 @@ void    Buzzer_PWM_Stop(void) ;
 #endif /* (Buzzer_PWM_UseOneCompareMode) */
 
 #if (!Buzzer_PWM_UsingFixedFunction)
-    uint8   Buzzer_PWM_ReadCounter(void) ;
-    uint8 Buzzer_PWM_ReadCapture(void) ;
+    uint16   Buzzer_PWM_ReadCounter(void) ;
+    uint16 Buzzer_PWM_ReadCapture(void) ;
 
     #if (Buzzer_PWM_UseStatus)
             void Buzzer_PWM_ClearFIFO(void) ;
     #endif /* (Buzzer_PWM_UseStatus) */
 
-    void    Buzzer_PWM_WriteCounter(uint8 counter)
+    void    Buzzer_PWM_WriteCounter(uint16 counter)
             ;
 #endif /* (!Buzzer_PWM_UsingFixedFunction) */
 
-void    Buzzer_PWM_WritePeriod(uint8 period)
+void    Buzzer_PWM_WritePeriod(uint16 period)
         ;
-uint8 Buzzer_PWM_ReadPeriod(void) ;
+uint16 Buzzer_PWM_ReadPeriod(void) ;
 
 #if (Buzzer_PWM_UseOneCompareMode)
-    void    Buzzer_PWM_WriteCompare(uint8 compare)
+    void    Buzzer_PWM_WriteCompare(uint16 compare)
             ;
-    uint8 Buzzer_PWM_ReadCompare(void) ;
+    uint16 Buzzer_PWM_ReadCompare(void) ;
 #else
-    void    Buzzer_PWM_WriteCompare1(uint8 compare)
+    void    Buzzer_PWM_WriteCompare1(uint16 compare)
             ;
-    uint8 Buzzer_PWM_ReadCompare1(void) ;
-    void    Buzzer_PWM_WriteCompare2(uint8 compare)
+    uint16 Buzzer_PWM_ReadCompare1(void) ;
+    void    Buzzer_PWM_WriteCompare2(uint16 compare)
             ;
-    uint8 Buzzer_PWM_ReadCompare2(void) ;
+    uint16 Buzzer_PWM_ReadCompare2(void) ;
 #endif /* (Buzzer_PWM_UseOneCompareMode) */
 
 
@@ -226,8 +226,8 @@ void Buzzer_PWM_RestoreConfig(void) ;
 /***************************************
 *         Initialization Values
 **************************************/
-#define Buzzer_PWM_INIT_PERIOD_VALUE          (255u)
-#define Buzzer_PWM_INIT_COMPARE_VALUE1        (127u)
+#define Buzzer_PWM_INIT_PERIOD_VALUE          (65535u)
+#define Buzzer_PWM_INIT_COMPARE_VALUE1        (32767u)
 #define Buzzer_PWM_INIT_COMPARE_VALUE2        (63u)
 #define Buzzer_PWM_INIT_INTERRUPTS_MODE       (uint8)(((uint8)(0u <<   \
                                                     Buzzer_PWM_STATUS_TC_INT_EN_MASK_SHIFT)) | \
@@ -264,73 +264,73 @@ void Buzzer_PWM_RestoreConfig(void) ;
    #if (Buzzer_PWM_Resolution == 8u) /* 8bit - PWM */
 
        #if(Buzzer_PWM_PWMModeIsCenterAligned)
-           #define Buzzer_PWM_PERIOD_LSB      (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
-           #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
+           #define Buzzer_PWM_PERIOD_LSB      (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
+           #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
        #else
-           #define Buzzer_PWM_PERIOD_LSB      (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F0_REG)
-           #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F0_REG)
+           #define Buzzer_PWM_PERIOD_LSB      (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F0_REG)
+           #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F0_REG)
        #endif /* (Buzzer_PWM_PWMModeIsCenterAligned) */
 
-       #define Buzzer_PWM_COMPARE1_LSB        (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D0_REG)
-       #define Buzzer_PWM_COMPARE1_LSB_PTR    ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D0_REG)
-       #define Buzzer_PWM_COMPARE2_LSB        (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
-       #define Buzzer_PWM_COMPARE2_LSB_PTR    ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
-       #define Buzzer_PWM_COUNTERCAP_LSB      (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A1_REG)
-       #define Buzzer_PWM_COUNTERCAP_LSB_PTR  ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A1_REG)
-       #define Buzzer_PWM_COUNTER_LSB         (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A0_REG)
-       #define Buzzer_PWM_COUNTER_LSB_PTR     ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A0_REG)
-       #define Buzzer_PWM_CAPTURE_LSB         (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F1_REG)
-       #define Buzzer_PWM_CAPTURE_LSB_PTR     ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F1_REG)
+       #define Buzzer_PWM_COMPARE1_LSB        (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D0_REG)
+       #define Buzzer_PWM_COMPARE1_LSB_PTR    ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D0_REG)
+       #define Buzzer_PWM_COMPARE2_LSB        (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
+       #define Buzzer_PWM_COMPARE2_LSB_PTR    ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
+       #define Buzzer_PWM_COUNTERCAP_LSB      (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A1_REG)
+       #define Buzzer_PWM_COUNTERCAP_LSB_PTR  ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A1_REG)
+       #define Buzzer_PWM_COUNTER_LSB         (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A0_REG)
+       #define Buzzer_PWM_COUNTER_LSB_PTR     ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A0_REG)
+       #define Buzzer_PWM_CAPTURE_LSB         (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F1_REG)
+       #define Buzzer_PWM_CAPTURE_LSB_PTR     ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F1_REG)
 
    #else
         #if(CY_PSOC3) /* 8-bit address space */
             #if(Buzzer_PWM_PWMModeIsCenterAligned)
-               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
-               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
+               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
+               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
             #else
-               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F0_REG)
-               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F0_REG)
+               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F0_REG)
+               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F0_REG)
             #endif /* (Buzzer_PWM_PWMModeIsCenterAligned) */
 
-            #define Buzzer_PWM_COMPARE1_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D0_REG)
-            #define Buzzer_PWM_COMPARE1_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D0_REG)
-            #define Buzzer_PWM_COMPARE2_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
-            #define Buzzer_PWM_COMPARE2_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__D1_REG)
-            #define Buzzer_PWM_COUNTERCAP_LSB     (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A1_REG)
-            #define Buzzer_PWM_COUNTERCAP_LSB_PTR ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A1_REG)
-            #define Buzzer_PWM_COUNTER_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A0_REG)
-            #define Buzzer_PWM_COUNTER_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A0_REG)
-            #define Buzzer_PWM_CAPTURE_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F1_REG)
-            #define Buzzer_PWM_CAPTURE_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__F1_REG)
+            #define Buzzer_PWM_COMPARE1_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D0_REG)
+            #define Buzzer_PWM_COMPARE1_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D0_REG)
+            #define Buzzer_PWM_COMPARE2_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
+            #define Buzzer_PWM_COMPARE2_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__D1_REG)
+            #define Buzzer_PWM_COUNTERCAP_LSB     (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A1_REG)
+            #define Buzzer_PWM_COUNTERCAP_LSB_PTR ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A1_REG)
+            #define Buzzer_PWM_COUNTER_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A0_REG)
+            #define Buzzer_PWM_COUNTER_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A0_REG)
+            #define Buzzer_PWM_CAPTURE_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F1_REG)
+            #define Buzzer_PWM_CAPTURE_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__F1_REG)
         #else
             #if(Buzzer_PWM_PWMModeIsCenterAligned)
-               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_D1_REG)
-               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_D1_REG)
+               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_D1_REG)
+               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_D1_REG)
             #else
-               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_F0_REG)
-               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_F0_REG)
+               #define Buzzer_PWM_PERIOD_LSB      (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_F0_REG)
+               #define Buzzer_PWM_PERIOD_LSB_PTR  ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_F0_REG)
             #endif /* (Buzzer_PWM_PWMModeIsCenterAligned) */
 
-            #define Buzzer_PWM_COMPARE1_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_D0_REG)
-            #define Buzzer_PWM_COMPARE1_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_D0_REG)
-            #define Buzzer_PWM_COMPARE2_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_D1_REG)
-            #define Buzzer_PWM_COMPARE2_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_D1_REG)
-            #define Buzzer_PWM_COUNTERCAP_LSB     (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_A1_REG)
-            #define Buzzer_PWM_COUNTERCAP_LSB_PTR ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_A1_REG)
-            #define Buzzer_PWM_COUNTER_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_A0_REG)
-            #define Buzzer_PWM_COUNTER_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_A0_REG)
-            #define Buzzer_PWM_CAPTURE_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_F1_REG)
-            #define Buzzer_PWM_CAPTURE_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__16BIT_F1_REG)
+            #define Buzzer_PWM_COMPARE1_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_D0_REG)
+            #define Buzzer_PWM_COMPARE1_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_D0_REG)
+            #define Buzzer_PWM_COMPARE2_LSB       (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_D1_REG)
+            #define Buzzer_PWM_COMPARE2_LSB_PTR   ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_D1_REG)
+            #define Buzzer_PWM_COUNTERCAP_LSB     (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_A1_REG)
+            #define Buzzer_PWM_COUNTERCAP_LSB_PTR ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_A1_REG)
+            #define Buzzer_PWM_COUNTER_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_A0_REG)
+            #define Buzzer_PWM_COUNTER_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_A0_REG)
+            #define Buzzer_PWM_CAPTURE_LSB        (*(reg16 *) Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_F1_REG)
+            #define Buzzer_PWM_CAPTURE_LSB_PTR    ((reg16 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__16BIT_F1_REG)
         #endif /* (CY_PSOC3) */
 
-       #define Buzzer_PWM_AUX_CONTROLDP1          (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u1__DP_AUX_CTL_REG)
-       #define Buzzer_PWM_AUX_CONTROLDP1_PTR      ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u1__DP_AUX_CTL_REG)
+       #define Buzzer_PWM_AUX_CONTROLDP1          (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u1__DP_AUX_CTL_REG)
+       #define Buzzer_PWM_AUX_CONTROLDP1_PTR      ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u1__DP_AUX_CTL_REG)
 
    #endif /* (Buzzer_PWM_Resolution == 8) */
 
-   #define Buzzer_PWM_COUNTERCAP_LSB_PTR_8BIT ( (reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__A1_REG)
-   #define Buzzer_PWM_AUX_CONTROLDP0          (*(reg8 *)  Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__DP_AUX_CTL_REG)
-   #define Buzzer_PWM_AUX_CONTROLDP0_PTR      ((reg8 *)   Buzzer_PWM_PWMUDB_sP8_pwmdp_u0__DP_AUX_CTL_REG)
+   #define Buzzer_PWM_COUNTERCAP_LSB_PTR_8BIT ( (reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__A1_REG)
+   #define Buzzer_PWM_AUX_CONTROLDP0          (*(reg8 *)  Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__DP_AUX_CTL_REG)
+   #define Buzzer_PWM_AUX_CONTROLDP0_PTR      ((reg8 *)   Buzzer_PWM_PWMUDB_sP16_pwmdp_u0__DP_AUX_CTL_REG)
 
 #endif /* (Buzzer_PWM_UsingFixedFunction) */
 
