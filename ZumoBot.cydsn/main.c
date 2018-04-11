@@ -582,5 +582,45 @@ int main()
 }
 #endif
 
+//Awet's PID
+#if 0
+#include "dr.h"
+//reflectance//
+int main()
+{
+    //struct sensors_ dig;
+    //truct sensors_ threshhold;
+    
+    sensorData d;
+
+    Systick_Start();
+
+    CyGlobalIntEnable; 
+    UART_1_Start();
+    
+    //float min[6] = {6000, 5500, 4800, 4200, 4800, 4500};
+    float min[6] = {11000, 9000, 8000, 7500, 8200, 8100};
+    float max[6] = {20000, 20000, 20000, 20000, 20000, 20000};
+    //float max[6] = {23000, 23000, 23000, 23000, 23000, 23000};
+    //float dif[6] = {17000, 17500, 18200, 18800, 18200, 18500};
+    
+    float speedScale= 1;
+    
+    float kp=1.2;
+    float kd=19;
+    
+   
+    startSensor(&d);
+    cmotor_start();
+    
+    for(;;)
+    {
+        drive(&d, min, max, kp, kd, speedScale);
+        
+        CyDelay(1);
+    }
+}   
+#endif
+
 
 /* [] END OF FILE */

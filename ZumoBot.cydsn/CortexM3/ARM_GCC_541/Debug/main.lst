@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
   23:main.c        ****     &nbsp;IR LED <br><br><br>
   24:main.c        ****     </p>
   25:main.c        ****     
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 2
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 2
 
 
   26:main.c        ****     <p>
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
   80:main.c        ****     
   81:main.c        ****     //cmotor_calibrate(-0.01);
   82:main.c        ****     //do_motortest();
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 3
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 3
 
 
   83:main.c        ****     
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  137:main.c        ****     
  138:main.c        ****     driveStart(&dstate, thresholdMin, thresholdMax);
  139:main.c        ****     //reflectance_start();
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 4
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 4
 
 
  140:main.c        ****     
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
   35              		@ args = 0, pretend = 0, frame = 232
   36              		@ frame_needed = 0, uses_anonymous_args = 0
   37 0000 70B5     		push	{r4, r5, r6, lr}
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 5
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 5
 
 
   38              		.cfi_def_cfa_offset 16
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  218:main.c        ****     play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
  219:main.c        ****                          "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F 
  220:main.c        **** 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 6
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 6
 
 
  221:main.c        **** */
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  245:main.c        ****     {
  246:main.c        ****         -Kpe, -Kpm, -Kp, Kp, Kpm, Kpe, //l3, l2, l1, r1, r2, r3
  247:main.c        ****         0,0,-Kd,Kd,0,0,
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 7
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 7
 
 
  248:main.c        ****         0,0,0.0f,0.0f,0,0
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  120 0080 2E46     		mov	r6, r5
  121              	.LVL7:
  122              	.L5:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 8
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 8
 
 
  123              	.LBB2:
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  162              	.LVL18:
  292:main.c        ****                 
  293:main.c        ****                 if(volts<4.2)
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 9
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 9
 
 
  163              		.loc 1 293 0
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  200 00fa 2246     		mov	r2, r4
  201 00fc 20A8     		add	r0, sp, #128
  202 00fe FFF7FEFF 		bl	driveUpdateSpeedOpt
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 10
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 10
 
 
  203              	.LVL26:
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  249              		.text
  250              	.Letext0:
  251              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 11
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 11
 
 
  252              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  306 0056 0C020000 		.4byte	.LASF5
  307 005a 03       		.uleb128 0x3
  308 005b 7D020000 		.4byte	.LASF7
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 12
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 12
 
 
  309 005f 02       		.byte	0x2
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  363 00c6 02       		.uleb128 0x2
  364 00c7 01       		.byte	0x1
  365 00c8 02       		.byte	0x2
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 13
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 13
 
 
  366 00c9 06020000 		.4byte	.LASF19
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  420 0138 58       		.byte	0x58
  421 0139 07       		.uleb128 0x7
  422 013a 4D010000 		.4byte	.LASF28
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 14
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 14
 
 
  423 013e 05       		.byte	0x5
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  477 01b0 0C       		.uleb128 0xc
  478 01b1 3C000000 		.4byte	.LASF34
  479 01b5 01       		.byte	0x1
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 15
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 15
 
 
  480 01b6 C0       		.byte	0xc0
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  534 0232 01       		.byte	0x1
  535 0233 EE       		.byte	0xee
  536 0234 25000000 		.4byte	0x25
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 16
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 16
 
 
  537 0238 04       		.byte	0x4
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  591 02ad 86000000 		.4byte	.LBE2-.LBB2
  592 02b1 AD030000 		.4byte	0x3ad
  593 02b5 14       		.uleb128 0x14
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 17
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 17
 
 
  594 02b6 C8010000 		.4byte	.LASF46
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  648 032b 09       		.byte	0x9
  649 032c C8       		.byte	0xc8
  650 032d 00       		.byte	0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 18
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 18
 
 
  651 032e 15       		.uleb128 0x15
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  705 0393 25       		.uleb128 0x25
  706 0394 17       		.uleb128 0x17
  707 0395 02       		.uleb128 0x2
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 19
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 19
 
 
  708 0396 7D       		.byte	0x7d
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  762 0400 807F     		.sleb128 -128
  763 0402 17       		.uleb128 0x17
  764 0403 01       		.uleb128 0x1
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 20
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 20
 
 
  765 0404 51       		.byte	0x51
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  819 0472 0B       		.byte	0xb
  820 0473 1C       		.uleb128 0x1c
  821 0474 64020000 		.4byte	.LASF53
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 21
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 21
 
 
  822 0478 64020000 		.4byte	.LASF53
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  876 0002 01       		.byte	0x1
  877 0003 25       		.uleb128 0x25
  878 0004 0E       		.uleb128 0xe
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 22
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 22
 
 
  879 0005 13       		.uleb128 0x13
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  933 003b 3A       		.uleb128 0x3a
  934 003c 0B       		.uleb128 0xb
  935 003d 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 23
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 23
 
 
  936 003e 05       		.uleb128 0x5
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  990 0074 0F       		.uleb128 0xf
  991 0075 00       		.byte	0
  992 0076 0B       		.uleb128 0xb
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 24
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 24
 
 
  993 0077 0B       		.uleb128 0xb
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1047 00af 3B       		.uleb128 0x3b
  1048 00b0 0B       		.uleb128 0xb
  1049 00b1 49       		.uleb128 0x49
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 25
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 25
 
 
  1050 00b2 13       		.uleb128 0x13
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1104 00e8 0E       		.uleb128 0xe
  1105 00e9 3A       		.uleb128 0x3a
  1106 00ea 0B       		.uleb128 0xb
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 26
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 26
 
 
  1107 00eb 3B       		.uleb128 0x3b
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1161 0123 31       		.uleb128 0x31
  1162 0124 13       		.uleb128 0x13
  1163 0125 00       		.byte	0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 27
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 27
 
 
  1164 0126 00       		.byte	0
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1218 0163 1B       		.uleb128 0x1b
  1219 0164 35       		.uleb128 0x35
  1220 0165 00       		.byte	0
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 28
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 28
 
 
  1221 0166 49       		.uleb128 0x49
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1275 001b 00000000 		.4byte	0
  1276              	.LLST1:
  1277 001f 12000000 		.4byte	.LVL3
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 29
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 29
 
 
  1278 0023 82000000 		.4byte	.LVL7
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1331      0200D101 
  1331      00000201 
  1331      FB0E0D00 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 30
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 30
 
 
  1331      01010101 
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1358              	.LASF41:
  1359 008d 636F6566 		.ascii	"coefficients\000"
  1359      66696369 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 31
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 31
 
 
  1359      656E7473 
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1383      53746172 
  1383      7400
  1384              	.LASF17:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 32
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 32
 
 
  1385 0133 6C6F6E67 		.ascii	"long double\000"
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1409      42617474 
  1409      65727954 
  1409      696D6500 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 33
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 33
 
 
  1410              	.LASF31:
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1437      6572795F 
  1437      53746172 
  1437      74436F6E 
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 34
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 34
 
 
  1438              	.LASF7:
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 1
  1460      69636B73 
  1460      00
  1461              	.LASF27:
-ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cc4c4tK9.s 			page 35
+ARM GAS  C:\Users\manuelfu\AppData\Local\Temp\cceDIqPk.s 			page 35
 
 
  1462 033c 66696C74 		.ascii	"filteredL2\000"
