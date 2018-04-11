@@ -14,7 +14,7 @@
 void cmotor_start(); // start motor PWM timers
 void cmotor_stop();  // stop motor PWM timers
 
-void calibrate(float rightSkew);
+void cmotor_calibrate(float rightSkew);
 void cmotor_speed(float left, float right, float scale);
 
 

@@ -35,7 +35,7 @@ void cmotor_stop()
 
 int getInRange(int speed, int min, int max){
     if (speed > max)
-        speed = min;
+        speed = max;
     
     if (speed < min)
         speed = min;
@@ -45,20 +45,20 @@ int getInRange(int speed, int min, int max){
 
 float calibration = 0.0f;
 
-void calibrate(float rightSkew){
+void cmotor_calibrate(float rightSkew){
     calibration = rightSkew;   
 }
 
 void cmotor_speed(float left, float right, float scale){
     int leftDir = left >= 0.0f ? 0 : 1;
     int rightDir = right >= 0.0f ? 0 : 1;
-    uint8 leftSpeed = scale * getInRange(fabs(left * 255), MIN_SPEED, MAX_SPEED);
-    uint8 rightSpeed = scale * getInRange(fabs(right * 255), MIN_SPEED, MAX_SPEED);
+    uint8 leftSpeed = scale * getInRange(fabs(left * (1.0f - calibration) * 255), MIN_SPEED, MAX_SPEED);
+    uint8 rightSpeed = scale * getInRange(fabs(right * (1.0f + calibration) * 255), MIN_SPEED, MAX_SPEED);
     
     MotorDirLeft_Write(leftDir);    
     MotorDirRight_Write(rightDir);   
-    PWM_WriteCompare1(leftSpeed * (1.0f - calibration)); 
-    PWM_WriteCompare2(rightSpeed * (1.0f + calibration)); 
+    PWM_WriteCompare1(leftSpeed); 
+    PWM_WriteCompare2(rightSpeed); 
 }
 
 /* [] END OF FILE */

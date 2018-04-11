@@ -53,99 +53,116 @@ float denoise(float signal, float threshold){
         return signal;
 }
 
-void driveStart(DriveState* state, float reflectanceMin, float reflectanceMax){
+bool driveDataIsZero(DriveState* state){
+    float totalDarkness = 0;
+    
+    for (int i = 0; i < NSENSORS; i++){
+     
+        /*if (i == REF_L2 || i == REF_R2)
+            continue;*/
+        
+        totalDarkness += state->current[i] - state->displ;
+        
+    }
+    
+    return fabs(totalDarkness) < 0.01f;
+    
+}
+
+void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax){
     reflectance_start();
     state->reflectanceMin = reflectanceMin;
     state->reflectanceMax = reflectanceMax;
+    state->emergencyTurnSum = 0.0f;
+    state->filteredL2 = 0;
+    state->filteredR2 = 0;
+    state->prevL2 = 0;
+    state-> prevR2 = 0;
     
-    state->current.l1 = 0;
-    state->current.l2 = 0;
-    state->current.l3 = 0;
-    state->current.r1 = 0;
-    state->current.r2 = 0;
-    state->current.r3 = 0;
-    state->current.time = 0;
+    for (int i = 0; i < NSENSORS; i++){
+        state->current[i] = 0;
+        state->derivative[i] = 0;
+        state->integral[i] = 0;
+    }
     
-    state->derivative.l1 = 0;
-    state->derivative.l2 = 0;
-    state->derivative.l3 = 0;
-    state->derivative.r1 = 0;
-    state->derivative.r2 = 0;
-    state->derivative.r3 = 0;
-    state->derivative.time = 0;
-    
-    state->integral.l1 = 0;
-    state->integral.l2 = 0;
-    state->integral.l3 = 0;
-    state->integral.r1 = 0;
-    state->integral.r2 = 0;
-    state->integral.r3 = 0;
-    state->integral.time = 0;
+    state->resetEmergencySumCounter = 0;
+    state->time = GetTicks();
+    state->displ = 0;
     
     cmotor_start();              // motor start
     
 }
 
-void driveFetchData(DriveState* state){
+void driveFetchData(DriveState* state, float displ){
     
     struct sensors_ in_data;
     
     reflectance_read(&in_data);
     
-    float min = state->reflectanceMin;
-    float max = state->reflectanceMax;
-    float r1, r2, r3, l1, l2, l3, time;
+    float data[NSENSORS], time;
     
-    r1 = normalize(in_data.r1, min, max, 0.0f, 1.0f);
-    r2 = normalize(in_data.r2, min, max, 0.0f, 1.0f);
-    r3 = normalize(in_data.r3, min, max, 0.0f, 1.0f);
-    l1 = normalize(in_data.l1, min, max, 0.0f, 1.0f);
-    l2 = normalize(in_data.l2, min, max, 0.0f, 1.0f);
-    l3 = normalize(in_data.l3, min, max, 0.0f, 1.0f);
+    data[REF_R1] = displ + normalize(in_data.r1, state->reflectanceMin[REF_R1], state->reflectanceMax[REF_R1], 0.0f, 1.0f);
+    data[REF_R2] = displ + normalize(in_data.r2, state->reflectanceMin[REF_R2], state->reflectanceMax[REF_R2], 0.0f, 1.0f);
+    data[REF_R3] = displ + normalize(in_data.r3, state->reflectanceMin[REF_R3], state->reflectanceMax[REF_R3], 0.0f, 1.0f);
+    data[REF_L1] = displ + normalize(in_data.l1, state->reflectanceMin[REF_L1], state->reflectanceMax[REF_L1], 0.0f, 1.0f);
+    data[REF_L2] = displ + normalize(in_data.l2, state->reflectanceMin[REF_L2], state->reflectanceMax[REF_L2], 0.0f, 1.0f);
+    data[REF_L3] = displ + normalize(in_data.l3, state->reflectanceMin[REF_L3], state->reflectanceMax[REF_L3], 0.0f, 1.0f);
     time = GetTicks();
     
+    printf("%5d %5d %5d %5d %5d %5d\r\n", in_data.l3, in_data.l2, in_data.l1, in_data.r1, in_data.r2, in_data.r3);
+    
+    //Filter l2 and r2 in case of random errors
+    if (data[REF_L2] - state->prevL2 > 0.2f && state->filteredL2 < 2){
+        data[REF_L2] = 0;
+        state->filteredL2++;
+    } else {
+        state->filteredL2=0;   
+    }
+    if (data[REF_R2] - state->prevR2 > 0.2f && state->filteredR2 < 2){
+        data[REF_R2] = 0;
+        state->filteredR2++;
+    } else {
+        state->filteredR2=0; 
+    }
+    
     //Compute derivative
-    float dt = time - state->current.time;
+    float dt = time - state->time;
+    float derivatives[NSENSORS];
     
     printf("dt: %f\n", dt);
     
-    state->derivative.r1 = (r1 - state->current.r1) / (dt);
-    state->derivative.r2 = (r2 - state->current.r2) / (dt);
-    state->derivative.r3 = (r3 - state->current.r3) / (dt);
-    state->derivative.l1 = (l1 - state->current.l1) / (dt);
-    state->derivative.l2 = (l2 - state->current.l2) / (dt);
-    state->derivative.l3 = (l3 - state->current.l3) / (dt);
-    state->derivative.time = time;
+    //const float derivativeFilter = 0.9f;
     
-    //Compute integral
-    state->integral.r1 = state->integral.r1 + r1 * dt;
-    state->integral.r2 = state->integral.r2 + r2 * dt;
-    state->integral.r3 = state->integral.r3 + r3 * dt;
-    state->integral.l1 = state->integral.l1 + l1 * dt;
-    state->integral.l2 = state->integral.l2 + l2 * dt;
-    state->integral.l3 = state->integral.l3 + l3 * dt;
-    state->integral.time = time;
-    
-    //Update current
-    state->current.r1 = r1;
-    state->current.r2 = r2;
-    state->current.r3 = r3;
-    state->current.l1 = l1;
-    state->current.l2 = l2;
-    state->current.l3 = l3;
-    state->current.time = time;
+    for (int i = 0; i < NSENSORS; i++){
+        derivatives[i] = (data[i] - state->current[i]) / dt;
+        
+        //printf("filtered: %d\n", state->filtered);
+        //printf("d[i]: %f\n", derivatives[i]);
+        
+        //if (state->filtered >= 1 && fabs(derivatives[i]) < derivativeFilter){
+            state->derivative[i] = derivatives[i];
+            state->integral[i] += data[i] * dt;
+            state->current[i] = data[i];
+        /*} else {
+            state->filtered++;   
+            return;
+        }*/
+    }
+    state->displ = displ;
+    state->time = time;
+
 }
 
 void driveResetIntegral(DriveState* state){
-    state->integral.l1 = 0;
-    state->integral.l2 = 0;
-    state->integral.l3 = 0;
-    state->integral.r1 = 0;
-    state->integral.r2 = 0;
-    state->integral.r3 = 0;
-    state->integral.time = GetTicks();
+    
+    for (int i = 0; i < NSENSORS; i++){
+        state->integral[i] = 0;
+    }
+
+    state->time = GetTicks();
 }
 
+#if 0
 void driveUpdateSpeed(DriveState* state, float maxSpeed, float rCoefficients[NCOEFF], float lCoefficients[NCOEFF]){
     
     float rightSpeed = 0.0f;
@@ -209,11 +226,101 @@ void driveUpdateSpeed(DriveState* state, float maxSpeed, float rCoefficients[NCO
     
     scalePairTo(1.0f, &leftProportion, &rightProportion);
     
-    uint8 right = (int) (rightProportion * 255);
-    uint8 left = (int) (leftProportion * 255);
-    
         
     cmotor_speed(leftProportion, rightProportion, maxSpeed);
+}
+#endif
+
+void driveUpdateSpeedOpt(DriveState* state, float maxSpeed, float aim, float correctionSpeed, float coefficients[NCOEFF]){
+    
+    float optvalue = 0.0f;
+
+        
+    for (int i = 0; i < NSENSORS; i++){
+        
+        /*if (i%NSENSORS == REF_R2)
+            continue;*/
+        
+        optvalue += coefficients[i] * state->current[i];
+        optvalue += coefficients[i+NSENSORS] * state->derivative[i];
+        optvalue += coefficients[i+NSENSORS*2] * state->integral[i];
+    }
+    
+    //Are we starting an emergency turn?
+    const int resetEmergencySumAfter = 10;
+    const float emergencyThreshold = 0.1f;
+    const float black = 0.8f;
+    const float emergencySumThreshold = 0.9f;
+    const float l1 = state->current[REF_L1];
+    const float r1 = state->current[REF_R1];
+    const float l3 = state->current[REF_L3];
+    const float r3 = state->current[REF_R3];
+    const float totalDarkness = l1+l3+r1+r3;
+    
+    if (r3 > black && l3 > black){
+        state->emergencyTurnSum = 0.0;
+        
+        //Signal horizontal line
+        
+    } else if (r3 > black && l3 < black){
+        state->emergencyTurnSum -= 1.0f;
+        state->resetEmergencySumCounter = 0;
+    } else if (l3 > black && r3 < black){
+        state->emergencyTurnSum += 1.0f;
+        state->resetEmergencySumCounter = 0;
+    } else {
+        state->resetEmergencySumCounter++;
+    }
+    
+    if (state->resetEmergencySumCounter > resetEmergencySumAfter){
+        state->resetEmergencySumCounter = 0;
+        state->emergencyTurnSum = 0.0;
+    }
+    
+    
+    //If all the sensors read almost white
+    if (totalDarkness < emergencyThreshold && fabs(state->emergencyTurnSum) > emergencySumThreshold){
+        if (state->emergencyTurnSum > 0.0f){
+            cmotor_speed(-1, +1, 1.0);
+        } else if (state->emergencyTurnSum < 0.0f) {
+            cmotor_speed(+1, -1, 1.0);
+        }
+        state->emergencyTurnSum = 0;
+        do {
+            driveFetchData(state, state->displ); 
+        } while (state->current[REF_L1] + state->current[REF_R1] < 0.5f);
+    }
+    
+    if (driveDataIsZero(state)){
+      cmotor_speed(0,0,0); 
+      return;
+    }
+    
+    float diff = optvalue - aim;
+    float rightSpeed = 1.0f;
+    float leftSpeed = 1.0f;
+    
+    if (diff > 0){
+        rightSpeed = 1.0f - diff*correctionSpeed; //fmax(1.0f - diff * correctionSpeed, 0.0f);
+    } else if (diff < 0) {
+        leftSpeed = 1.0f + diff*correctionSpeed; //fmax(1.0f + diff * correctionSpeed, 0.0f);
+    }
+    
+    /*
+    printf("optvalue: %f\n", diff);
+    printf("left: %f\n", leftSpeed);
+    printf("right: %f\n", rightSpeed);
+    */
+    cmotor_speed(leftSpeed, rightSpeed, maxSpeed);
+    
+}
+
+int getDigitalSensor(DriveState* state, int sensor, float threshold){
+    float value = 0;
+    
+    value = state->current[sensor];
+    
+    return (value > threshold ? 1 : 0);
 }
 
 void driveStop(){

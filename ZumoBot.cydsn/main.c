@@ -56,7 +56,11 @@ int rread(void);
  * @details  ** Enable global interrupt since Zumo library uses interrupts. **<br>&nbsp;&nbsp;&nbsp;CyGlobalIntEnable;<br>
 */
 
-#if 1
+#include "motortest.h"
+#include "hybrid.h"
+
+
+#if 0
 //battery level//
 int main()
 {
@@ -68,14 +72,18 @@ int main()
     ADC_Battery_Start();        
 
     uint16 adcresult =0;
-    float volts = 0.0;
     const float divider_ratio = 1.5f;
     const float adc_max_voltage = 5.0f;
     const float bits_max = 4095.0f;
 
     printf("\nBoot\n");
     
-    struct sensors_ data;
+    //cmotor_calibrate(-0.01);
+    //do_motortest();
+    
+    //for(;;){}
+    
+    //struct sensors_ data;
     
  /*
     play_music("2 C D D e F F e D C b b C D .D -C oC", 300);
@@ -99,108 +107,335 @@ int main()
     
     DriveState dstate;
     
-    /*
-    float lCoefficients[NCOEFF] =
+    //Two sensors working values
+    /*float coefficients[NCOEFF] =
     {
-        1, 0.8, 2, //r1, r2, r3
-        -1, -0.8, -2, //l1, l2, l3
-        0, 0.0, 0, //derivatives r1, r2, r3
-        -25, 0, 0, //derivatives l1, l2, l3
-        0, 0, 0, //integrals r1, r2, r3
-        0.001, 0, 0 //integrals l1, l2, l3
-    };
+        0.0f, 0, -0.8f, 0.8f, 0, 0.0f, //l3, l2, l1, r1, r2, r3
+        0,0,-9.0f,9.0f,0,0,
+        0,0,0.0f,0.0f,0,0
+    };*/
+    //NOTE: Speed 1, correction=1.5
+    //**********************
     
-    float rCoefficients[NCOEFF] =
+    float coefficients[NCOEFF] =
     {
-        -1, -0.8, -2, //r1, r2, r3
-        1, 0.8, 2, //l1, l2, l3
-        -25, 0, 0, //derivatives r1, r2, r3
-        0, 0.00, 0,      //derivatives l1, l2, l3
-        0.001, 0, 0, //integrals r1, r2, r3
-        0, 0, 0 //integrals l1, l2, l3
+        0.0f, 0, -0.5f, 0, 0, 0.0f, //l3, l2, l1, r1, r2, r3
+        0, 0,0, 9.0f,0.0f, 0, //derivatives
+        0,0,0.0f,0.0f,0,0
     };
-    */
+
+    //float thresholdMin[NSENSORS] = {4200, 4800, 4500, 4800, 5500, 7000};
     
-float lCoefficients[NCOEFF] =
-    {
-        1, 0.8, 2, //r1, r2, r3
-        0, -0.8, -2, //l1, l2, l3
-        0, 0, 0, //derivatives r1, r2, r3
-        0, 0, 0, //derivatives l1, l2, l3
-        0, 0, 0, //integrals r1, r2, r3
-        0, 0, 0 //integrals l1, l2, l3
-    };
+    //White track
+    //float thresholdMin[NSENSORS] = {7000, 5500, 5000, 4500, 5000, 5000};
     
-    float rCoefficients[NCOEFF] =
-    {
-        0, -0.8, -2, //r1, r2, r3
-        1, 0.8, 2, //l1, l2, l3
-        0, 0, 0, //derivatives r1, r2, r3
-        0, 0, 0, //derivatives l1, l2, l3
-        0, 0, 0, //integrals r1, r2, r3
-        0, 0, 0 //integrals l1, l2, l3
-    };
+    //White table
+    float thresholdMin[NSENSORS] = {11000, 9000, 8000, 7500, 8200, 8100};
     
     
+    float thresholdMax[NSENSORS] = {20000, 20000, 20000, 20000, 20000, 20000};
     
-    driveStart(&dstate, 6000, 10000);
+    driveStart(&dstate, thresholdMin, thresholdMax);
     //reflectance_start();
     
-    int counter = 0;
+    //int counter = 0;
+    const uint32_t batteryMeasurementDelay = 5000;
+    uint32_t lastBatteryTime = 0;
     
     for(;;)
     {
         
-        ADC_Battery_StartConvert();
-        if(ADC_Battery_IsEndConversion(ADC_Battery_WAIT_FOR_RESULT)) {   // wait for get ADC converted value
-            adcresult = ADC_Battery_GetResult16(); // get the ADC value (0 - 4095)
-            // convert value to Volts
-            // you need to implement the conversion
-            
-            volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
-            
-            //reflectance_read(&data);
-            
-            driveFetchData(&dstate);
-            driveUpdateSpeed(&dstate, 0.6f, rCoefficients, lCoefficients);
-            
-            if (counter % 10 == 0)
-                driveResetIntegral(&dstate);
+        if (GetTicks() > lastBatteryTime + batteryMeasurementDelay){
+            ADC_Battery_StartConvert();
+            if(ADC_Battery_IsEndConversion(ADC_Battery_WAIT_FOR_RESULT)) {   // wait for get ADC converted value
+                adcresult = ADC_Battery_GetResult16(); // get the ADC value (0 - 4095)
+                // convert value to Volts
+                // you need to implement the conversion
                 
-            counter++;
-            
-            printf("L1: %f\n", dstate.current.l1);
-            printf("L2: %f\n", dstate.current.l2);
-            printf("L3: %f\n", dstate.current.l3);
-            printf("R1: %f\n", dstate.current.r1);
-            printf("R2: %f\n", dstate.current.r2);
-            printf("R3: %f\n", dstate.current.r3);
-            
-            printf("DL1: %f\n", dstate.integral.l1);
-            printf("DL2: %f\n", dstate.integral.l2);
-            printf("DL3: %f\n", dstate.integral.l3);
-            printf("DR1: %f\n", dstate.integral.r1);
-            printf("DR2: %f\n", dstate.integral.r2);
-            printf("DR3: %f\n", dstate.integral.r3);
-            
-            // Print both ADC results and converted value
-            printf("%d %f\r\n",adcresult, volts);
-            
-            if(volts<4.2)
-            {
-                lighton = !lighton; 
-                BatteryLed_Write(lighton?1:0); // Switch led on
+                const float volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
+                
+                lighton = !lighton;
                 ShieldLed_Write(lighton?1:0);
-                //Beep(1000, 150);
+                
+                if(volts<4.2)
+                { 
+                    BatteryLed_Write(1); // Switch led on
+                    Beep(500, 200);
+                }
+                
+                lastBatteryTime = GetTicks();
             }
         }
-        CyDelay(20);
+        
+        //reflectance_read(&data);
+        
+        driveFetchData(&dstate, -0.5f);
+        
+        float speed = 1.0f;
+        //float correction = fmax(speed * 20, 1.0f);
+        
+        driveUpdateSpeedOpt(&dstate, speed, 0.0f, 6.0f, coefficients);
+    
+        CyDelay(1);
         
        
         
     }
  }   
 #endif
+
+//Two sensors curve
+#if  1
+//battery level//
+int main()
+{
+    bool lighton = false;
+    CyGlobalIntEnable; 
+    UART_1_Start();
+    Systick_Start();
+    
+    ADC_Battery_Start();        
+
+    uint16 adcresult =0;
+    const float divider_ratio = 1.5f;
+    const float adc_max_voltage = 5.0f;
+    const float bits_max = 4095.0f;
+
+    printf("\nBoot\n");
+    
+    
+    //cmotor_calibrate(-0.01);
+    //do_motortest();
+    
+    //for(;;){}
+    
+    //struct sensors_ data;
+    
+ /*
+    play_music("2 C D D e F F e D C b b C D .D -C oC", 300);
+    play_music("3 E =EeEeEBDC A =S 2 =CE 3 =A B =S 2 =E 3 =aB C 2 E", 500);   
+
+    play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
+                         "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
+
+*/
+   
+    //play_music("1 A A A A 0-.F1 =C A 0-.F1 =C A", 500);
+     
+    //play_music_with_base("2 -.A =S -.A =S -.A =S -.A =S 1-.F2 =C A 1-.F2 =C oA"
+  //      , "1 A A A A a A a oA", 500);
+    
+    BatteryLed_Write(0); // Switch led off 
+    //uint8 button;
+    //button = SW1_Read(); // read SW1 on pSoC board
+    // SW1_Read() returns zero when button is pressed
+    // SW1_Read() returns one when button is not pressed
+    
+    DriveState dstate;
+    
+    float KdpRatio = 19.0;
+    float Kpe = 100.0;
+    float Kpm = 1.0;
+    
+    float Kp = 1.0;
+    float Kd = KdpRatio;
+    
+    //Two sensors working values
+    float coefficients[NCOEFF] =
+    {
+        -Kpe, -Kpm, -Kp, Kp, Kpm, Kpe, //l3, l2, l1, r1, r2, r3
+        0,0,-Kd,Kd,0,0,
+        0,0,0.0f,0.0f,0,0
+    };
+    //NOTE: Speed 1, correction=1.5
+    //**********************
+    
+    /*float coefficients[NCOEFF] =
+    {
+        0.0f, 0, -0.8f, 0.8f, 0, 0.0f, //l3, l2, l1, r1, r2, r3
+        0, 0,2.375, 2.375, 0, 0, //derivatives
+        0,0,0.0f,0.0f,0,0
+    };*/
+
+    //float thresholdMin[NSENSORS] = {4200, 4800, 4500, 4800, 5500, 7000};
+    
+    //White track
+    //float thresholdMin[NSENSORS] = {7000, 5500, 5000, 4500, 5000, 5000};
+    
+    //White table
+    float thresholdMin[NSENSORS] = {11000, 9000, 8000, 7500, 8200, 8100};
+    
+    
+    float thresholdMax[NSENSORS] = {20000, 20000, 20000, 20000, 20000, 20000};
+    
+    driveStart(&dstate, thresholdMin, thresholdMax);
+    //reflectance_start();
+    
+    //int counter = 0;
+    const uint32_t batteryMeasurementDelay = 5000;
+    uint32_t lastBatteryTime = 0;
+    
+    for(;;)
+    {
+        
+        if (GetTicks() > lastBatteryTime + batteryMeasurementDelay){
+            ADC_Battery_StartConvert();
+            if(ADC_Battery_IsEndConversion(ADC_Battery_WAIT_FOR_RESULT)) {   // wait for get ADC converted value
+                adcresult = ADC_Battery_GetResult16(); // get the ADC value (0 - 4095)
+                // convert value to Volts
+                // you need to implement the conversion
+                
+                const float volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
+                
+                lighton = !lighton;
+                ShieldLed_Write(lighton?1:0);
+                
+                if(volts<4.2)
+                { 
+                    BatteryLed_Write(1); // Switch led on
+                    Beep(500, 200);
+                }
+                
+                lastBatteryTime = GetTicks();
+            }
+        }
+        
+        //reflectance_read(&data);
+        
+        driveFetchData(&dstate, 0.0f);
+        
+        float speed = 1.0f;
+        //float correction = fmax(speed * 20, 1.0f);
+        
+        driveUpdateSpeedOpt(&dstate, speed, 0.0f, 1.0f, coefficients);
+    
+        CyDelay(1);
+        
+       
+        
+    }
+ }   
+#endif
+
+//Hybrid mode
+#if 0
+//battery level//
+int main()
+{
+    bool lighton = false;
+    CyGlobalIntEnable; 
+    UART_1_Start();
+    Systick_Start();
+    
+    ADC_Battery_Start();        
+
+    uint16 adcresult =0;
+    const float divider_ratio = 1.5f;
+    const float adc_max_voltage = 5.0f;
+    const float bits_max = 4095.0f;
+
+    printf("\nBoot\n");
+    
+    
+    BatteryLed_Write(0); // Switch led off 
+    
+    DriveState dstate;
+    HybridState hstate;
+    HybridParams hparams;
+    
+    hparams.speed = 0.5f;
+    
+    hparams.Kp = 0.8f;
+    hparams.Td = 2.375f;
+    hparams.Ti = 0;
+    hparams.pidCorrection = 0.5f;
+    
+    hparams.softThreshold = 0.6f;
+    hparams.hardThreshold = 0.6f;
+    hparams.softCorrection = 0.30f;
+    hparams.hardCorrection = 0.60f;
+    
+
+    //float thresholdMin[NSENSORS] = {4200, 4800, 4500, 4800, 5500, 7000};
+    
+    //White track
+    //float thresholdMin[NSENSORS] = {7000, 5500, 5000, 4500, 5000, 5000};
+    
+    //White table
+    float thresholdMin[NSENSORS] = {11000, 9000, 8000, 7500, 8200, 8100};
+    
+    
+    float thresholdMax[NSENSORS] = {20000, 20000, 20000, 20000, 20000, 20000};
+    
+    //driveStart(&dstate, thresholdMin, thresholdMax);
+    hybridStart(&hstate, &dstate, thresholdMin, thresholdMax);
+
+    const uint32_t batteryMeasurementDelay = 5000;
+    uint32_t lastBatteryTime = 0;
+    
+    for(;;)
+    {
+        
+        if (GetTicks() > lastBatteryTime + batteryMeasurementDelay){
+            ADC_Battery_StartConvert();
+            if(ADC_Battery_IsEndConversion(ADC_Battery_WAIT_FOR_RESULT)) {   // wait for get ADC converted value
+                adcresult = ADC_Battery_GetResult16(); // get the ADC value (0 - 4095)
+                // convert value to Volts
+                // you need to implement the conversion
+                
+                const float volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
+                
+                lighton = !lighton;
+                ShieldLed_Write(lighton?1:0);
+                
+                if(volts<4.2)
+                { 
+                    BatteryLed_Write(1); // Switch led on
+                    Beep(500, 200);
+                }
+                
+                lastBatteryTime = GetTicks();
+            }
+        }
+        
+        //reflectance_read(&data);
+        
+        //driveFetchData(&dstate, 0.0f);
+        hybridFetch(&hstate);
+        
+        float speed = 0.5f;
+        float correction = fmax(speed * 20, 1.0f);
+        
+        //driveUpdateSpeedOpt(&dstate, speed, 0.0f, 1.5f, coefficients);
+        hybridUpdate(&hstate, &hparams);
+        
+        /*if (counter % integralPeriod == 0)
+            driveResetIntegral(&dstate);
+            
+        counter++;*/
+        /*
+        printf("L1: %f\n", dstate.current[REF_L1]);
+        printf("L2: %f\n", dstate.current[REF_L2]);
+        printf("L3: %f\n", dstate.current[REF_L3]);
+        printf("R1: %f\n", dstate.current[REF_R1]);
+        printf("R2: %f\n", dstate.current[REF_R2]);
+        printf("R3: %f\n", dstate.current[REF_R3]);
+        */
+        // Print both ADC results and converted value
+        //printf("%d %f\r\n", adcresult, volts);
+        
+
+    
+        CyDelay(1);
+        
+       
+        
+    }
+ }   
+#endif
+
+
+
 
 #if 0
 // button
@@ -312,12 +547,13 @@ int main()
         reflectance_read(&ref);
         printf("%5d %5d %5d %5d %5d %5d\r\n", ref.l3, ref.l2, ref.l1, ref.r1, ref.r2, ref.r3);       // print out each period of reflectance sensors
         
+        
         // read digital values that are based on threshold. 0 = white, 1 = black
         // when blackness value is over threshold the sensors reads 1, otherwise 0
         reflectance_digital(&dig);      //print out 0 or 1 according to results of reflectance period
         printf("%5d %5d %5d %5d %5d %5d \r\n", dig.l3, dig.l2, dig.l1, dig.r1, dig.r2, dig.r3);        //print out 0 or 1 according to results of reflectance period
         
-        CyDelay(200);
+        CyDelay(20);
     }
 }   
 #endif
