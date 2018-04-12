@@ -12,7 +12,6 @@
 
 #ifndef DR_H
 #define DR_H
-# define treshold 2300
 #include "Reflectance.h"
 typedef struct {
    struct sensors_ s;

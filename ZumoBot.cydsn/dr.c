@@ -1,4 +1,4 @@
-/* ========================================
+ /* ========================================
  *
  * Copyright YOUR COMPANY, THE YEAR
  * All Rights Reserved
@@ -11,10 +11,11 @@
 */
 #include "dr.h"
 #include "Systick.h"
-#include <stdio.h>
 #include "custom_motor.h"
 
-
+/*
+@brief start sensor data
+*/
 void startSensor(sensorData* d)
 {
     d->s.l1 = 0;
@@ -29,14 +30,17 @@ void startSensor(sensorData* d)
     reflectance_start();
 }
 
+
+/*
+@brief get data and drive
+*/
 void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale) 
 {
     float r1, r2, r3, l1, l2, l3, dt, time, proportional, newSpeed;
     
-    //read sensor values
     reflectance_read(&d->s);
    
-    // Scale sensor value from 0 - 1
+    // Scale sensor values from 0 - 1
     l1 = scale(d->s.l1,min[0],max[0]);
     l2 = scale(d->s.l2,min[1],max[1]);
     l3 = scale(d->s.l3,min[2],max[2]);
@@ -45,7 +49,7 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
     r3 = scale(d->s.r3,min[5],max[5]);
     
    
-    // check if robot is deviating from line, it will be 0 if in line
+    // calulate robot deviation from line
     proportional = (l1 * -kp) + (r1 * kp) +  (l3 * -kp*100) + (r3 * kp*100);
     
     
@@ -65,32 +69,35 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
         
     }
     
-    // derivative : get change of deviation from line over time
+    // calculate change of deviation from line over time
     time =GetTicks();
     dt =time - d->time;
     d->derivative = (proportional - d->lastproportional)/dt;
+    
+    // update time and proportional values
     d->time = time;
-    
-    
     d->lastproportional = proportional;
     
     
-    //get the change of deviation as speed
+    //calculate deviation as speed
     newSpeed = proportional + d->derivative*kd ;
     
     
-    //if newspeed is less than 0, robot is deviating to right, left engine get less speed, or if 0 go straight
      if(newSpeed<=0)
         {
-            cmotor_speed(1.0+newSpeed,1.0,speedScale);
+            cmotor_speed(1.0 + newSpeed, 1.0, speedScale);
         }
-        else if(newSpeed>0) // if newspeed is greater than 0, robot is deviating to left, right engine get less speed 
+        else 
         {
-            cmotor_speed(1.0,1.0-newSpeed,speedScale);
+            cmotor_speed(1.0, 1.0 - newSpeed, speedScale);
             
         }     
 }
 
+
+/*
+@brief scale sensor data from 0 to 1
+*/
 float scale(float data, float min, float max)
 {
     if(data<min)
@@ -102,6 +109,9 @@ float scale(float data, float min, float max)
         data = max;
     }
     
+    //scale and return
     return (data -min )/(max - min);
 }
+
+
 /* [] END OF FILE */
