@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include "Ultra.h"
 #include "CyLib.h"
+#include "custom_motor.h"
 
 void check_if_inRing(enum State *s, struct sensors_ *dig)
 {
@@ -33,34 +34,78 @@ void check_if_inRing(enum State *s, struct sensors_ *dig)
         {
             *s = turnL;
         }
-        else
+        else if(dig->r1 ==1 || dig->l1 ==1)
         {
             *s = reverse;
         }
     }
 }
 
-void doState( enum State *s)
+void doState( enum State *s, int attackDistance, float speedScale )
 {
       int distance = Ultra_GetDistance();
         printf("distance = %d\r\n", distance);
-        CyDelay(200);
         
     switch(*s)
         {
             case search:
+                if(distance<attackDistance)
+                {
+                    *s = attack;
+                    return;
+                }
+                else
+                {
+                   cmotor_speed(-1,1, 0.7);
+                }
             break;
             
             case attack:
+            
+                cmotor_speed(1,1,speedScale);
+                
+                if(distance> attackDistance)
+                {
+                    *s = search;
+                }
             break;
             
             case turnL:
+           
+            cmotor_speed(-1, 1, speedScale);
+            
+            if(distance<attackDistance)
+                {
+                    *s = attack;
+                }
+                else
+                {
+                    *s = search;
+                }
+            
             break;
             
             case turnR:
+                
+                cmotor_speed(1, -1, speedScale);
+                
+                if(distance<attackDistance)
+                {
+                    *s = attack;
+                }
+                else
+                {
+                    *s = search;
+                }
+            
             break;
             
             case reverse:
+            
+                cmotor_speed(-1,-1, speedScale);
+                
+               
+            
             break;
         }
 }

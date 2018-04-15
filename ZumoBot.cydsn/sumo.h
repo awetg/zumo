@@ -14,7 +14,7 @@
 #define SUMO_H
 #include "Reflectance.h"
 enum State {search, attack, reverse, turnR, turnL};
-void doState( enum State *s);
+void doState( enum State *s, int attackDistance, float speedScale);
 void check_if_inRing(enum State *s, struct sensors_ *dig);
 #endif
 

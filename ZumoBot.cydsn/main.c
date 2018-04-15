@@ -61,7 +61,7 @@ int rread(void);
 
 
 //Two sensors curve
-#if  1
+#if  0
 //battery level//
 int main()
 {
@@ -198,6 +198,36 @@ int main()
     }
 }   
 #endif
+
+#if 1
+#include "sumo.h"
+
+ 
+//ultrasonic sensor//
+int main()
+{
+    CyGlobalIntEnable; 
+    UART_1_Start();
+    Systick_Start();
+    Ultra_Start(); // Ultra Sonic Start function
+    
+    struct sensors_ dig;
+    enum State state = search;
+    int attackDistance = 28;
+    float speedScale = 1;
+    
+    reflectance_start();
+    cmotor_start();
+    
+    while(1)
+    {
+        check_if_inRing(&state, &dig);
+        doState(&state, attackDistance, speedScale);
+        CyDelay(1);
+    }
+}   
+#endif
+
 
 
 #if 0
