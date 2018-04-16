@@ -216,7 +216,6 @@ int main()
     
     sensorData d;
     
-    
     float speedScale= 1;
     float kp=1.2;
     float kd=19;
@@ -239,6 +238,7 @@ int main()
     //main loop
     for(;;)
     {
+        checkBattery(5000, 4.2);
         drive(&d, min, max, kp, kd, speedScale);
         CyDelay(1);
     }
@@ -256,6 +256,7 @@ int main()
     UART_1_Start();
     Systick_Start();
     Ultra_Start();
+    IR_Start();
     
     struct sensors_ dig;
     enum State state = search;
@@ -266,7 +267,7 @@ int main()
     CyDelay(2);
     cmotor_start();
     
-    //go to first line
+    //go to start of ring
     do{
         reflectance_digital(&dig);
         cmotor_speed(1, 1, speedScale/2);
