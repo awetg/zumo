@@ -12,7 +12,9 @@
 #include "dr.h"
 #include "Systick.h"
 #include "custom_motor.h"
+#include "transversal.h"
 
+int count = 0; // for checking horizontal lines
 /*
 @brief start sensor data
 */
@@ -35,7 +37,7 @@ void startSensor(sensorData* d)
 /*
 @brief get data and drive
 */
-void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale, bool *fLine, bool *secLine) 
+void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale) 
 {
     float r1, r2, r3, l1, l2, l3, dt, time, proportional, newSpeed;
     
@@ -49,39 +51,28 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
     r2 = scale(d->s.r2,min[4],max[4]);
     r3 = scale(d->s.r3,min[5],max[5]);
     
-   
-    // calulate robot deviation from line
-    proportional = (l1 * -kp) + (r1 * kp) +  (l3 * -kp*100) + (r3 * kp*100);
-    
-    
-    //check for horizontal line
-    if((l3 + r3) > 1.8)
+    //check for horizontal lines
+    if(l3+r3 >=2)
     {
-        *fLine = true;
-        
-        if(*secLine)
+        count = transversalCount(r3, l3);
+        if(count >=3)
         {
             cmotor_speed(0, 0, 0);
             return;
         }
     }
-    //check for second horizontal 
-    if(*fLine)
-    {
-        if((l3 + r3) < 0.5)
-        {
-            *secLine = true;
-            *fLine = false;
-        }    
-    }
+    
+    // calulate robot deviation from line
+    proportional = (l1 * -kp) + (r1 * kp) +  (l3 * -kp*100) + (r3 * kp*100);
+    
     
     // check if sensor l1 , l3, r1, r3 are on white , then stop or make turn
      if(l1+r1+l3+r3<0.01){
         
-        // check if l2, r2 are black, if yes turn
+        // check if l2, r2 are black, if yes sharp turn
         if(l2+r2>0.0)
         {
-            proportional = (l2 * -kp*100) + (r2 * kp*100);
+            proportional = (l2 * -kp*100) + (r2 * kp*100); // sharp turn
         }
         else // if all are white stop
         {
@@ -90,6 +81,7 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
         }
         
     }
+    
     
     // calculate change of deviation from line over time
     time =GetTicks();

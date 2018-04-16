@@ -20,7 +20,7 @@ typedef struct {
 }sensorData;
 void startSensor(sensorData*);
 float scale(float , float, float);
-void drive(sensorData* d, float *min,float *max, float kp, float kd,float speedSccale, bool *fLine, bool *secLine);
+void drive(sensorData* d, float *min,float *max, float kp, float kd,float speedSccale);
 #endif
 
 /* [] END OF FILE */

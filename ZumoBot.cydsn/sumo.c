@@ -42,58 +42,43 @@ void check_if_inRing(enum State *state, struct sensors_ *dig)
     }
 }
 
+
+
+
 void doState( enum State *state, int attackDistance, float speedScale )
 {   
     switch(*state)
-        {
-            case search:
-                if(enemyFound(attackDistance))
-                {
-                    *state = attack;
-                    return;
-                }
-                else
-                {
-                   cmotor_speed(-1,1, speedScale/2);
-                }
-            break;
+    {
+        case search:
+            if(enemyFound(attackDistance))
+            {
+                *state = attack;
+                return;
+            }
+            else
+            {
+               cmotor_speed(-1,1, speedScale/2);
+            }
+        break;
+        
+        case attack:
+        
+            cmotor_speed(1,1,speedScale);
             
-            case attack:
-            
-                cmotor_speed(1,1,speedScale);
-                
-                if(!enemyFound(attackDistance))
-                {
-                    *state = search;
-                }
-            break;
-            
-            case turnL:
-                //turn
-                cmotor_speed(-1, 1, speedScale);
-                CyDelay(300);
-                //go forward
-                cmotor_speed(1, 1, speedScale);
-                CyDelay(200);
-                if(enemyFound(attackDistance))
-                    {
-                        *state = attack;
-                    }
-                    else
-                    {
-                        *state = search;
-                    }
-            
-            break;
-            
-            case turnR:
-                //turn
-                cmotor_speed(1, -1, speedScale);
-                CyDelay(300);
-                //go forward
-                cmotor_speed(1, 1, speedScale);
-                CyDelay(200);
-                if(enemyFound(attackDistance))
+            if(!enemyFound(attackDistance)) //if enemy not found, search
+            {
+                *state = search;
+            }
+        break;
+        
+        case turnL:
+            //turn
+            cmotor_speed(-1, 1, speedScale);
+            CyDelay(300);
+            //go forward
+            cmotor_speed(1, 1, speedScale);
+            CyDelay(300);
+            if(enemyFound(attackDistance))
                 {
                     *state = attack;
                 }
@@ -101,17 +86,34 @@ void doState( enum State *state, int attackDistance, float speedScale )
                 {
                     *state = search;
                 }
+        
+        break;
+        
+        case turnR:
+            //turn
+            cmotor_speed(1, -1, speedScale);
+            CyDelay(300);
+            //go forward
+            cmotor_speed(1, 1, speedScale);
+            CyDelay(300);
+            if(enemyFound(attackDistance))
+            {
+                *state = attack;
+            }
+            else
+            {
+                *state = search;
+            }
+        
+        break;
+        
+        case reverse:
+        
+            cmotor_speed(-1,-1, speedScale);
+            CyDelay(300);
             
-            break;
-            
-            case reverse:
-            
-                cmotor_speed(-1,-1, speedScale);
-                
-               
-            
-            break;
-        }
+        break;
+    }
 }
 
 
@@ -122,7 +124,7 @@ bool enemyFound( int attackDistance)
     
     if(distance<attackDistance && distance!=5)
     return true;
-    else
+    else 
     return false;
 }
 /* [] END OF FILE */
