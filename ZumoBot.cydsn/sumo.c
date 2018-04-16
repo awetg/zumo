@@ -65,45 +65,26 @@ void doState( enum State *state, int attackDistance, float speedScale )
         
             cmotor_speed(1,1,speedScale);
             
-            if(!enemyFound(attackDistance)) //if enemy not found, search
-            {
+            if(!enemyFound(attackDistance)) //if enemy not found, start search
                 *state = search;
-            }
         break;
         
         case turnL:
-            //turn
-            cmotor_speed(-1, 1, speedScale);
-            CyDelay(300);
-            //go forward
-            cmotor_speed(1, 1, speedScale);
-            CyDelay(300);
+            turn(LEFT, speedScale);
             if(enemyFound(attackDistance))
-                {
-                    *state = attack;
-                }
-                else
-                {
-                    *state = search;
-                }
+                *state = attack;
+            else
+                *state = search;
         
         break;
         
         case turnR:
-            //turn
-            cmotor_speed(1, -1, speedScale);
-            CyDelay(300);
-            //go forward
-            cmotor_speed(1, 1, speedScale);
-            CyDelay(300);
+            turn(RIGHT, speedScale);
+            
             if(enemyFound(attackDistance))
-            {
                 *state = attack;
-            }
             else
-            {
                 *state = search;
-            }
         
         break;
         
@@ -111,6 +92,10 @@ void doState( enum State *state, int attackDistance, float speedScale )
         
             cmotor_speed(-1,-1, speedScale);
             CyDelay(300);
+            if(enemyFound(attackDistance))
+                *state = attack;
+            else
+                *state = search;
             
         break;
     }
@@ -126,5 +111,16 @@ bool enemyFound( int attackDistance)
     return true;
     else 
     return false;
+}
+
+void turn(int direction, int speedScale)
+{
+    //turn
+    cmotor_speed(1 * direction, -1 * direction, speedScale);
+    CyDelay(300);
+    
+    //go forward
+    cmotor_speed(1, 1, speedScale);
+    CyDelay(300);
 }
 /* [] END OF FILE */
