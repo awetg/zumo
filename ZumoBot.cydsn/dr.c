@@ -65,7 +65,7 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
             return;
         }
     }
-    
+    //check for second horizontal 
     if(*fLine)
     {
         if((l3 + r3) < 0.5)

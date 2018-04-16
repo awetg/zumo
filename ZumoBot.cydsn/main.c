@@ -50,6 +50,7 @@
 #include "drive.h"
 #include "motortest.h"
 #include "battery.h"
+#include "transversal.h"
 
 int rread(void);
 
@@ -67,11 +68,14 @@ int main()
 {
     CyGlobalIntEnable; 
     UART_1_Start();
+    IR_Start();
     ADC_Battery_Start(); 
     Systick_Start();      
-
+    
     printf("\nBoot\n");
     
+    
+
     
     //9th Beethoven, Fur Elise, Polyphonic chords
     /*
@@ -96,14 +100,20 @@ int main()
     DriveState dstate;
     
     //Parameters of PID for the motors
-    float speed = 1.0f;
+    float speed = 0.3f;
     
-    float KdpRatio = 19.0;
-    float Kpe = 100.0;
-    float Kpm = 2.0;
+    const float KdpRatio = 19.0;
+    const float Kpe = 100.0;
+    const float Kpm = 2.0;
     
-    float Kp = 1.0;
-    float Kd = KdpRatio;
+    const float Kp = 1.0;
+    const float Kd = KdpRatio;
+    
+    //Status of the track
+    bool firstLineReached = false;
+    bool startTriggered = false;
+    bool trackEnded = false;
+    bool paused = false;
     
     //Coefficients to pass to the motors, reflecting the PID parameters symmetrically
     float coefficients[NCOEFF] =
@@ -142,14 +152,44 @@ int main()
         //Note: You can use displ=-0.5f to obtain a range -0.5f(white) to 0.5f(black)
         driveFetchData(&dstate, 0.0f);
         
-        //Update the speed of the motors so that:
-        //- speed represents the full speed
-        //- one of the two motors is always at full speed
-        //- the function value is computed from matrix product of coefficients and the sensor values
-        //- the difference between the function value and the aim (0.0f in this case) is computed
-        //- the difference is then multiplied by the correction speed (1.0f in this case)
-        //- the value is subctracted from the right engine full speed if positive, or from the left engine full speed if negative
-        driveUpdateSpeed(&dstate, speed, 0.0f, 1.0f, coefficients);
+        //Fetch the values of R3 and L3 for the transversal line check
+        float r3 = dstate.current[REF_R3];
+        float l3 = dstate.current[REF_L3];
+        
+        if (paused){
+            //Set the speed to zero if paused
+            cmotor_speed(0,0,0);
+        } else {
+            //Update the speed of the motors so that:
+            //- speed represents the full speed
+            //- one of the two motors is always at full speed
+            //- the function value is computed from matrix product of coefficients and the sensor values
+            //- the difference between the function value and the aim (0.0f in this case) is computed
+            //- the difference is then multiplied by the correction speed (1.0f in this case)
+            //- the value is subctracted from the right engine full speed if positive, or from the left engine full speed if negative
+            driveUpdateSpeed(&dstate, speed, 0.0f, 1.0f, coefficients);
+        }
+        
+        if (!firstLineReached){
+            //If we reach the first transversal line, take note of it...
+            firstLineReached = transversalDetect(r3, l3);
+            //...and pause the robot
+            paused = firstLineReached;
+        } else if (!startTriggered && firstLineReached){
+            IR_flush(); // clear IR receive buffer
+            IR_wait(); // wait for IR command
+            startTriggered = true;
+            transversalReset(); //Bring back to zero the count of transversl lines passed
+            speed = 1.0f; //Set full speed for the race
+            cmotor_speed(1,1,speed); //Go straight for 50 ms to pass the first transversal line
+            CyDelay(50);
+            paused = false;
+        } else if (!trackEnded && startTriggered){
+            if (transversalCount(r3, l3) >= 2){
+                cmotor_stop(); //Stop at the end, after reading two tranversal lines
+                paused = true; 
+            }
+        }
     
         //1 ms delay. The totale execution time for a cycle is around 6 ms
         CyDelay(1);

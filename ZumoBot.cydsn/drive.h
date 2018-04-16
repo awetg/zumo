@@ -43,6 +43,10 @@ typedef struct drivestate {
     float prevL2, prevR2;
     int filteredL2, filteredR2;
     
+    //Horizontal lines
+    bool onTransversalLine;
+    int passedTransversalLines;
+    
     //Arrays of minimum and maximum reflectance values for the reflectance sensors
     float *reflectanceMin;
     float *reflectanceMax;
