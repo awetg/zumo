@@ -160,29 +160,24 @@ int main()
 
 
 //Awet's PID
-#if 0
+#if 1
 #include "dr.h"
 //reflectance//
 int main()
 {
-    //struct sensors_ dig;
-    //truct sensors_ threshhold;
-    
-    sensorData d;
-
     Systick_Start();
-
     CyGlobalIntEnable; 
     UART_1_Start();
+    IR_Start();
     
-    //float min[6] = {6000, 5500, 4800, 4200, 4800, 4500};
+    
     float min[6] = {11000, 9000, 8000, 7500, 8200, 8100};
     float max[6] = {20000, 20000, 20000, 20000, 20000, 20000};
-    //float max[6] = {23000, 23000, 23000, 23000, 23000, 23000};
-    //float dif[6] = {17000, 17500, 18200, 18800, 18200, 18500};
+    
+    sensorData d;
+    
     
     float speedScale= 1;
-    
     float kp=1.2;
     float kd=19;
     
@@ -190,16 +185,30 @@ int main()
     startSensor(&d);
     cmotor_start();
     
+    
+    bool fLineReached = false;
+    bool secLineReached = false;
+    
+     // go to first line
+    struct sensors_ dig;
+    do{
+        reflectance_digital(&dig);
+        cmotor_speed(1, 1, 0.5);
+    }while((dig.l3 + dig.r3) < 2);
+    
+    cmotor_speed(0, 0, 0);
+    IR_wait();
+    
+    //main loop
     for(;;)
     {
-        drive(&d, min, max, kp, kd, speedScale);
-        
+        drive(&d, min, max, kp, kd, speedScale, &fLineReached, &secLineReached);
         CyDelay(1);
     }
 }   
 #endif
 
-#if 1
+#if 0
 #include "sumo.h"
 
  
@@ -209,17 +218,18 @@ int main()
     CyGlobalIntEnable; 
     UART_1_Start();
     Systick_Start();
-    Ultra_Start(); // Ultra Sonic Start function
+    Ultra_Start();
     
     struct sensors_ dig;
     enum State state = search;
-    int attackDistance = 28;
+    int attackDistance = 60;
     float speedScale = 1;
     
     reflectance_start();
     cmotor_start();
     
-    while(1)
+    
+    for(;;)
     {
         check_if_inRing(&state, &dig);
         doState(&state, attackDistance, speedScale);

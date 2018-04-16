@@ -13,9 +13,11 @@
 #ifndef SUMO_H
 #define SUMO_H
 #include "Reflectance.h"
+#include<stdbool.h>
 enum State {search, attack, reverse, turnR, turnL};
-void doState( enum State *s, int attackDistance, float speedScale);
-void check_if_inRing(enum State *s, struct sensors_ *dig);
+void doState( enum State *state, int attackDistance, float speedScale);
+void check_if_inRing(enum State *state, struct sensors_ *dig);
+bool enemyFound( int attackDistance);
 #endif
 
 /* [] END OF FILE */

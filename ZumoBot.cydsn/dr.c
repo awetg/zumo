@@ -28,13 +28,14 @@ void startSensor(sensorData* d)
     d->lastproportional= 0;
     d->derivative= 0;
     reflectance_start();
+    CyDelay(2);
 }
 
 
 /*
 @brief get data and drive
 */
-void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale) 
+void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale, bool *fLine, bool *secLine) 
 {
     float r1, r2, r3, l1, l2, l3, dt, time, proportional, newSpeed;
     
@@ -52,6 +53,27 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
     // calulate robot deviation from line
     proportional = (l1 * -kp) + (r1 * kp) +  (l3 * -kp*100) + (r3 * kp*100);
     
+    
+    //check for horizontal line
+    if((l3 + r3) > 1.8)
+    {
+        *fLine = true;
+        
+        if(*secLine)
+        {
+            cmotor_speed(0, 0, 0);
+            return;
+        }
+    }
+    
+    if(*fLine)
+    {
+        if((l3 + r3) < 0.5)
+        {
+            *secLine = true;
+            *fLine = false;
+        }    
+    }
     
     // check if sensor l1 , l3, r1, r3 are on white , then stop or make turn
      if(l1+r1+l3+r3<0.01){
