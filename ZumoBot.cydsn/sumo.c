@@ -50,67 +50,51 @@ void doState( enum State *state, int attackDistance, float speedScale )
     switch(*state)
     {
         case search:
-            if(enemyFound(attackDistance))
-            {
-                *state = attack;
-                return;
-            }
-            else
-            {
-               cmotor_speed(-1,1, speedScale/2);
-            }
+            
+            cmotor_speed(-1,1, speedScale/2);
+            checkForEnemy(attackDistance, state);
+            
         break;
         
         case attack:
         
             cmotor_speed(1,1,speedScale);
+            checkForEnemy(attackDistance, state);
             
-            if(!enemyFound(attackDistance)) //if enemy not found, start search
-                *state = search;
         break;
         
         case turnL:
             turn(LEFT, speedScale);
-            if(enemyFound(attackDistance))
-                *state = attack;
-            else
-                *state = search;
+            checkForEnemy(attackDistance, state);
         
         break;
         
         case turnR:
             turn(RIGHT, speedScale);
+            checkForEnemy(attackDistance, state);
             
-            if(enemyFound(attackDistance))
-                *state = attack;
-            else
-                *state = search;
-        
         break;
         
         case reverse:
         
             cmotor_speed(-1,-1, speedScale);
             CyDelay(300);
-            if(enemyFound(attackDistance))
-                *state = attack;
-            else
-                *state = search;
+            checkForEnemy(attackDistance, state);
             
         break;
     }
 }
 
 
-bool enemyFound( int attackDistance)
+void checkForEnemy( int attackDistance, enum State *state)
 {
     int distance = Ultra_GetDistance();
     printf("distance = %d\r\n", distance); 
     
     if(distance<attackDistance && distance!=5)
-    return true;
+    *state = attack;
     else 
-    return false;
+    *state = search;
 }
 
 void turn(int direction, int speedScale)
