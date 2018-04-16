@@ -63,6 +63,8 @@ void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax)
     //Start the reflectance sensors readings
     reflectance_start();
     
+    CyDelay(5); //Wait for the sensors to initialize
+    
     //Initialize the state to its initial value
     state->reflectanceMin = reflectanceMin;
     state->reflectanceMax = reflectanceMax;
@@ -178,6 +180,9 @@ void driveUpdateSpeed(DriveState* state, float maxSpeed, float aim, float correc
     // START OF EMERGENCY TURN HANDLING CODE
     //***************************************
     
+    //Note: Since we monitor L3 and R3 for emergency turn, this code also deals with recognizing the horizontal signal lines 
+    //      at the start and end of the track
+    
     //This type of turn is executed to handle 90 degrees or more non smooth turns.
     //If all the sensors end up on white, and one of external sensors (R3 or L3) in the previous resetEmergencySumAfter 
     //number of cycles has read more black than the other, assume that the path sharply turn that way,
@@ -198,12 +203,9 @@ void driveUpdateSpeed(DriveState* state, float maxSpeed, float aim, float correc
     //Total darkness from the sensors. If less than emergencyThreshold, execute emergency turn.
     const float totalDarkness = l1+l3+r1+r3; 
     
-    //Both R3 and L3 are reading black, meaning we meet an horizontal line
+    //Both R3 and L3 are reading black, meaning we meet a trasnversal line
     if (r3 > black && l3 > black){
-        state->emergencyTurnSum = 0.0; //Reset the sum, since we are in a horizontal line, not in a turn
-        
-        //TODO: Signal horizontal line
-        
+        state->emergencyTurnSum = 0.0; //Reset the sum, since we are in a horizontal line, not in a turn        
     } else if (r3 > black && l3 < black){ //R3 only reads black
         state->emergencyTurnSum -= 1.0f; //Make the sum more negative, to signal that the road probably goes right
         state->resetEmergencySumCounter = 0; //Stop counting for reset, because we have a reading
