@@ -61,9 +61,16 @@ int rread(void);
 */
 
 
-//Two sensors curve
+
 #if  1
-//battery level//
+
+    
+bool endOfTrackNotReached(DriveState* state){        
+    float r3 = state->current[REF_R3];
+    float l3 = state->current[REF_L3];
+    return transversalCount(r3, l3) < 2;
+}
+    
 int main()
 {
     CyGlobalIntEnable; 
@@ -84,8 +91,8 @@ int main()
 
     play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
                          "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
-
     */
+    
     
     //Imperial march
     /* 
@@ -99,8 +106,11 @@ int main()
     
     DriveState dstate;
     
+    //Initial speed to reach the starting line
+    const float walkSpeed = 0.3f;
+    
     //Parameters of PID for the motors
-    float speed = 0.3f;
+    const float speed = 1.0f;
     
     const float KdpRatio = 19.0;
     const float Kpe = 100.0;
@@ -114,6 +124,15 @@ int main()
     bool startTriggered = false;
     bool trackEnded = false;
     bool paused = false;
+    
+    //Coefficients to pass to the motors, reflecting the PID parameters symmetrically
+    float walkCoefficients[NCOEFF] =
+    {
+        0, -Kpm, -Kp, Kp, Kpm, 0, //l3, l2, l1, r1, r2, r3
+        0,0,-Kd,Kd,0,0,
+        0,0,0.0f,0.0f,0,0
+    };
+
     
     //Coefficients to pass to the motors, reflecting the PID parameters symmetrically
     float coefficients[NCOEFF] =
@@ -141,6 +160,18 @@ int main()
     
     //Start the motors and the PID
     driveStart(&dstate, thresholdMin, thresholdMax);
+    
+    driveWhile(isNotYetOnTransversalLine, &dstate, walkSpeed, walkCoefficients, checkBatteryWithDefaults);
+    
+    IR_flush(); // clear IR receive buffer
+    IR_wait(); // wait for IR command
+    
+    transversalReset(); //Reset the count of transversal lines passed (to esclude the initial one)
+    
+    //Race
+    driveWhile(endOfTrackNotReached, &dstate, speed, coefficients, checkBatteryWithDefaults);
+    
+    /*
     
     for(;;)
     {
@@ -181,8 +212,10 @@ int main()
             startTriggered = true;
             transversalReset(); //Bring back to zero the count of transversl lines passed
             speed = 1.0f; //Set full speed for the race
-            cmotor_speed(1,1,speed); //Go straight for 50 ms to pass the first transversal line
-            CyDelay(50);
+            
+            //Drive straight while we still havent passed the transversal line
+            driveFixedWhile(&dstate, 1.0, 1.0, speed, isStillOnTransversalLine);
+            
             paused = false;
         } else if (!trackEnded && startTriggered){
             if (transversalCount(r3, l3) >= 2){
@@ -194,7 +227,7 @@ int main()
         //1 ms delay. The totale execution time for a cycle is around 6 ms
         CyDelay(1);
         
-    }
+    }*/
  }   
 #endif
 
@@ -245,7 +278,7 @@ int main()
 }   
 #endif
 
-#if 1
+#if 0
 #include "sumo.h"
 
  
