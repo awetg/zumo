@@ -62,7 +62,7 @@ int rread(void);
 
 
 //Two sensors curve
-#if  0
+#if  1
 //battery level//
 int main()
 {
@@ -200,7 +200,7 @@ int main()
 
 
 //Awet's PID
-#if 1
+#if 0
 #include "dr.h"
 //reflectance//
 int main()
