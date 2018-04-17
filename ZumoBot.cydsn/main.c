@@ -216,7 +216,6 @@ int main()
     
     sensorData d;
     
-    
     float speedScale= 1;
     float kp=1.2;
     float kd=19;
@@ -226,14 +225,11 @@ int main()
     cmotor_start();
     
     
-    bool fLineReached = false;
-    bool secLineReached = false;
-    
      // go to first line
     struct sensors_ dig;
     do{
         reflectance_digital(&dig);
-        cmotor_speed(1, 1, 0.5);
+        cmotor_speed(1, 1, speedScale/2);
     }while((dig.l3 + dig.r3) < 2);
     
     cmotor_speed(0, 0, 0);
@@ -242,13 +238,14 @@ int main()
     //main loop
     for(;;)
     {
-        drive(&d, min, max, kp, kd, speedScale, &fLineReached, &secLineReached);
+        checkBattery(5000, 4.2);
+        drive(&d, min, max, kp, kd, speedScale);
         CyDelay(1);
     }
 }   
 #endif
 
-#if 0
+#if 1
 #include "sumo.h"
 
  
@@ -259,6 +256,7 @@ int main()
     UART_1_Start();
     Systick_Start();
     Ultra_Start();
+    IR_Start();
     
     struct sensors_ dig;
     enum State state = search;
@@ -266,9 +264,24 @@ int main()
     float speedScale = 1;
     
     reflectance_start();
+    CyDelay(2);
     cmotor_start();
     
+    //go to start of ring
+    do{
+        reflectance_digital(&dig);
+        cmotor_speed(1, 1, speedScale/2);
+    }while((dig.l3 + dig.r3) < 2);
     
+    cmotor_speed(0, 0, 0);
+    IR_wait();
+    
+    // got to center of ring
+    cmotor_speed(1, 1, speedScale);
+    CyDelay(300);
+    
+    
+    //main loop
     for(;;)
     {
         check_if_inRing(&state, &dig);

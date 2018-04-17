@@ -40,7 +40,7 @@ int transversalCount(float r3, float l3){
     
 //Reset the count of transversal lines passed
 void transversalReset(){
-    trCount = 0;
+    trCount = 0; 
 }
 
 /* [] END OF FILE */
