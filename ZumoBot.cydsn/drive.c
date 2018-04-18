@@ -95,10 +95,6 @@ bool driveDataIsZero(DriveState* state){
 void driveReset(DriveState* state){
     
     state->emergencyTurnSum = 0.0f;
-    state->filteredL2 = 0;
-    state->filteredR2 = 0;
-    state->prevL2 = 0;
-    state->prevR2 = 0;
     state->resetEmergencySumCounter = 0;
     state->time = GetTicks();
     state->displ = 0;
@@ -155,33 +151,6 @@ void driveFetchData(DriveState* state, float displ){
     
     //Show the data for debug
     //printf("%5d %5d %5d %5d %5d %5d\r\n", in_data.l3, in_data.l2, in_data.l1, in_data.r1, in_data.r2, in_data.r3);
-    
-    
-    //*****************************************
-    //FILTER l2 and r2 in case of random errors (see hardware bug with L2 and R2 reflectance sensors)
-    
-    //If the difference between the last and the current reading is greater than this number, discard it
-    const float errorThreshold = 0.2f; 
-    
-    //If more than maximumMeasurementsToDiscard measurements in a row have a great difference from before,
-    //accept the new value as real
-    const int maximumMeasurementsToDiscard = 2;
-    
-    if (data[REF_L2] - state->prevL2 > errorThreshold && state->filteredL2 < maximumMeasurementsToDiscard){
-        data[REF_L2] = 0;
-        state->filteredL2++; //Take count of the amount of times in a row we filtered
-    } else {
-        state->filteredL2=0; //No filtering this time, reset the counter
-    }
-    if (data[REF_R2] - state->prevR2 > errorThreshold && state->filteredR2 < maximumMeasurementsToDiscard){
-        data[REF_R2] = 0;
-        state->filteredR2++; //Take count of the amount of times in a row we filtered
-    } else {
-        state->filteredR2=0; //No filtering this time, reset the counter
-    }
-    
-    //END FILTER for l2 and r2
-    //*****************************************
     
     
     //Compute the time difference from the last reading

@@ -39,10 +39,6 @@ typedef struct drivestate {
     float emergencyTurnSum;
     int resetEmergencySumCounter;
     
-    //Filter for r2 and l2
-    float prevL2, prevR2;
-    int filteredL2, filteredR2;
-    
     //Arrays of minimum and maximum reflectance values for the reflectance sensors
     float *reflectanceMin;
     float *reflectanceMax;

@@ -596,8 +596,10 @@
       <Data key="bc9bbc67-d7f8-43cb-80c9-9415958ddc6b/16a808f6-2e13-45b9-bce0-b001c8655113" value="ADC_Battery_Bypass" />
       <Data key="cd6f6d8d-0413-4668-86e5-6df22d2714d0" value="Buzzer" />
       <Data key="cd997344-d07d-4095-831b-589b8491bc10" value="L3" />
+      <Data key="d51831d1-fc3e-4c6f-a3ee-7924d2209086" value="Pin_A1" />
+      <Data key="e4affa7f-0519-4677-aa1a-ecdf6cded5ee" value="Pin_A5" />
       <Data key="e8b7a1a1-1d9e-418f-bb9c-65257ff897d0" value="SW1" />
-      <Data key="e31c1b62-8c2d-4b3a-bde0-4ecc9ba178cf" value="Shield_led" />
+      <Data key="e31c1b62-8c2d-4b3a-bde0-4ecc9ba178cf" value="ShieldLed" />
       <Data key="e76cc1b7-e7aa-4a18-93ee-abf8cf1d598c" value="R1" />
       <Data key="e851a3b9-efb8-48be-bbb8-b303b216c393" value="MotorPwmLeft" />
       <Data key="ed092b9b-d398-4703-be89-cebf998501f6" value="Tx_1" />
@@ -3810,6 +3812,16 @@
     <Group key="cd997344-d07d-4095-831b-589b8491bc10">
       <Group key="0">
         <Data key="Port Format" value="15,5" />
+      </Group>
+    </Group>
+    <Group key="d51831d1-fc3e-4c6f-a3ee-7924d2209086">
+      <Group key="0">
+        <Data key="Port Format" value="12,5" />
+      </Group>
+    </Group>
+    <Group key="e4affa7f-0519-4677-aa1a-ecdf6cded5ee">
+      <Group key="0">
+        <Data key="Port Format" value="2,4" />
       </Group>
     </Group>
     <Group key="e8b7a1a1-1d9e-418f-bb9c-65257ff897d0">
