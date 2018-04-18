@@ -13,7 +13,7 @@
 #include "transversal.h"
 
 int trCount = 0;
-bool onTransversal = false;
+bool onTransversal = true;
 
 //Takes the values of r3 and l3 and returns true if we are on a transversal line
 bool transversalDetect(float r3, float l3){
@@ -41,6 +41,7 @@ int transversalCount(float r3, float l3){
 //Reset the count of transversal lines passed
 void transversalReset(){
     trCount = 0; 
+    onTransversal = true;
 }
 
 /* [] END OF FILE */

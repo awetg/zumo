@@ -39,14 +39,6 @@ typedef struct drivestate {
     float emergencyTurnSum;
     int resetEmergencySumCounter;
     
-    //Filter for r2 and l2
-    float prevL2, prevR2;
-    int filteredL2, filteredR2;
-    
-    //Horizontal lines
-    bool onTransversalLine;
-    int passedTransversalLines;
-    
     //Arrays of minimum and maximum reflectance values for the reflectance sensors
     float *reflectanceMin;
     float *reflectanceMax;
@@ -62,6 +54,17 @@ typedef struct drivestate {
     
 //Start the motors and set the initial values for state
 void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax);
+
+//Reset the temporary state of the drive, keeping the original initialization parameters
+void driveReset(DriveState* state);
+
+//Drive at fixed speed while the condition is true, with motor speeds being right*speed and left*speed
+//At each cycle, the callback function is called, if not null
+void driveFixedWhile(bool (* condition) (DriveState*), DriveState* state, float left, float right, float scale, void (*callback)());
+
+//Drive with PID while the condition is true, with motor speeds being right*speed and left*speed
+//At each cycle, the callback function is called, if not null
+void driveWhile(bool (* condition) (DriveState*), DriveState* state, float speed, float* coefficients, void (*callback)());
 
 //Return true if the data from all the sensors is zero
 bool driveDataIsZero(DriveState* state);
@@ -83,6 +86,15 @@ int getDigitalSensor(DriveState* state, int sensor, float threshold);
 
 //Stop the motor
 void driveStop();
+
+
+//*********************************
+//DEFAULT CONDITIONS FOR driveWhile
+//*********************************
+
+bool isStillOnTransversalLine(DriveState* state);
+bool isNotYetOnTransversalLine(DriveState* state);
+
 
 #endif
 

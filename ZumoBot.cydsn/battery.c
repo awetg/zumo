@@ -62,4 +62,8 @@ void checkBattery(uint32_t batteryMeasurementDelay, float minVoltage){
     }
 }
 
+void checkBatteryWithDefaults(){
+    checkBattery(5000, 4.2);   
+}
+
 /* [] END OF FILE */

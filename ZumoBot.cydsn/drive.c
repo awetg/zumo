@@ -36,6 +36,40 @@ float normalize(float value, float min, float max, float nmin, float nmax){
     return scaled;
 }
 
+//Drive at fixed speed while the condition is true, with motor speeds being right*speed and left*speed
+void driveFixedWhile(bool (* condition) (DriveState*), DriveState* state, float left, float right, float speed, void (*callback)()){
+    driveReset(state); //Discard the turning and PID data
+    
+    while (condition(state)){
+        cmotor_speed(left, right, speed);
+        
+        if (callback != NULL)
+            callback();
+            
+        CyDelay(1);
+    }
+    
+    cmotor_speed(0, 0, 0);
+}
+
+//Drive with PID while the condition is true, with motor speeds being right*speed and left*speed
+void driveWhile(bool (* condition) (DriveState*), DriveState* state, float speed, float* coefficients, void (*callback)()){
+    driveReset(state); //Discard the turning and PID data
+    driveFetchData(state, 0.0f); //Fetch the initial data (will be used to check the condition the first time)
+    
+    while (condition(state)){
+        driveFetchData(state, 0.0f);
+        driveUpdateSpeed(state, speed, 0.0f, 1.0f, coefficients);
+        
+        if (callback != NULL)
+            callback();
+        
+        CyDelay(1);
+    }
+    
+    cmotor_speed(0, 0, 0);
+}
+
 //Check if every sensor is zero
 bool driveDataIsZero(DriveState* state){
     float totalDarkness = 0;
@@ -58,21 +92,9 @@ bool driveDataIsZero(DriveState* state){
     
 }
 
-//Start the drive
-void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax){
-    //Start the reflectance sensors readings
-    reflectance_start();
+void driveReset(DriveState* state){
     
-    CyDelay(5); //Wait for the sensors to initialize
-    
-    //Initialize the state to its initial value
-    state->reflectanceMin = reflectanceMin;
-    state->reflectanceMax = reflectanceMax;
     state->emergencyTurnSum = 0.0f;
-    state->filteredL2 = 0;
-    state->filteredR2 = 0;
-    state->prevL2 = 0;
-    state->prevR2 = 0;
     state->resetEmergencySumCounter = 0;
     state->time = GetTicks();
     state->displ = 0;
@@ -83,6 +105,22 @@ void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax)
         state->derivative[i] = 0;
         state->integral[i] = 0;
     }
+    
+}
+
+//Start the drive
+void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax){
+    //Start the reflectance sensors readings
+    reflectance_start();
+    
+    driveReset(state);
+    
+    //Initialize the state to its initial value
+    state->reflectanceMin = reflectanceMin;
+    state->reflectanceMax = reflectanceMax;
+    
+    CyDelay(5); //Wait for the sensors to initialize
+    
     
     //Start the motor
     //Note: the custom_motor.h custom library allows for sharp turns
@@ -115,33 +153,6 @@ void driveFetchData(DriveState* state, float displ){
     //printf("%5d %5d %5d %5d %5d %5d\r\n", in_data.l3, in_data.l2, in_data.l1, in_data.r1, in_data.r2, in_data.r3);
     
     
-    //*****************************************
-    //FILTER l2 and r2 in case of random errors (see hardware bug with L2 and R2 reflectance sensors)
-    
-    //If the difference between the last and the current reading is greater than this number, discard it
-    const float errorThreshold = 0.2f; 
-    
-    //If more than maximumMeasurementsToDiscard measurements in a row have a great difference from before,
-    //accept the new value as real
-    const int maximumMeasurementsToDiscard = 2;
-    
-    if (data[REF_L2] - state->prevL2 > errorThreshold && state->filteredL2 < maximumMeasurementsToDiscard){
-        data[REF_L2] = 0;
-        state->filteredL2++; //Take count of the amount of times in a row we filtered
-    } else {
-        state->filteredL2=0; //No filtering this time, reset the counter
-    }
-    if (data[REF_R2] - state->prevR2 > errorThreshold && state->filteredR2 < maximumMeasurementsToDiscard){
-        data[REF_R2] = 0;
-        state->filteredR2++; //Take count of the amount of times in a row we filtered
-    } else {
-        state->filteredR2=0; //No filtering this time, reset the counter
-    }
-    
-    //END FILTER for l2 and r2
-    //*****************************************
-    
-    
     //Compute the time difference from the last reading
     float dt = time - state->time;
     
@@ -149,7 +160,11 @@ void driveFetchData(DriveState* state, float displ){
     
     //Set the current measurement, and its derivative and integral
     for (int i = 0; i < NSENSORS; i++){
-        state->derivative[i] = (data[i] - state->current[i]) / dt;
+        if (dt == 0){
+            state->derivative[i] = 0;
+        } else { 
+            state->derivative[i] = (data[i] - state->current[i]) / dt;
+        }
         state->integral[i] += data[i] * dt;
         state->current[i] = data[i];
     }
@@ -287,6 +302,36 @@ int getDigitalSensor(DriveState* state, int sensor, float threshold){
 void driveStop(){
     //Stop the motor (cmotor_stop() from custom_motor.h)
     cmotor_stop();
+}
+
+
+//*********************************
+//DEFAULT CONDITIONS FOR driveWhile
+//*********************************
+
+
+bool isStillOnTransversalLine(DriveState* state){
+    const float l3 = state->current[REF_L3];
+    const float r3 = state->current[REF_R3];
+    const float dl3 = state->derivative[REF_L3];
+    const float dr3 = state->derivative[REF_R3];
+    
+    const float white = 0.0f;
+    
+    //We are still on the line if l3 or r3 read any black or grey value 
+    return (l3 > white || r3 > white) || (dl3 > 0.0f || dr3 > 0.0f);
+}
+
+bool isNotYetOnTransversalLine(DriveState* state){
+    const float l3 = state->current[REF_L3];
+    const float r3 = state->current[REF_R3];
+    const float dl3 = state->derivative[REF_L3];
+    const float dr3 = state->derivative[REF_R3];
+    const float black = 1.0f;
+    
+    //We not yet on the line if either l3 or r3 read a value that is less than full black
+    
+    return !((l3 >= black && r3 >= black) && (dl3 <= 0.0f && dr3 <= 0.0f));
 }
 
 
