@@ -10,10 +10,14 @@
  * ========================================
 */
 #include "sumo.h"
-#include <stdio.h>
 #include "Ultra.h"
 #include "CyLib.h"
 #include "custom_motor.h"
+#include "Systick.h"
+#include <stdlib.h>
+
+int randomNumber = 0;
+float time, searchDuration = 50;
 
 
 void check_if_inRing(enum State *state, struct sensors_ *dig)
@@ -51,34 +55,40 @@ void doState( enum State *state, int attackDistance, float speedScale )
     {
         case search:
             
-            cmotor_speed(-1,1, speedScale/2);
+            searchEnemy(speedScale/2);
             checkForEnemy(attackDistance, state);
             
         break;
         
         case attack:
         
-            cmotor_speed(1,1,speedScale);
+            driveSumo(FORWARD, speedScale);
             checkForEnemy(attackDistance, state);
             
         break;
         
         case turnL:
             turn(LEFT, speedScale);
+            CyDelay(300); // turn duration
+            driveSumo(FORWARD,speedScale);
+            CyDelay(300); // forward duration
             checkForEnemy(attackDistance, state);
         
         break;
         
         case turnR:
             turn(RIGHT, speedScale);
+            CyDelay(300); // turn duration
+            driveSumo(FORWARD,speedScale);
+            CyDelay(300); // forward duration
             checkForEnemy(attackDistance, state);
             
         break;
         
         case reverse:
         
-            cmotor_speed(-1,-1, speedScale);
-            CyDelay(300);
+            driveSumo(REVERSE, speedScale);
+            CyDelay(300); // reverse duration
             checkForEnemy(attackDistance, state);
             
         break;
@@ -88,23 +98,54 @@ void doState( enum State *state, int attackDistance, float speedScale )
 
 void checkForEnemy( int attackDistance, enum State *state)
 {
-    int distance = Ultra_GetDistance();
-    printf("distance = %d\r\n", distance); 
+    int distance = Ultra_GetDistance(); 
     
-    if(distance<attackDistance && distance!=5)
+    if(distance<attackDistance)
     *state = attack;
     else 
     *state = search;
 }
 
+
+
 void turn(int direction, int speedScale)
 {
-    //turn
     cmotor_speed(1 * direction, -1 * direction, speedScale);
-    CyDelay(300);
+}
+
+
+void driveSumo(int direction, int speedScale)
+{
+    cmotor_speed(1 * direction, 1*direction, speedScale);
+}
+
+void searchEnemy(int speedScale)
+{
+    if(GetTicks() - time > searchDuration)
+    {
+        randomNumber = random() % 5;
+        time = GetTicks();
+        searchDuration = (randomNumber * 100) + 300;
+    }
     
-    //go forward
-    cmotor_speed(1, 1, speedScale);
-    CyDelay(300);
+    
+    if(randomNumber == 0)
+    {
+        driveSumo(FORWARD, speedScale);
+    }
+    else if ( randomNumber % 2)
+    {
+        turn(RIGHT,speedScale);
+    }
+    else
+    {
+        turn(LEFT,speedScale);
+    }
+}
+
+
+void startTime()
+{
+    time = GetTicks();
 }
 /* [] END OF FILE */

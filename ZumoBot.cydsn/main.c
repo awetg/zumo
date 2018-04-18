@@ -62,7 +62,7 @@ int rread(void);
 
 
 //Two sensors curve
-#if  1
+#if  0
 //battery level//
 int main()
 {
@@ -245,7 +245,7 @@ int main()
 }   
 #endif
 
-#if 1
+#if 0
 #include "sumo.h"
 
  
@@ -257,6 +257,7 @@ int main()
     Systick_Start();
     Ultra_Start();
     IR_Start();
+    startTime();
     
     struct sensors_ dig;
     enum State state = search;
@@ -268,7 +269,7 @@ int main()
     cmotor_start();
     
     //go to start of ring
-    do{
+   /* do{
         reflectance_digital(&dig);
         cmotor_speed(1, 1, speedScale/2);
     }while((dig.l3 + dig.r3) < 2);
@@ -277,8 +278,8 @@ int main()
     IR_wait();
     
     // got to center of ring
-    cmotor_speed(1, 1, speedScale);
-    CyDelay(300);
+    cmotor_speed(1, 1, speedScale * 0.7);
+    CyDelay(400);*/
     
     
     //main loop
@@ -437,8 +438,6 @@ int main()
     }
 }
 #endif
-
-
 
 
 /* [] END OF FILE */
