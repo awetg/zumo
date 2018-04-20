@@ -16,6 +16,9 @@
 #include <stdbool.h>
 #include <stdint.h>
     
+//Set this to 0 to disable emergency turns (turns to handles sharp angles)
+#define EMERGENCY_TURN 1
+    
 #define NCOEFF 18
     
 #define NSENSORS 6

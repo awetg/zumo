@@ -191,6 +191,7 @@ void driveUpdateSpeed(DriveState* state, float maxSpeed, float aim, float correc
         weightedSum += coefficients[i+NSENSORS*2] * state->integral[i];
     }
     
+#if EMERGENCY_TURN
     //***************************************
     // START OF EMERGENCY TURN HANDLING CODE
     //***************************************
@@ -261,7 +262,8 @@ void driveUpdateSpeed(DriveState* state, float maxSpeed, float aim, float correc
     //***************************************
     // END OF EMERGENCY TURN HANDLING CODE
     //***************************************
-    
+#endif
+
     //Check if we are completely on white, in which case stop the motors
     if (driveDataIsZero(state)){
       cmotor_speed(0,0,0); 

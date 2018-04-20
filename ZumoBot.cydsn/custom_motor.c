@@ -57,8 +57,8 @@ void cmotor_calibrate(float rightSkew){
 void cmotor_speed(float left, float right, float scale){
     int leftDir = left >= 0.0f ? 0 : 1;
     int rightDir = right >= 0.0f ? 0 : 1;
-    uint8 leftSpeed = scale * getInRange(fabs(left * (1.0f - calibration) * 255), MIN_SPEED, MAX_SPEED);
-    uint8 rightSpeed = scale * getInRange(fabs(right * (1.0f + calibration) * 255), MIN_SPEED, MAX_SPEED);
+    uint8 leftSpeed = scale * getInRange(fabs(left * (calibration < 0 ? 1.0f + calibration : 1.0f) * 255), MIN_SPEED, MAX_SPEED);
+    uint8 rightSpeed = scale * getInRange(fabs(right * (calibration > 0 ? 1.0f - calibration : 1.0f) * 255), MIN_SPEED, MAX_SPEED);
     
     MotorDirLeft_Write(leftDir);    
     MotorDirRight_Write(rightDir);   
