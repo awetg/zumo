@@ -13,8 +13,9 @@
 #include "Systick.h"
 #include "custom_motor.h"
 #include "transversal.h"
+#include "IR.h"
 
-int count = 0; // for checking horizontal lines
+
 /*
 @brief start sensor data
 */
@@ -35,9 +36,9 @@ void startSensor(sensorData* d)
 
 
 /*
-@brief get data and drive
+@brief get reflectance data and drive
 */
-void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale) 
+void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale, int *hrLineCount) 
 {
     float r1, r2, r3, l1, l2, l3, dt, time, proportional, newSpeed;
     
@@ -51,16 +52,12 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
     r2 = scale(d->s.r2,min[4],max[4]);
     r3 = scale(d->s.r3,min[5],max[5]);
     
-    //check for horizontal lines
-    if(l3+r3 >=2)
-    {
-        count = transversalCount(r3, l3);
-        if(count >=3)
+    *hrLineCount = transversalCount(r3, l3);
+        if(*hrLineCount >=2)
         {
             cmotor_speed(0, 0, 0);
             return;
         }
-    }
     
     // calulate robot deviation from line
     proportional = (l1 * -kp) + (r1 * kp) +  (l3 * -kp*100) + (r3 * kp*100);
@@ -127,5 +124,20 @@ float scale(float data, float min, float max)
     return (data -min )/(max - min);
 }
 
+/*
+@got to start of race or sumo fight
+*/
+void gotoStartingLine( int speedScale)
+{
+     // go to first line
+    struct sensors_ dig;
+    do{
+        reflectance_digital(&dig);
+        cmotor_speed(1, 1, speedScale/2);
+    }while((dig.l3 + dig.r3) < 2);
+    
+    cmotor_speed(0, 0, 0);
+    IR_wait();
+}
 
 /* [] END OF FILE */

@@ -13,17 +13,17 @@
 #ifndef SUMO_H
 #define SUMO_H
 #define RIGHT 1
-#define LEFT -1
+#define LEFT (-1)
 #define FORWARD 1
-#define REVERSE -1
+#define BACKWARD (-1)
 #include "Reflectance.h"
-enum State {search, attack, reverse, turnR, turnL};
-void doState( enum State *state, int attackDistance, float speedScale);
+enum State {SEARCH, ATTACK, REVERSE, TURN_R, TURN_L};
+void doState( enum State *state, int attackDistance, float speedScale, float *searchTime);
 void check_if_inRing(enum State *state, struct sensors_ *dig);
 void checkForEnemy( int attackDistance, enum State *state);
-void turn(int direction, int speedScale);
-void driveSumo(int direction, int speedScale);
-void searchEnemy(int speedScale);
+void turn(int direction, float speedScale);
+void driveSumo(int direction, float speedScale);
+void searchEnemy(float speedScale, float *searchTime);
 void startTime();
 #endif
 

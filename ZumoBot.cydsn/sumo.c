@@ -16,58 +16,61 @@
 #include "Systick.h"
 #include <stdlib.h>
 
-int randomNumber = 0;
-float time, searchDuration = 50;
 
 
+/*
+@check robbot is inside ring using refelectance sensor
+*/
 void check_if_inRing(enum State *state, struct sensors_ *dig)
 {
-    int sumofsensors=0;
     
     reflectance_digital(dig);
     
-    sumofsensors = dig->l1 + dig->l2 + dig->l3 + dig->r1 + dig->r2 + dig->r3;
+    int sumofsensors = dig->l1 + dig->l2 + dig->l3 + dig->r1 + dig->r2 + dig->r3;
      
     //check if any sensor is on black
     if(sumofsensors > 0 )
     {
+        // if leftmost sensor is on black turn right
         if(dig->l3>0)
         {
-            *state = turnR;
+            *state = TURN_R;
         }
-        else if ( dig->r3>0)
+        // if rightmost sensor is on black turn left
+        else if ( dig->r3>0) 
         {
-            *state = turnL;
+            *state = TURN_L;
         }
-        else if(dig->r1 ==1 || dig->l1 ==1)
+        else if(dig->r1 ==1 || dig->l1 ==1) // if middle sensor is on black go backward
         {
-            *state = reverse;
+            *state = REVERSE;
         }
     }
 }
 
 
+/*
+@execute each state of sumo robot
+*/
 
-
-void doState( enum State *state, int attackDistance, float speedScale )
+void doState( enum State *state, int attackDistance, float speedScale, float *searchTime )
 {   
     switch(*state)
     {
-        case search:
+        case SEARCH:
             
-            searchEnemy(speedScale/2);
+            searchEnemy(speedScale, searchTime);
             checkForEnemy(attackDistance, state);
             
         break;
         
-        case attack:
+        case ATTACK:
         
-            driveSumo(FORWARD, speedScale);
-            checkForEnemy(attackDistance, state);
+            driveSumo(FORWARD, speedScale); // attack until reach end of ring
             
         break;
         
-        case turnL:
+        case TURN_L:
             turn(LEFT, speedScale);
             CyDelay(300); // turn duration
             driveSumo(FORWARD,speedScale);
@@ -76,7 +79,7 @@ void doState( enum State *state, int attackDistance, float speedScale )
         
         break;
         
-        case turnR:
+        case TURN_R:
             turn(RIGHT, speedScale);
             CyDelay(300); // turn duration
             driveSumo(FORWARD,speedScale);
@@ -85,9 +88,9 @@ void doState( enum State *state, int attackDistance, float speedScale )
             
         break;
         
-        case reverse:
+        case REVERSE:
         
-            driveSumo(REVERSE, speedScale);
+            driveSumo(BACKWARD, speedScale);
             CyDelay(300); // reverse duration
             checkForEnemy(attackDistance, state);
             
@@ -95,57 +98,67 @@ void doState( enum State *state, int attackDistance, float speedScale )
     }
 }
 
-
+/*
+@check if object exist inside given range using ultrasonic sensor
+*/
 void checkForEnemy( int attackDistance, enum State *state)
 {
     int distance = Ultra_GetDistance(); 
     
     if(distance<attackDistance)
-    *state = attack;
+    *state = ATTACK;
     else 
-    *state = search;
+    *state = SEARCH;
 }
 
+/*
+@turn robot to right or left direction
+*/
 
-
-void turn(int direction, int speedScale)
+void turn(int direction, float speedScale)
 {
     cmotor_speed(1 * direction, -1 * direction, speedScale);
 }
 
-
-void driveSumo(int direction, int speedScale)
+/*
+@drive robot in straight line to forward or backward direction
+*/
+void driveSumo(int direction, float speedScale)
 {
     cmotor_speed(1 * direction, 1*direction, speedScale);
 }
 
-void searchEnemy(int speedScale)
+
+/*
+@Do random search patterns when robot is in search state
+*/
+void searchEnemy(float speedScale, float *searchTime)
 {
-    if(GetTicks() - time > searchDuration)
+    if(GetTicks() > *searchTime)
     {
-        randomNumber = random() % 5;
-        time = GetTicks();
-        searchDuration = (randomNumber * 100) + 300;
+        int randomNumber = random() % 3;
+        int randomTime = 500 + random() % 3000;
+        
+        *searchTime = GetTicks() + randomTime;
+        
+        if(randomNumber == 0)
+        {
+            driveSumo(FORWARD, speedScale);
+            *searchTime = GetTicks() + randomTime / 3;
+        }
+        else if (randomNumber % 2 == 1)
+        {
+            turn(RIGHT,speedScale*0.3);
+        }
+        else
+        {
+            turn(LEFT,speedScale*0.3);
+        }
+        
     }
     
     
-    if(randomNumber == 0)
-    {
-        driveSumo(FORWARD, speedScale);
-    }
-    else if ( randomNumber % 2)
-    {
-        turn(RIGHT,speedScale);
-    }
-    else
-    {
-        turn(LEFT,speedScale);
-    }
+
 }
 
-
-void startTime()
-{
-    time = GetTicks();
-}
 /* [] END OF FILE */

@@ -62,7 +62,7 @@ int rread(void);
 
 
 
-#if  1
+#if  0
 
     
 bool endOfTrackNotReached(DriveState* state){        
@@ -235,44 +235,38 @@ int main()
 //Awet's PID
 #if 0
 #include "dr.h"
-//reflectance//
+
 int main()
 {
-    Systick_Start();
     CyGlobalIntEnable; 
+    ADC_Battery_Start(); 
+    Systick_Start();
     UART_1_Start();
     IR_Start();
     
+    initBattery();
     
+    // all variables used, no globals
     float min[6] = {11000, 9000, 8000, 7500, 8200, 8100};
     float max[6] = {20000, 20000, 20000, 20000, 20000, 20000};
-    
     sensorData d;
-    
     float speedScale= 1;
     float kp=1.2;
     float kd=19;
+    int hrLinesCount = 0; // horizontal lines encountered after race start
     
-   
+    
     startSensor(&d);
     cmotor_start();
     
+    // go to first horizontal line
+    gotoStartingLine(speedScale);
     
-     // go to first line
-    struct sensors_ dig;
-    do{
-        reflectance_digital(&dig);
-        cmotor_speed(1, 1, speedScale/2);
-    }while((dig.l3 + dig.r3) < 2);
-    
-    cmotor_speed(0, 0, 0);
-    IR_wait();
-    
-    //main loop
+    // main loop
     for(;;)
     {
         checkBattery(5000, 4.2);
-        drive(&d, min, max, kp, kd, speedScale);
+        drive(&d, min, max, kp, kd, speedScale, &hrLinesCount);
         CyDelay(1);
     }
 }   
@@ -280,45 +274,44 @@ int main()
 
 #if 0
 #include "sumo.h"
+#include "dr.h"
 
- 
-//ultrasonic sensor//
 int main()
 {
     CyGlobalIntEnable; 
+    ADC_Battery_Start(); 
     UART_1_Start();
     Systick_Start();
     Ultra_Start();
     IR_Start();
     
+    initBattery();
+    
+    // all variables used, no globals
     struct sensors_ dig;
-    enum State state = search;
-    int attackDistance = 60;
+    enum State state = SEARCH;
+    int attackDistance = 30;
     float speedScale = 1;
+    float searchTime = GetTicks();
     
     reflectance_start();
     CyDelay(2);
     cmotor_start();
     
-    //go to start of ring
-    do{
-        reflectance_digital(&dig);
-        cmotor_speed(1, 1, speedScale/2);
-    }while((dig.l3 + dig.r3) < 2);
-    
-    cmotor_speed(0, 0, 0);
-    IR_wait();
+    // got to ring entrance
+    gotoStartingLine(speedScale);
     
     // got to center of ring
     cmotor_speed(1, 1, speedScale);
-    CyDelay(300);
+    CyDelay(300); 
     
     
     //main loop
     for(;;)
     {
+        checkBatteryWithDefaults();
         check_if_inRing(&state, &dig);
-        doState(&state, attackDistance, speedScale);
+        doState(&state, attackDistance, speedScale, &searchTime);
         CyDelay(1);
     }
 }   
