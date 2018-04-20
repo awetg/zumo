@@ -81,7 +81,7 @@ int main()
     
     printf("\nBoot\n");
     
-    
+    //cmotor_calibrate(0.03f);
 
     
     //9th Beethoven, Fur Elise, Polyphonic chords
@@ -113,11 +113,12 @@ int main()
     const float speed = 1.0f;
     
     const float KdpRatio = 19.0;
-    const float Kpe = 100.0;
-    const float Kpm = 2.0;
+    const float Kpe = 1.5;
+    const float Kpm = 1.2;
     
     const float Kp = 1.0;
-    const float Kd = KdpRatio;
+    const float Kd = KdpRatio * Kp;// KdpRatio*Kp;
+    const float Kpd = 0;// KdpRatio*Kp;
     
     //Status of the track
     bool firstLineReached = false;
@@ -129,7 +130,7 @@ int main()
     float walkCoefficients[NCOEFF] =
     {
         0, -Kpm, -Kp, Kp, Kpm, 0, //l3, l2, l1, r1, r2, r3
-        0,0,-Kd,Kd,0,0,
+        0,-Kpd,-Kd,Kd,Kpd,0,
         0,0,0.0f,0.0f,0,0
     };
 
@@ -138,7 +139,7 @@ int main()
     float coefficients[NCOEFF] =
     {
         -Kpe, -Kpm, -Kp, Kp, Kpm, Kpe, //l3, l2, l1, r1, r2, r3
-        0,0,-Kd,Kd,0,0,
+        0,-Kpd,-Kd,Kd,Kpd,0,
         0,0,0.0f,0.0f,0,0
     };
 
@@ -171,63 +172,7 @@ int main()
     //Race
     driveWhile(endOfTrackNotReached, &dstate, speed, coefficients, checkBatteryWithDefaults);
     
-    /*
     
-    for(;;)
-    {
-        //Check that the battery has more than 4.2 V every 5 seconds
-        checkBattery(5000, 4.2);
-        
-        //Fetch the data from the reflectance sensor, in the range 0..1 + displ, where
-        //displ = 0.0f in this case
-        //Note: You can use displ=-0.5f to obtain a range -0.5f(white) to 0.5f(black)
-        driveFetchData(&dstate, 0.0f);
-        
-        //Fetch the values of R3 and L3 for the transversal line check
-        float r3 = dstate.current[REF_R3];
-        float l3 = dstate.current[REF_L3];
-        
-        if (paused){
-            //Set the speed to zero if paused
-            cmotor_speed(0,0,0);
-        } else {
-            //Update the speed of the motors so that:
-            //- speed represents the full speed
-            //- one of the two motors is always at full speed
-            //- the function value is computed from matrix product of coefficients and the sensor values
-            //- the difference between the function value and the aim (0.0f in this case) is computed
-            //- the difference is then multiplied by the correction speed (1.0f in this case)
-            //- the value is subctracted from the right engine full speed if positive, or from the left engine full speed if negative
-            driveUpdateSpeed(&dstate, speed, 0.0f, 1.0f, coefficients);
-        }
-        
-        if (!firstLineReached){
-            //If we reach the first transversal line, take note of it...
-            firstLineReached = transversalDetect(r3, l3);
-            //...and pause the robot
-            paused = firstLineReached;
-        } else if (!startTriggered && firstLineReached){
-            IR_flush(); // clear IR receive buffer
-            IR_wait(); // wait for IR command
-            startTriggered = true;
-            transversalReset(); //Bring back to zero the count of transversl lines passed
-            speed = 1.0f; //Set full speed for the race
-            
-            //Drive straight while we still havent passed the transversal line
-            driveFixedWhile(&dstate, 1.0, 1.0, speed, isStillOnTransversalLine);
-            
-            paused = false;
-        } else if (!trackEnded && startTriggered){
-            if (transversalCount(r3, l3) >= 2){
-                cmotor_stop(); //Stop at the end, after reading two tranversal lines
-                paused = true; 
-            }
-        }
-    
-        //1 ms delay. The totale execution time for a cycle is around 6 ms
-        CyDelay(1);
-        
-    }*/
  }   
 #endif
 
