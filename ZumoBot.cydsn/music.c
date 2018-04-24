@@ -37,7 +37,7 @@ void PlayPDM(uint16* track, int size)
     SPIM_PDM_Enable();
     SPIM_PDM_Start();
     
-    const int BUFFER_SIZE = 128;
+    const int BUFFER_SIZE = 255;
     uint16 buffer[BUFFER_SIZE];
     
     for (int i = 0; i < size; i++){
@@ -46,7 +46,6 @@ void PlayPDM(uint16* track, int size)
           PlayBufferPDM(buffer, BUFFER_SIZE);   
         }
     }
-    
     
     SPIM_PDM_Stop();
 }

@@ -52,6 +52,7 @@
 #include "battery.h"
 #include "transversal.h"
 #include "pdm/track_bbb.h"
+#include "pdm/trackmarch.h"
 
 int rread(void);
 
@@ -86,8 +87,11 @@ int main()
 
     
     //9th Beethoven, Fur Elise, Polyphonic chords
+    
     /*
     play_music("2 C D D e F F e D C b b C D .D -C oC", 300);
+    
+    
     play_music("3 E =EeEeEBDC A =S 2 =CE 3 =A B =S 2 =E 3 =aB C 2 E", 500);   
 
     play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
@@ -103,7 +107,7 @@ int main()
           , "1 A A A A a A a oA", 500);
     */
     
-    PlayPDM((uint16*)trackbbb, BBB_SIZE);
+    //PlayPDM((uint16*)trackmarch, MARCH_SIZE);
     
     BatteryLed_Write(0); // Switch battery led off 
     
@@ -156,17 +160,23 @@ int main()
     
     //White table
     float thresholdMin[NSENSORS] = {11000, 9000, 8000, 7500, 8200, 8100};
+    //float thresholdMin[NSENSORS] = {13000, 11000, 9000, 9500, 10200, 10100};
    
     //Black with margin
     float thresholdMax[NSENSORS] = {20000, 20000, 20000, 20000, 20000, 20000};
     
+    
     initBattery();
+    
+    PlayPDM((uint16*)trackmarch, MARCH_SIZE);
     
     //Start the motors and the PID
     driveStart(&dstate, thresholdMin, thresholdMax);
     
     driveWhile(isNotYetOnTransversalLine, &dstate, walkSpeed, walkCoefficients, checkBatteryWithDefaults);
     
+    PlayPDM((uint16*)trackbbb, BBB_SIZE);
+
     IR_flush(); // clear IR receive buffer
     IR_wait(); // wait for IR command
     
@@ -175,7 +185,11 @@ int main()
     //Race
     driveWhile(endOfTrackNotReached, &dstate, speed, coefficients, checkBatteryWithDefaults);
     
-    
+    play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
+                         "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
+  
+   
+    CyDelay(10000);
  }   
 #endif
 
