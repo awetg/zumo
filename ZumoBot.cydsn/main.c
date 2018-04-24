@@ -51,6 +51,7 @@
 #include "motortest.h"
 #include "battery.h"
 #include "transversal.h"
+#include "pdm/track_bbb.h"
 
 int rread(void);
 
@@ -62,7 +63,7 @@ int rread(void);
 
 
 
-#if  0
+#if  1
 
     
 bool endOfTrackNotReached(DriveState* state){        
@@ -101,6 +102,8 @@ int main()
     play_music_with_base("2 -.A =S -.A =S -.A =S -.A =S 1-.F2 =C A 1-.F2 =C oA"
           , "1 A A A A a A a oA", 500);
     */
+    
+    PlayPDM((uint16*)trackbbb, BBB_SIZE);
     
     BatteryLed_Write(0); // Switch battery led off 
     

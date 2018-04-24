@@ -27,6 +27,30 @@ void stop_music(){
     Buzzer_PWM_Stop();
 }
 
+void PlayBufferPDM(uint16* buffer, int size)
+{
+    SPIM_PDM_PutArray(buffer, size);
+}
+
+void PlayPDM(uint16* track, int size)
+{
+    SPIM_PDM_Enable();
+    SPIM_PDM_Start();
+    
+    const int BUFFER_SIZE = 128;
+    uint16 buffer[BUFFER_SIZE];
+    
+    for (int i = 0; i < size; i++){
+        buffer[i%BUFFER_SIZE] = track[i];
+        if (i % BUFFER_SIZE == BUFFER_SIZE - 1){
+          PlayBufferPDM(buffer, BUFFER_SIZE);   
+        }
+    }
+    
+    
+    SPIM_PDM_Stop();
+}
+
 void Beep16(uint32 length, uint16 pitch)
 {
     uint16 cmp = pitch / 2;

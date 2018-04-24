@@ -205,7 +205,7 @@ void driveUpdateSpeed(DriveState* state, float maxSpeed, float aim, float correc
     //so execute a full speed turn in that direction until either R1 or L1 go back on path
     
     //Are we starting an emergency turn?
-    const int resetEmergencySumAfter = 20; //Reset the sum value after resetEmergencySumAfter white readings
+    const int resetEmergencySumAfter = 40; //Reset the sum value after resetEmergencySumAfter white readings
     const float emergencyThreshold = 0.1f; //If the sum of all the sensors is less than this value, assume you lost the track
     const float black = 0.8f; //Assume a black measurement from L3 or R3 if their value is greater than this value
     const float emergencySumThreshold = 0.9f; //If the emergency sum absolute value is greater than this, assume R3 or L3 read the correct path turn
