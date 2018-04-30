@@ -20,10 +20,10 @@
 //State variable to keep count of the last time we measure the battery (so we can repeat the measurement after a certain time)
 uint32_t lastBatteryTime = 0;
 //State variable to keep count of the state of the battery sensing light, to alternate it
-bool lighton = false;
+bool battery_lighton = false;
 
 void initBattery(){
-    lighton = false;
+    battery_lighton = false;
     lastBatteryTime = 0; 
 }
 
@@ -46,8 +46,8 @@ void checkBattery(uint32_t batteryMeasurementDelay, float minVoltage){
             const float volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
             
             //Switch the battery sensing light, to signal that the code is correctly sensing the battery
-            lighton = !lighton;
-            ShieldLed_Write(lighton?1:0);
+            battery_lighton = !battery_lighton;
+            ShieldLed_Write(battery_lighton?1:0);
             
             //If the voltage is critical
             if(volts<minVoltage)
