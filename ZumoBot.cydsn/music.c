@@ -12,6 +12,7 @@
 
 /* [] END OF FILE */
 
+#include "Systick.h"
 #include "Beep.h"
 #include <stdio.h>
 #include <math.h>
@@ -47,8 +48,29 @@ void PlayPDM(uint16* track, int size)
         }
     }
     
+    for (int i = 0; i < BUFFER_SIZE; i++)
+        buffer[i] = 0;
+    
+    PlayBufferPDM(buffer, BUFFER_SIZE);
+    
+    CyDelay(100);
+    
     SPIM_PDM_Stop();
 }
+
+void Beep16AsyncStart(uint16 pitch)
+{
+    uint16 cmp = pitch / 2;
+    Buzzer_PWM_Start();
+    Buzzer_PWM_WriteCompare(cmp);
+    Buzzer_PWM_WritePeriod(pitch);
+}
+
+void Beep16AsyncStop()
+{
+    Buzzer_PWM_Stop();
+}
+
 
 void Beep16(uint32 length, uint16 pitch)
 {
@@ -154,20 +176,6 @@ void play_music_with_base(char* music, char* baseline, float base_duration){
                 tmp_base.legato = false;
                 tmp_base.note = base.note;
             }
-        
-        /*if (n_c >= 2 && n_b == 0){
-            tmp_note.legato = true;
-            play_note(tmp_note);
-            tmp_note.legato = false;
-            play_note(tmp_note);
-            n_c = n_c - 2;
-        } else if (n_b >= 2 && n_c == 0){
-            tmp_base.legato = true;
-            play_note(tmp_base);
-            tmp_base.legato = false;
-            play_note(tmp_base);
-            n_b = n_b - 2;
-        } else */ 
             
         while (n_b != 0 && n_c != 0){
             tmp_note.legato = true;
@@ -188,28 +196,6 @@ void play_music_with_base(char* music, char* baseline, float base_duration){
             play_note(tmp_note); 
             n_c--;
         }
-        /*    
-        if (n_b > 1)
-            {
-                play_note(tmp_note);
-                n_b--;
-            }
-        if (n_b >= 1 && n_c >= 1){
-            tmp_note.legato = false;
-            play_note(tmp_note);
-            tmp_note.legato = false;
-            play_note(tmp_base);
-            n_c = n_c - 1;
-            n_b = n_b - 1;
-        } else if (n_c == 1 && n_b == 0){
-            tmp_note.duration = unit_duration * 2;
-            play_note(tmp_note);
-            n_c = n_c - 1;
-        } else if (n_b == 1 && n_c == 0){
-            tmp_base.duration = unit_duration * 2;
-            play_note(tmp_base);
-            n_b = n_b - 1;
-        }*/
         
         if (c != '\0' && n_c == 0){
             i++;
@@ -249,6 +235,75 @@ void play_music(char* music, float base_duration){
     }
     
     stop_music();
+    
+}
+
+
+Note music_async_current_note;
+bool music_async_stopped;
+bool music_async_note_playing;
+int music_async_note_last_time;
+int music_async_index;
+char* music_async_data;
+float music_async_base_duration;
+
+void set_music_async(char* music, float base_duration){
+    music_async_current_note.octave = 0;
+    music_async_current_note.legato = false;
+    music_async_note_playing = false;
+    music_async_note_last_time = 0;
+    music_async_index = 0;
+    music_async_data = music;
+    music_async_base_duration = base_duration;
+    music_async_stopped = false;
+}
+
+void stop_music_async(){
+    music_async_stopped = true;
+    Beep16AsyncStop();
+}
+
+void play_music_async(){
+    
+    char c = music_async_data[music_async_index];
+    
+    //Loop back to the beginning
+    if (c == '\0'){
+        music_async_index = 0;
+        c = music_async_data[music_async_index];
+    }
+    
+    if (music_async_stopped){
+        stop_music();
+        return;
+    }
+    
+    if (music_async_note_playing){
+      int time = GetTicks();
+    
+      if (music_async_note_last_time + music_async_current_note.duration  < time){
+        Beep16AsyncStop();  
+        music_async_note_playing = false;
+        return;
+      } else {
+        return;
+      }
+    }
+    
+    
+    if (c != '\0'){
+        //If we successfully parsed a note
+        if (parse_note(&music_async_current_note, c, music_async_base_duration)){
+            //Play it
+            play_note_async(music_async_current_note);
+            music_async_note_last_time = GetTicks();
+            music_async_note_playing = true;
+        }
+
+        music_async_index++;
+    }
+    
+    
     
 }
 
@@ -307,6 +362,7 @@ void play_note(Note note){
         return;
     }
     
+    
     const float freq = FREQ_A * powf(2, BASE_OCTAVE + note.octave + (float)n / 12);
     
     const float period = 1 / freq;
@@ -323,6 +379,34 @@ void play_note(Note note){
         Beep16L(note.duration, (uint16) pwm);
     else
         Beep16(note.duration, (uint16) pwm);
+
+}
+
+
+
+void play_note_async(Note note){
+    int n = note_index(note.note);
+    
+    if (note.note == 'S'){
+        //Silence
+        Beep16AsyncStart(0);
+        return;
+    }
+    
+    const float freq = FREQ_A * powf(2, BASE_OCTAVE + note.octave + (float)n / 12);
+    
+    const float period = 1 / freq;
+    const float unit_period = MAX_PERIOD / PERIOD_PWM;
+    
+    const float pwm = period / unit_period;
+    
+    
+    if (pwm < 1.0f || pwm >= PERIOD_PWM){
+     printf("Can not play this note. \n");   
+    }
+    
+    Beep16AsyncStart((uint16) pwm);
+    
 
 }
 /*

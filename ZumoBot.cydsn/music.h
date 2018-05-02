@@ -24,9 +24,15 @@ typedef struct note {
 } Note;
     
 void play_note(Note note);
+void play_note_async(Note note);
+
 //void play_note_and_base(Note note, Note base);
 void PlayBufferPDM(uint16* buffer, int size);
 void PlayPDM(uint16* track, int size);
+
+void play_music_async();
+void set_music_async(char* music, float base_duration);
+void stop_music_async();
 
 void play_music(char* music, float base_duration);
 void play_music_with_base(char* music, char* baseline, float base_duration);

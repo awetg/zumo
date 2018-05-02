@@ -64,14 +64,23 @@ int rread(void);
 
 
 
-#if  0
-
+void checkBatteryWithDefaultsAndMusic(){
+    checkBatteryWithDefaults();
+    play_music_async();
+}
     
 bool endOfTrackNotReached(DriveState* state){        
     float r3 = state->current[REF_R3];
     float l3 = state->current[REF_L3];
+       
     return transversalCount(r3, l3) < 2;
 }
+
+
+#if  0
+
+    
+
     
 int main()
 {
@@ -106,9 +115,7 @@ int main()
     play_music_with_base("2 -.A =S -.A =S -.A =S -.A =S 1-.F2 =C A 1-.F2 =C oA"
           , "1 A A A A a A a oA", 500);
     */
-    
-    //PlayPDM((uint16*)trackmarch, MARCH_SIZE);
-    
+
     BatteryLed_Write(0); // Switch battery led off 
     
     DriveState dstate;
@@ -165,6 +172,7 @@ int main()
     //Black with margin
     float thresholdMax[NSENSORS] = {20000, 20000, 20000, 20000, 20000, 20000};
     
+    set_music_async("2 C D D e F F e D C b b C D .D -C oC", 300);
     
     initBattery();
     
@@ -183,7 +191,9 @@ int main()
     transversalReset(); //Reset the count of transversal lines passed (to esclude the initial one)
     
     //Race
-    driveWhile(endOfTrackNotReached, &dstate, speed, coefficients, checkBatteryWithDefaults);
+    driveWhile(endOfTrackNotReached, &dstate, speed, coefficients, checkBatteryWithDefaultsAndMusic);
+    
+    stop_music_async();
     
     play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
                          "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
@@ -253,9 +263,11 @@ int main()
     // all variables used, no globals
     struct sensors_ dig;
     enum State state = SEARCH;
-    int attackDistance = 60;
+    int attackDistance = 40;
     float speedScale = 1;
     float searchTime = GetTicks();
+    
+    set_music_async("2 C D D e F F e D C b b C D .D -C oC", 300);
     
     reflectance_start();
     CyDelay(2);
