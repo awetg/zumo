@@ -127,13 +127,14 @@ float scale(float data, float min, float max)
 /*
 @got to start of race or sumo fight
 */
-void gotoStartingLine( int speedScale)
+void gotoStartingLine( float speedScale)
 {
      // go to first line
     struct sensors_ dig;
+   cmotor_speed(1, 1, speedScale/2);
+    
     do{
         reflectance_digital(&dig);
-        cmotor_speed(1, 1, speedScale/2);
     }while((dig.l3 + dig.r3) < 2);
     
     cmotor_speed(0, 0, 0);

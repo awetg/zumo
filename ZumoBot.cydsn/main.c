@@ -64,7 +64,7 @@ int rread(void);
 
 
 
-#if  1
+#if  0
 
     
 bool endOfTrackNotReached(DriveState* state){        
@@ -234,9 +234,10 @@ int main()
 }   
 #endif
 
-#if 0
+#if 1
 #include "sumo.h"
 #include "dr.h"
+#include "drive.h"
 
 int main()
 {
@@ -252,7 +253,7 @@ int main()
     // all variables used, no globals
     struct sensors_ dig;
     enum State state = SEARCH;
-    int attackDistance = 30;
+    int attackDistance = 60;
     float speedScale = 1;
     float searchTime = GetTicks();
     
@@ -271,7 +272,7 @@ int main()
     //main loop
     for(;;)
     {
-        checkBatteryWithDefaults();
+        checkBatteryWithDefaultsAndMusic();
         check_if_inRing(&state, &dig);
         doState(&state, attackDistance, speedScale, &searchTime);
         CyDelay(1);
@@ -389,12 +390,15 @@ int main()
     {
         // read raw sensor values
         reflectance_read(&ref);
-        printf("%5d %5d %5d %5d %5d %5d\r\n", ref.l3, ref.l2, ref.l1, ref.r1, ref.r2, ref.r3);       // print out each period of reflectance sensors
+        //printf("%5d %5d %5d %5d %5d %5d\r\n", ref.l3, ref.l2, ref.l1, ref.r1, ref.r2, ref.r3);       // print out each period of reflectance sensors
         
         
         // read digital values that are based on threshold. 0 = white, 1 = black
         // when blackness value is over threshold the sensors reads 1, otherwise 0
         reflectance_digital(&dig);      //print out 0 or 1 according to results of reflectance period
+        
+        int sumofsensors = dig.l1 + dig.l2 + dig.l3 + dig.r1 + dig.r2 + dig.r3;
+       if (sumofsensors > 0)
         printf("%5d %5d %5d %5d %5d %5d \r\n", dig.l3, dig.l2, dig.l1, dig.r1, dig.r2, dig.r3);        //print out 0 or 1 according to results of reflectance period
         
         CyDelay(20);
