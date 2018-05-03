@@ -21,7 +21,7 @@ typedef struct {
 void startSensor(sensorData*);
 float scale(float , float, float);
 void drive(sensorData* d, float *min,float *max, float kp, float kd,float speedSccale, int *hrLineCount);
-void gotoStartingLine( int speedScale);
+void gotoStartingLine( float speedScale);
 #endif
 
 /* [] END OF FILE */

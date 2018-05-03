@@ -15,6 +15,7 @@
 #include "custom_motor.h"
 #include "Systick.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 
 
@@ -31,14 +32,17 @@ void check_if_inRing(enum State *state, struct sensors_ *dig)
     //check if any sensor is on black
     if(sumofsensors > 0 )
     {
+        printf("N sensors: %d\n", sumofsensors);
         // if leftmost sensor is on black turn right
         if(dig->l3>0)
         {
+            printf("L3 black\n");
             *state = TURN_R;
         }
         // if rightmost sensor is on black turn left
         else if ( dig->r3>0) 
         {
+            printf("R3 black\n");
             *state = TURN_L;
         }
         else if(dig->r1 ==1 || dig->l1 ==1) // if middle sensor is on black go backward
@@ -61,38 +65,45 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
             
             searchEnemy(speedScale, searchTime);
             checkForEnemy(attackDistance, state);
+            ShieldLed_Write(0);
             
         break;
         
         case ATTACK:
-        
+            ShieldLed_Write(1);
             driveSumo(FORWARD, speedScale); // attack until reach end of ring
-            
+                        
         break;
         
         case TURN_L:
+             ShieldLed_Write(0);
             turn(LEFT, speedScale);
             CyDelay(300); // turn duration
             driveSumo(FORWARD,speedScale);
             CyDelay(300); // forward duration
             checkForEnemy(attackDistance, state);
+           
         
         break;
         
         case TURN_R:
+            ShieldLed_Write(0);
             turn(RIGHT, speedScale);
             CyDelay(300); // turn duration
             driveSumo(FORWARD,speedScale);
             CyDelay(300); // forward duration
             checkForEnemy(attackDistance, state);
             
+            
         break;
         
         case REVERSE:
         
+            ShieldLed_Write(0);
             driveSumo(BACKWARD, speedScale);
             CyDelay(300); // reverse duration
             checkForEnemy(attackDistance, state);
+            
             
         break;
     }
@@ -105,10 +116,12 @@ void checkForEnemy( int attackDistance, enum State *state)
 {
     int distance = Ultra_GetDistance(); 
     
-    if(distance<attackDistance)
+    if(distance<attackDistance){
     *state = ATTACK;
-    else 
+    }
+    else {
     *state = SEARCH;
+    }
 }
 
 /*

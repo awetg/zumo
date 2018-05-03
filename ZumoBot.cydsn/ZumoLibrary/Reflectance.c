@@ -12,7 +12,7 @@
 
 static volatile struct sensors_ sensors;
 static volatile struct sensors_  digital_sensor_value;
-static struct sensors_ threshold = { 10000, 10000, 10000, 10000, 10000, 10000};
+static struct sensors_ threshold = { 20000, 20000, 20000, 20000, 20000, 20000};
 static volatile bool refl_init = false;
 
 /**
