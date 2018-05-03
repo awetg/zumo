@@ -25,6 +25,13 @@ void turn(int direction, float speedScale);
 void driveSumo(int direction, float speedScale);
 void searchEnemy(float speedScale, float *searchTime);
 void startTime();
+
+//Set the function that will be called at every cycle during a delay
+void setDelayCallback(void (*callback)());
+
+//Delay, but keep on calling a callback function during the delay
+//The function to call is set by setDelayCallback
+void delayCallback(int delay);
 #endif
 
 /* [] END OF FILE */

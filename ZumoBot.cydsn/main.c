@@ -270,7 +270,7 @@ int main()
     float speedScale = 1;
     float searchTime = GetTicks();
     
-    set_music_async("2 C D D e F F e D C b b C D .D -C oC", 300);
+    set_music_async("3 -SAAACDSD -SDEFSF -SFGESE -SDCCD -.S -SACDSD -SDEFSF -SFGESE -SDCD S -SACDSD -SDFGSG -SG 4 -AbSb -S -A3G4A3D -.S -SDEFSFSGS4A3D -.S -SDFESESFD E -S     -SGG 4-ASASAS -b -.A oS 3-GSGSGS -G 4-.A oS 4-ASASAS -b -.A oS -3GSFSESDS oS   4A oS b 3-bDF4b -4ASASASA3G oS G -2G3bDG F -2C3ADF -ESFSESDS oS", 250);
     
     reflectance_start();
     CyDelay(2);
@@ -287,6 +287,7 @@ int main()
     //main loop
     for(;;)
     {
+        setDelayCallback(checkBatteryWithDefaultsAndMusic);
         checkBatteryWithDefaultsAndMusic();
         check_if_inRing(&state, &dig);
         doState(&state, attackDistance, speedScale, &searchTime);
@@ -405,7 +406,7 @@ int main()
     {
         // read raw sensor values
         reflectance_read(&ref);
-        //printf("%5d %5d %5d %5d %5d %5d\r\n", ref.l3, ref.l2, ref.l1, ref.r1, ref.r2, ref.r3);       // print out each period of reflectance sensors
+        printf("%5d %5d %5d %5d %5d %5d\r\n", ref.l3, ref.l2, ref.l1, ref.r1, ref.r2, ref.r3);       // print out each period of reflectance sensors
         
         
         // read digital values that are based on threshold. 0 = white, 1 = black
@@ -413,8 +414,8 @@ int main()
         reflectance_digital(&dig);      //print out 0 or 1 according to results of reflectance period
         
         int sumofsensors = dig.l1 + dig.l2 + dig.l3 + dig.r1 + dig.r2 + dig.r3;
-       if (sumofsensors > 0)
-        printf("%5d %5d %5d %5d %5d %5d \r\n", dig.l3, dig.l2, dig.l1, dig.r1, dig.r2, dig.r3);        //print out 0 or 1 according to results of reflectance period
+       //if (sumofsensors > 0)
+        //printf("%5d %5d %5d %5d %5d %5d \r\n", dig.l3, dig.l2, dig.l1, dig.r1, dig.r2, dig.r3);        //print out 0 or 1 according to results of reflectance period
         
         CyDelay(20);
     }

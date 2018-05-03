@@ -78,9 +78,9 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
         case TURN_L:
              ShieldLed_Write(0);
             turn(LEFT, speedScale);
-            CyDelay(300); // turn duration
+            delayCallback(300); // turn duration
             driveSumo(FORWARD,speedScale);
-            CyDelay(300); // forward duration
+            delayCallback(300); // forward duration
             checkForEnemy(attackDistance, state);
            
         
@@ -89,9 +89,9 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
         case TURN_R:
             ShieldLed_Write(0);
             turn(RIGHT, speedScale);
-            CyDelay(300); // turn duration
+            delayCallback(300); // turn duration
             driveSumo(FORWARD,speedScale);
-            CyDelay(300); // forward duration
+            delayCallback(300); // forward duration
             checkForEnemy(attackDistance, state);
             
             
@@ -101,7 +101,7 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
         
             ShieldLed_Write(0);
             driveSumo(BACKWARD, speedScale);
-            CyDelay(300); // reverse duration
+            delayCallback(300); // reverse duration
             checkForEnemy(attackDistance, state);
             
             
@@ -172,6 +172,24 @@ void searchEnemy(float speedScale, float *searchTime)
     
     
 
+}
+
+//Function pointer that will be called at every cycle during a delay
+void (*delayCallbackFunc)() = NULL;
+
+//Set the function that will be called at every cycle during a delay
+void setDelayCallback(void (*callback)()){
+    delayCallbackFunc = callback;
+}
+
+//Delay, but keep on calling a callback function during the delay
+//The function to call is set by setDelayCallback
+void delayCallback(int delay){
+    uint32 end = GetTicks() + delay;
+    while (GetTicks() < end){
+        if (delayCallbackFunc != NULL)
+         delayCallbackFunc();
+    }
 }
 
 /* [] END OF FILE */
