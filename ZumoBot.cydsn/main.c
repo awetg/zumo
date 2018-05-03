@@ -132,7 +132,7 @@ int main()
     const float Kpm = 1.2;
     
     const float Kp = 1.0;
-    const float Kd = 0;//KdpRatio * Kp;// KdpRatio*Kp;
+    const float Kd = KdpRatio * Kp;// KdpRatio*Kp;
     const float Kpd = 0;// KdpRatio*Kp;
     
     //Coefficients to pass to the motors, reflecting the PID parameters symmetrically
@@ -167,8 +167,8 @@ int main()
     //Black with margin
     float thresholdMax[NSENSORS] = {20000, 20000, 20000, 20000, 20000, 20000};
     
-    //Set the music to play during the race
-    set_music_async("2 C D D e F F e D C b b C D .D -C oC", 300);
+    //Set the music to play during the race (Pirates of Caribbean)
+    set_music_async("3 -SAAACDSD -SDEFSF -SFGESE -SDCCD -.S -SACDSD -SDEFSF -SFGESE -SDCD S -SACDSD -SDFGSG -SG 4 -AbSb -S -A3G4A3D -.S -SDEFSFSGS4A3D -.S -SDFESESFD E -S     -SGG 4-ASASAS -b -.A oS 3-GSGSGS -G 4-.A oS 4-ASASAS -b -.A oS -3GSFSESDS oS   4A oS b 3-bDF4b -4ASASASA3G oS G -2G3bDG F -2C3ADF -ESFSESDS oS", 250);
     
     //Init the battery measuring procedures
     initBattery();

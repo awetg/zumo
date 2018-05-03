@@ -403,6 +403,7 @@ void play_note_async(Note note){
     if (note.note == 'S'){
         //Silence
         Beep16AsyncStart(0);
+        Beep16AsyncStop();
         return;
     }
     

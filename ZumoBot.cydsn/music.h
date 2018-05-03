@@ -48,12 +48,14 @@ To write the track:
 Notes: a A b B C d D e E F g G, where the lower caps one are flat notes. There are no sharps.
 Silence: S
 Octave: Select the octave by using numbers -> 0 = first octave, 1 = second octave, ...
+The octaves start from A, not from C
 Length modifiers: = (semiquaver), - (quaver), default or space (crotchet), o (minim), O (semibreve)
 The length modifier apply to multiple notes or silences, but get reset to default (crotchet) at every space
 Legato: L (only in synchronous playing)
 
 
 Example, Fur Elise: "3 E =EeEeEBDC A =S 2 =CE 3 =A B =S 2 =E 3 =aB C 2 E"
+Example, Pirates of Caribbean: "3 -SAAACDSD -SDEFSF -SFGESE -SDCCD -.S -SACDSD -SDEFSF -SFGESE -SDCD S -SACDSD -SDFGSG -SG 4 -AbSb -S -A3G4A3D -.S -SDEFSFSGS4A3D -.S -SDFESESFD E -S     -SGG 4-ASASAS -b -.A oS 3-GSGSGS -G 4-.A oS 4-ASASAS -b -.A oS -3GSFSESDS oS   4A oS b 3-bDF4b -4ASASASA3G oS G -2G3bDG F -2C3ADF -ESFSESDS oS"
 */
 
 
