@@ -64,7 +64,7 @@ int rread(void);
 
 
 
-#if  1
+#if  0
 
     
 void checkBatteryWithDefaultsAndMusic(){
@@ -325,7 +325,7 @@ int main()
 #endif
 
 
-#if 0
+#if 1
 //ultrasonic sensor//
 int main()
 {
