@@ -35,7 +35,7 @@ void checkBattery(uint32_t batteryMeasurementDelay, float minVoltage){
     const float bits_max = 4095.0f;
     
     //If enough time has passed from the previous measurement
-    if (GetTicks() > lastBatteryTime + batteryMeasurementDelay){
+    if (GetTicks() >= lastBatteryTime + batteryMeasurementDelay){
         //Start the battery measurement
         ADC_Battery_StartConvert();
         if(ADC_Battery_IsEndConversion(ADC_Battery_WAIT_FOR_RESULT)) {   // Wait to get ADC converted value
@@ -45,15 +45,13 @@ void checkBattery(uint32_t batteryMeasurementDelay, float minVoltage){
             //Convert value to Volts
             const float volts = (adcresult / bits_max) * (adc_max_voltage * divider_ratio);
             
-            //Switch the battery sensing light, to signal that the code is correctly sensing the battery
-            //lighton = !lighton;
-            //ShieldLed_Write(lighton?1:0);
-            
             //If the voltage is critical
             if(volts<minVoltage)
             {
                 BatteryLed_Write(1); // Switch critical battery led on
-                Beep(300, 200); //Emit a short beep
+                
+                //Emit a short beep
+                Beep(300, 200);
             }
             
             //Record the last time the battery has been checked

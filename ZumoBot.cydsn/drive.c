@@ -40,15 +40,17 @@ float normalize(float value, float min, float max, float nmin, float nmax){
 void driveFixedWhile(bool (* condition) (DriveState*), DriveState* state, float left, float right, float speed, void (*callback)()){
     driveReset(state); //Discard the turning and PID data
     
+    cmotor_speed(left, right, speed); //Start driving at fixed speed
+    
     while (condition(state)){
-        cmotor_speed(left, right, speed);
-        
+                
         if (callback != NULL)
-            callback();
+            callback(); //One loop has been executed, call the callback if it exists
             
         CyDelay(1);
     }
     
+    //The condition is now true, so stop the driving
     cmotor_speed(0, 0, 0);
 }
 
@@ -58,15 +60,17 @@ void driveWhile(bool (* condition) (DriveState*), DriveState* state, float speed
     driveFetchData(state, 0.0f); //Fetch the initial data (will be used to check the condition the first time)
     
     while (condition(state)){
+        //Get the sensors data and update the motor speed accordingly
         driveFetchData(state, 0.0f);
         driveUpdateSpeed(state, speed, 0.0f, 1.0f, coefficients);
         
         if (callback != NULL)
-            callback();
+            callback(); //One loop has been executed, call the callback if it exists
         
         CyDelay(1);
     }
     
+    //The condition is now true, so stop the driving
     cmotor_speed(0, 0, 0);
 }
 
@@ -74,13 +78,9 @@ void driveWhile(bool (* condition) (DriveState*), DriveState* state, float speed
 bool driveDataIsZero(DriveState* state){
     float totalDarkness = 0;
     
+    //Sums the readings from all the sensors
     for (int i = 0; i < NSENSORS; i++){
-     
-        /*if (i == REF_L2 || i == REF_R2) //Ignore L2 and R2
-            continue;*/
-        
-        totalDarkness += state->current[i] - state->displ;
-        
+        totalDarkness += state->current[i] - state->displ; 
     }
     
     //Small threshold below which we consider the sensors sum value to be zero
@@ -92,6 +92,7 @@ bool driveDataIsZero(DriveState* state){
     
 }
 
+//Reset the state of the drive
 void driveReset(DriveState* state){
     
     state->emergencyTurnSum = 0.0f;
@@ -113,9 +114,11 @@ void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax)
     //Start the reflectance sensors readings
     reflectance_start();
     
+    //Reset the state of the driver
     driveReset(state);
     
-    //Initialize the state to its initial value
+    //Set the minimum and maximum reflectance for each sensor
+    //NOTE: reflectanceMin and reflectanceMax are float arrays of 6 elements, one for each sensor
     state->reflectanceMin = reflectanceMin;
     state->reflectanceMax = reflectanceMax;
     
@@ -152,17 +155,15 @@ void driveFetchData(DriveState* state, float displ){
     //Show the data for debug
     //printf("%5d %5d %5d %5d %5d %5d\r\n", in_data.l3, in_data.l2, in_data.l1, in_data.r1, in_data.r2, in_data.r3);
     
-    
     //Compute the time difference from the last reading
     float dt = time - state->time;
     
+    //Show the time for debug
     //printf("dt: %f\n", dt);
     
     //Set the current measurement, and its derivative and integral
     for (int i = 0; i < NSENSORS; i++){
-        if (dt == 0){
-            state->derivative[i] = 0;
-        } else { 
+        if (dt != 0){
             state->derivative[i] = (data[i] - state->current[i]) / dt;
         }
         state->integral[i] += data[i] * dt;

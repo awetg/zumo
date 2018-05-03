@@ -63,12 +63,15 @@ int rread(void);
 */
 
 
+//Callbacks and conditions for driving loops, used both in race and sumo.
 
+//To be called at every cycle. Performs battery check and plays the previously selected music.
 void checkBatteryWithDefaultsAndMusic(){
     checkBatteryWithDefaults();
     play_music_async();
 }
     
+//Check if the end of track has been reached, and update the count of transversal lines passed.
 bool endOfTrackNotReached(DriveState* state){        
     float r3 = state->current[REF_R3];
     float l3 = state->current[REF_L3];
@@ -77,7 +80,7 @@ bool endOfTrackNotReached(DriveState* state){
 }
 
 
-#if  0
+#if  1
 
     
 int main()
@@ -90,8 +93,10 @@ int main()
     
     printf("\nBoot\n");
     
+    //Slow down one of the two motors if it is normally faster than the other (small corrections not necessary with PID)
     //cmotor_calibrate(0.03f);
 
+    //Musics to choose from:
     
     //9th Beethoven, Fur Elise, Polyphonic chords
     
@@ -103,11 +108,9 @@ int main()
 
     play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
                          "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
-    */
-    
     
     //Imperial march
-    /* 
+    
     play_music("1 A A A A 0-.F1 =C A 0-.F1 =C A", 500);
      
     play_music_with_base("2 -.A =S -.A =S -.A =S -.A =S 1-.F2 =C A 1-.F2 =C oA"
@@ -129,14 +132,8 @@ int main()
     const float Kpm = 1.2;
     
     const float Kp = 1.0;
-    const float Kd = KdpRatio * Kp;// KdpRatio*Kp;
+    const float Kd = 0;//KdpRatio * Kp;// KdpRatio*Kp;
     const float Kpd = 0;// KdpRatio*Kp;
-    
-    //Status of the track
-    bool firstLineReached = false;
-    bool startTriggered = false;
-    bool trackEnded = false;
-    bool paused = false;
     
     //Coefficients to pass to the motors, reflecting the PID parameters symmetrically
     float walkCoefficients[NCOEFF] =
@@ -170,34 +167,42 @@ int main()
     //Black with margin
     float thresholdMax[NSENSORS] = {20000, 20000, 20000, 20000, 20000, 20000};
     
+    //Set the music to play during the race
     set_music_async("2 C D D e F F e D C b b C D .D -C oC", 300);
     
+    //Init the battery measuring procedures
     initBattery();
     
+    //Check the battery in the beginning
+    checkBattery(0, 4.2); //Must be > 4.2V
+    
+    //Play the initial music
     PlayPDM((uint16*)trackmarch, MARCH_SIZE);
     
     //Start the motors and the PID
     driveStart(&dstate, thresholdMin, thresholdMax);
     
+    //Drive until the first transversal line is not reached
     driveWhile(isNotYetOnTransversalLine, &dstate, walkSpeed, walkCoefficients, checkBatteryWithDefaults);
     
+    //Play "Bad Bad Boys" recording
     PlayPDM((uint16*)trackbbb, BBB_SIZE);
 
-    IR_flush(); // clear IR receive buffer
-    IR_wait(); // wait for IR command
+    IR_flush(); // Clear IR receive buffer
+    IR_wait(); // Wait for IR command
     
     transversalReset(); //Reset the count of transversal lines passed (to esclude the initial one)
     
     //Race
     driveWhile(endOfTrackNotReached, &dstate, speed, coefficients, checkBatteryWithDefaultsAndMusic);
     
+    //Stop the race music
     stop_music_async();
     
+    //Play the final music
     play_music_with_base("4 CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB CACBCACBCACBCADB", 
                          "3 S C CS CS C CS C CS CS C CS  A AS AS A AS A AS AS A AS  F FS FS F FS F FS FS F FS  G GS GS G GS G GS GS G GS" , 200);
   
-   
-    CyDelay(10000);
  }   
 #endif
 
@@ -242,7 +247,7 @@ int main()
 }   
 #endif
 
-#if 1
+#if 0
 #include "sumo.h"
 #include "dr.h"
 #include "drive.h"
@@ -329,7 +334,7 @@ int main()
 #endif
 
 
-#if 1
+#if 0
 //ultrasonic sensor//
 int main()
 {
