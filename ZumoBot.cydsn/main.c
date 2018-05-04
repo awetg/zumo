@@ -54,6 +54,12 @@
 #include "pdm/track_bbb.h"
 #include "pdm/trackmarch.h"
 
+#define MAIN_PID 0
+#define ALT_PID  1
+#define SUMO     2
+
+#define ROBOT_MODE MAIN_PID
+
 int rread(void);
 
 /**
@@ -80,9 +86,9 @@ bool endOfTrackNotReached(DriveState* state){
 }
 
 
-#if  1
+//PID main
+#if ROBOT_MODE == MAIN_PID
 
-    
 int main()
 {
     CyGlobalIntEnable; 
@@ -208,7 +214,7 @@ int main()
 
 
 //Awet's PID
-#if 0
+#if ROBOT_MODE == ALT_PID
 #include "dr.h"
 
 int main()
@@ -247,7 +253,8 @@ int main()
 }   
 #endif
 
-#if 0
+//Sumo battle
+#if ROBOT_MODE == SUMO
 #include "sumo.h"
 #include "dr.h"
 #include "drive.h"
@@ -272,6 +279,12 @@ int main()
     
     set_music_async("3 -SAAACDSD -SDEFSF -SFGESE -SDCCD -.S -SACDSD -SDEFSF -SFGESE -SDCD S -SACDSD -SDFGSG -SG 4 -AbSb -S -A3G4A3D -.S -SDEFSFSGS4A3D -.S -SDFESESFD E -S     -SGG 4-ASASAS -b -.A oS 3-GSGSGS -G 4-.A oS 4-ASASAS -b -.A oS -3GSFSESDS oS   4A oS b 3-bDF4b -4ASASASA3G oS G -2G3bDG F -2C3ADF -ESFSESDS oS", 250);
     
+    //Play the initial music
+    PlayPDM((uint16*)trackmarch, MARCH_SIZE);
+    
+    //Play "Bad Bad Boys" recording
+    PlayPDM((uint16*)trackbbb, BBB_SIZE);
+    
     reflectance_start();
     CyDelay(2);
     cmotor_start();
@@ -295,158 +308,6 @@ int main()
     }
 }   
 #endif
-
-
-
-#if 0
-// button
-int main()
-{
-    CyGlobalIntEnable; 
-    UART_1_Start();
-    Systick_Start();
-    
-    printf("\nBoot\n");
-
-    //BatteryLed_Write(1); // Switch led on 
-    BatteryLed_Write(0); // Switch led off 
-    
-    //uint8 button;
-    //button = SW1_Read(); // read SW1 on pSoC board
-    // SW1_Read() returns zero when button is pressed
-    // SW1_Read() returns one when button is not pressed
-    
-    bool led = false;
-    
-    for(;;)
-    {
-        // toggle led state when button is pressed
-        if(SW1_Read() == 0) {
-            led = !led;
-            BatteryLed_Write(led);
-            ShieldLed_Write(led);
-            if(led) printf("Led is ON\n");
-            else printf("Led is OFF\n");
-            Beep(1000, 150);
-            while(SW1_Read() == 0) CyDelay(10); // wait while button is being pressed
-        }        
-    }
- }   
-#endif
-
-
-#if 0
-//ultrasonic sensor//
-int main()
-{
-    CyGlobalIntEnable; 
-    UART_1_Start();
-    Systick_Start();
-    Ultra_Start();                          // Ultra Sonic Start function
-    while(1) {
-        int d = Ultra_GetDistance();
-        //If you want to print out the value  
-        printf("distance = %d\r\n", d);
-        CyDelay(200);
-    }
-}   
-#endif
-
-
-#if 0
-//IR receiver//
-int main()
-{
-    CyGlobalIntEnable; 
-    UART_1_Start();
-    IR_Start();
-    
-    uint32_t IR_val; 
-    
-    printf("\n\nIR test\n");
-    
-    IR_flush(); // clear IR receive buffer
-    printf("Buffer cleared\n");
-    
-    IR_wait(); // wait for IR command
-    printf("IR command received\n");
-    
-    // print received IR pulses and their lengths
-    for(;;)
-    {
-        if(IR_get(&IR_val)) {
-            int l = IR_val & IR_SIGNAL_MASK; // get pulse length
-            int b = 0;
-            if((IR_val & IR_SIGNAL_HIGH) != 0) b = 1; // get pulse state (0/1)
-            printf("%d %d\r\n",b, l);
-            //printf("%d %lu\r\n",IR_val & IR_SIGNAL_HIGH ? 1 : 0, (unsigned long) (IR_val & IR_SIGNAL_MASK));
-        }
-    }    
- }   
-#endif
-
-
-#if 0
-//reflectance//
-int main()
-{
-    struct sensors_ ref;
-    struct sensors_ dig;
-
-    Systick_Start();
-
-    CyGlobalIntEnable; 
-    UART_1_Start();
-  
-    reflectance_start();
-    reflectance_set_threshold(9000, 9000, 11000, 11000, 9000, 9000); // set center sensor threshold to 11000 and others to 9000
-    
-
-    for(;;)
-    {
-        // read raw sensor values
-        reflectance_read(&ref);
-        printf("%5d %5d %5d %5d %5d %5d\r\n", ref.l3, ref.l2, ref.l1, ref.r1, ref.r2, ref.r3);       // print out each period of reflectance sensors
-        
-        
-        // read digital values that are based on threshold. 0 = white, 1 = black
-        // when blackness value is over threshold the sensors reads 1, otherwise 0
-        reflectance_digital(&dig);      //print out 0 or 1 according to results of reflectance period
-        
-        int sumofsensors = dig.l1 + dig.l2 + dig.l3 + dig.r1 + dig.r2 + dig.r3;
-       //if (sumofsensors > 0)
-        //printf("%5d %5d %5d %5d %5d %5d \r\n", dig.l3, dig.l2, dig.l1, dig.r1, dig.r2, dig.r3);        //print out 0 or 1 according to results of reflectance period
-        
-        CyDelay(20);
-    }
-}   
-#endif
-
-
-#if 0
-//motor//
-int main()
-{
-    CyGlobalIntEnable; 
-    UART_1_Start();
-
-    motor_start();              // motor start
-
-    motor_forward(100,2000);     // moving forward
-    motor_turn(200,50,2000);     // turn
-    motor_turn(50,200,2000);     // turn
-    motor_backward(100,2000);    // movinb backward
-       
-    motor_stop();               // motor stop
-    
-    for(;;)
-    {
-
-    }
-}
-#endif
-
-
 
 
 /* [] END OF FILE */
