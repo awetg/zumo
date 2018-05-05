@@ -1,11 +1,11 @@
+
+
+
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * @file    sumo.h
+ * @brief   Robot-sumo header file
+ * @details If you want to use Robot-sumo methods, you need to include sumo.h file. 
  *
  * ========================================
 */
@@ -17,9 +17,12 @@
 #define FORWARD 1
 #define BACKWARD (-1)
 #include "Reflectance.h"
+/**
+* @brief    Robot states
+*/
 enum State {SEARCH, ATTACK, REVERSE, TURN_R, TURN_L};
 void doState( enum State *state, int attackDistance, float speedScale, float *searchTime);
-void check_if_inRing(enum State *state, struct sensors_ *dig);
+void check_if_insideRing(enum State *state, struct sensors_ *dig);
 void checkForEnemy( int attackDistance, enum State *state);
 void turn(int direction, float speedScale);
 void driveSumo(int direction, float speedScale);

@@ -1,28 +1,34 @@
+
+
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * @file    sumo.c
+ * @brief   Basic methods for Robot-sumo fight. For more details, please refer to sumo.h file. 
  *
  * ========================================
 */
+
+
 #include "sumo.h"
 #include "Ultra.h"
 #include "CyLib.h"
 #include "custom_motor.h"
 #include "Systick.h"
-#include <stdlib.h>
-#include <stdio.h>
+#include<stdlib.h>
+
+
+
+
 
 
 
 /*
-@check robbot is inside ring using refelectance sensor
+@brief      Check if robbot is inside ring using refelectance sensor.
+@details    The function check if any of the Refelectance sensors are reading black, and change robots state depending sensor values.
+@param      enum State* state : state of robot
+@param      struct sensors_* dig : to read digital values of Refelectance sensor
 */
-void check_if_inRing(enum State *state, struct sensors_ *dig)
+void check_if_insideRing(enum State *state, struct sensors_ *dig)
 {
     
     reflectance_digital(dig);
@@ -32,17 +38,14 @@ void check_if_inRing(enum State *state, struct sensors_ *dig)
     //check if any sensor is on black
     if(sumofsensors > 0 )
     {
-        printf("N sensors: %d\n", sumofsensors);
         // if leftmost sensor is on black turn right
         if(dig->l3>0)
         {
-            printf("L3 black\n");
             *state = TURN_R;
         }
         // if rightmost sensor is on black turn left
         else if ( dig->r3>0) 
         {
-            printf("R3 black\n");
             *state = TURN_L;
         }
         else if(dig->r1 ==1 || dig->l1 ==1) // if middle sensor is on black go backward
@@ -53,10 +56,20 @@ void check_if_inRing(enum State *state, struct sensors_ *dig)
 }
 
 
-/*
-@execute each state of sumo robot
-*/
 
+
+
+
+
+
+/*
+@brief      Execute each state of sumo robot.
+@details    The method do a switch of robot's state, and do current state of robot.
+@param      enum State* state : to read current state
+@param      int attackDistance : if ultrasonic sensor pick up an object less or equal to this distance, robot will change to attack state
+@param      float speedscale : speed scale of robot's motor, value is 0-1
+@param      float* searchTime : time the robot will spend on each search behaviour
+*/
 void doState( enum State *state, int attackDistance, float speedScale, float *searchTime )
 {   
     switch(*state)
@@ -65,18 +78,15 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
             
             searchEnemy(speedScale, searchTime);
             checkForEnemy(attackDistance, state);
-            ShieldLed_Write(0);
             
         break;
         
         case ATTACK:
-            ShieldLed_Write(1);
-            driveSumo(FORWARD, speedScale); // attack until reach end of ring
+            driveSumo(FORWARD, speedScale); // attack until end of ring is reached
                         
         break;
         
         case TURN_L:
-             ShieldLed_Write(0);
             turn(LEFT, speedScale);
             delayCallback(300); // turn duration
             driveSumo(FORWARD,speedScale);
@@ -87,7 +97,6 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
         break;
         
         case TURN_R:
-            ShieldLed_Write(0);
             turn(RIGHT, speedScale);
             delayCallback(300); // turn duration
             driveSumo(FORWARD,speedScale);
@@ -109,12 +118,20 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
     }
 }
 
+
+
+
+
+
 /*
-@check if object exist inside given range using ultrasonic sensor
+@brief      check if object exist on a given range using ultrasonic sensor.
+@details    The method read ultrasonic sensor to see objects infront of the robot, and change state of robot if object is found with in given range.
+@param      int attackDistance : if ultrasonic sensor pick up an object less or equal to this distance, robot will change to attack state
+@param      enum State* state : to change current state of robot to attack if opponent is found
 */
 void checkForEnemy( int attackDistance, enum State *state)
 {
-    int distance = Ultra_GetDistance(); 
+    int distance = Ultra_GetDistance();
     
     if(distance<attackDistance){
     *state = ATTACK;
@@ -124,17 +141,33 @@ void checkForEnemy( int attackDistance, enum State *state)
     }
 }
 
-/*
-@turn robot to right or left direction
-*/
 
+
+
+
+
+
+
+/*
+@brief     Turn robot to right or left direction.
+@param     int direction : pre defined LEFT or RIGHT values
+@param     float speedscale : speed scale the robot will turn, value is 0-1
+*/
 void turn(int direction, float speedScale)
 {
     cmotor_speed(1 * direction, -1 * direction, speedScale);
 }
 
+
+
+
+
+
+
 /*
-@drive robot in straight line to forward or backward direction
+@brief      Drive robot in straight line to forward or backward direction.
+@param     int direction : pre defined FORWARD or BACKWARD values
+@param      float speedscale : speed scale of robot's motor, value is 0-1
 */
 void driveSumo(int direction, float speedScale)
 {
@@ -142,8 +175,16 @@ void driveSumo(int direction, float speedScale)
 }
 
 
+
+
+
+
 /*
-@Do random search patterns when robot is in search state
+@brief      Do random search patterns when robot is in search state.
+@details    The method do a random search behaviour for random amount of time.
+@details    This search behaviour include go forward, turn left and turn right.
+@param      float speedscale : speed scale of robot's motor, value is 0-1
+@param      float* searchTime : time the robot will spend on each search behaviour
 */
 void searchEnemy(float speedScale, float *searchTime)
 {
@@ -169,21 +210,44 @@ void searchEnemy(float speedScale, float *searchTime)
         }
         
     }
-    
-    
-
 }
+
+
+
+
+
+
+
+
+
 
 //Function pointer that will be called at every cycle during a delay
 void (*delayCallbackFunc)() = NULL;
 
-//Set the function that will be called at every cycle during a delay
+
+
+
+
+/*
+@brief      Set the function that will be called at every cycle during a delay.
+@param      void (*calback)() : a function to be set as delayCallbackFunc, this function will be call on delays
+*/
 void setDelayCallback(void (*callback)()){
     delayCallbackFunc = callback;
 }
 
+
+
+
+
+
 //Delay, but keep on calling a callback function during the delay
 //The function to call is set by setDelayCallback
+/*
+@brief      Calls a function for given milliseconds of time.
+@details    This method is used when a delay is needed, instead of waiting without performing any usefull operaion a previously set function can be called for a given milliseconds.
+@param      int delay : amount of millisecond a function will be called continally
+*/
 void delayCallback(int delay){
     uint32 end = GetTicks() + delay;
     while (GetTicks() < end){

@@ -1,22 +1,26 @@
+
+
+
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * @file    dr.h
+ * @brief   Line follower with PID controller header file
+ * @details A set of mthods for line follower, this methods implement the PID controller. If you want to use drive methods, you need to include dr.h file.
  *
  * ========================================
 */
 
 
-//Awet's personal version of the PID drive
+
+
 
 #ifndef DR_H
 #define DR_H
 #include "Reflectance.h"
-#include<stdbool.h>
+/**
+* @brief    sensor data for PID controller
+* @details  raw value of Reflectance Sensor, time, proportional(error), and rate of of error over time(derivative)
+*/
 typedef struct {
    struct sensors_ s;
    float time, lastproportional, derivative;

@@ -213,6 +213,10 @@ int main()
 #endif
 
 
+
+
+
+
 //Awet's PID
 #if ROBOT_MODE == ALT_PID
 #include "dr.h"
@@ -240,24 +244,30 @@ int main()
     startSensor(&d);
     cmotor_start();
     
+    
     // go to first horizontal line
     gotoStartingLine(speedScale);
+    
     
     // main loop
     for(;;)
     {
         checkBattery(5000, 4.2);
         drive(&d, min, max, kp, kd, speedScale, &hrLinesCount);
+        
         CyDelay(1);
     }
 }   
 #endif
 
+
+
+
+
 //Sumo battle
 #if ROBOT_MODE == SUMO
 #include "sumo.h"
 #include "dr.h"
-#include "drive.h"
 
 int main()
 {
@@ -277,6 +287,8 @@ int main()
     float speedScale = 1;
     float searchTime = GetTicks();
     
+    
+    
     set_music_async("3 -SAAACDSD -SDEFSF -SFGESE -SDCCD -.S -SACDSD -SDEFSF -SFGESE -SDCD S -SACDSD -SDFGSG -SG 4 -AbSb -S -A3G4A3D -.S -SDEFSFSGS4A3D -.S -SDFESESFD E -S     -SGG 4-ASASAS -b -.A oS 3-GSGSGS -G 4-.A oS 4-ASASAS -b -.A oS -3GSFSESDS oS   4A oS b 3-bDF4b -4ASASASA3G oS G -2G3bDG F -2C3ADF -ESFSESDS oS", 250);
     
     //Play the initial music
@@ -285,9 +297,14 @@ int main()
     //Play "Bad Bad Boys" recording
     PlayPDM((uint16*)trackbbb, BBB_SIZE);
     
+    
+    
+    
     reflectance_start();
     CyDelay(2);
     cmotor_start();
+    
+    
     
     // got to ring entrance
     gotoStartingLine(speedScale);
@@ -297,13 +314,18 @@ int main()
     CyDelay(300); 
     
     
+    
+    // setting funtion to be called during delays
+    setDelayCallback(checkBatteryWithDefaultsAndMusic);
+    
+    
     //main loop
     for(;;)
     {
-        setDelayCallback(checkBatteryWithDefaultsAndMusic);
         checkBatteryWithDefaultsAndMusic();
-        check_if_inRing(&state, &dig);
+        check_if_insideRing(&state, &dig);
         doState(&state, attackDistance, speedScale, &searchTime);
+        
         CyDelay(1);
     }
 }   
