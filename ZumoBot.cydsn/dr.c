@@ -1,16 +1,15 @@
- /* ========================================
+ 
+
+
+
+/* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * @file    dr.c
+ * @brief   A set of methods for PID controller implementation. For more details, please refer to dr.h file. 
  *
  * ========================================
 */
 
-//Awet's personal version of the PID drive
 
 #include "dr.h"
 #include "Systick.h"
@@ -19,8 +18,13 @@
 #include "IR.h"
 
 
+
+
+
 /*
-@brief start sensor data
+@brief      Start sensor data
+@details    The method set all the sensorData variables to zero, and start refelectance sensor.
+@param      struc sensorData* d : a collection of variables for PID controller. Refer to dr.h
 */
 void startSensor(sensorData* d)
 {
@@ -38,8 +42,20 @@ void startSensor(sensorData* d)
 }
 
 
+
+
+
+
 /*
-@brief get reflectance data and drive
+@brief      Get reflectance data and drive.
+@details    The method read refelectance sensor data and calculate if robot is deviating from line, finally set speed accordingly.
+@param      struc sensorData* d : a collection of variables for PID controller. Refer to dr.h
+@param      float *min : an array of minmum values for refelectance sensor(white value)
+@param      float *max : an array of maximum values for refelectance sensor(black value)
+@param      float kp : proportional(error) constant
+@param      float kd : derivative constant
+@param      float speedscale : speed scale of robot's motor, value is 0-1
+@param      int *hrLineCount : count of horizontal lines encountered after race started
 */
 void drive(sensorData* d, float *min,float *max, float kp, float kd, float speedScale, int *hrLineCount) 
 {
@@ -55,14 +71,15 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
     r2 = scale(d->s.r2,min[4],max[4]);
     r3 = scale(d->s.r3,min[5],max[5]);
     
+    // check if on horizontal line by checking if r3 and l3 are black
     *hrLineCount = transversalCount(r3, l3);
-        if(*hrLineCount >=2)
+        if(*hrLineCount >=2) // if horizontal lines encountered are more than or equal to 2 stop
         {
             cmotor_speed(0, 0, 0);
             return;
         }
     
-    // calulate robot deviation from line
+    // calulate robot deviation from line ( error), if on line sum will be zero
     proportional = (l1 * -kp) + (r1 * kp) +  (l3 * -kp*100) + (r3 * kp*100);
     
     
@@ -109,8 +126,21 @@ void drive(sensorData* d, float *min,float *max, float kp, float kd, float speed
 }
 
 
+
+
+
+
+
+
+
+
+
+
 /*
-@brief scale sensor data from 0 to 1
+@brief      Scale sensor data from 0 to 1
+@param      float data : single refelectance sensor data
+@param      float min : minmum value for refelectance sensor(white value)
+@param      float max : maximum value for refelectance sensor(black value)
 */
 float scale(float data, float min, float max)
 {
@@ -127,12 +157,19 @@ float scale(float data, float min, float max)
     return (data -min )/(max - min);
 }
 
+
+
+
+
+
+
 /*
-@got to start of race or sumo fight
+@brief      Go to the entrance of line follower race or sumo fight
+@details    The method will drive the robot in straight line to forward direction until both outmost sensors read black, and wait for signal from remote control.
+@param      float speedscale : speed scale of robot's motor, value is 0-1
 */
 void gotoStartingLine( float speedScale)
 {
-     // go to first line
     struct sensors_ dig;
    cmotor_speed(1, 1, speedScale/2);
     
@@ -141,7 +178,8 @@ void gotoStartingLine( float speedScale)
     }while((dig.l3 + dig.r3) < 2);
     
     cmotor_speed(0, 0, 0);
-    IR_wait();
+    
+    IR_wait();  // wait for remote control
 }
 
 /* [] END OF FILE */
