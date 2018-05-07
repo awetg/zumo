@@ -75,18 +75,20 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
     switch(*state)
     {
         case SEARCH:
-            
+            ShieldLed_Write(0); //Turn off attack light
             searchEnemy(speedScale, searchTime);
             checkForEnemy(attackDistance, state);
             
         break;
         
         case ATTACK:
+            ShieldLed_Write(1); //Turn on attack light
             driveSumo(FORWARD, speedScale); // attack until end of ring is reached
                         
         break;
         
         case TURN_L:
+            ShieldLed_Write(0); //Turn off attack light
             turn(LEFT, speedScale);
             delayCallback(300); // turn duration
             driveSumo(FORWARD,speedScale);
@@ -97,6 +99,7 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
         break;
         
         case TURN_R:
+            ShieldLed_Write(0); //Turn off attack light
             turn(RIGHT, speedScale);
             delayCallback(300); // turn duration
             driveSumo(FORWARD,speedScale);
@@ -108,7 +111,7 @@ void doState( enum State *state, int attackDistance, float speedScale, float *se
         
         case REVERSE:
         
-            ShieldLed_Write(0);
+            ShieldLed_Write(0); //Turn off attack light
             driveSumo(BACKWARD, speedScale);
             delayCallback(300); // reverse duration
             checkForEnemy(attackDistance, state);

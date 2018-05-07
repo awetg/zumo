@@ -58,7 +58,7 @@
 #define ALT_PID  1
 #define SUMO     2
 
-#define ROBOT_MODE MAIN_PID
+#define ROBOT_MODE SUMO
 
 int rread(void);
 
