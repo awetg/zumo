@@ -131,6 +131,8 @@ void driveStart(DriveState* state, float* reflectanceMin, float* reflectanceMax)
     
 }
 
+//Fetch data from the reflectance sensors, and put them in range [0.0 + displ, 1.0 0 displ], storing
+//them in state. Store also their integrals and derivatives for each sensor.
 void driveFetchData(DriveState* state, float displ){
     
     struct sensors_ in_data;
@@ -179,6 +181,12 @@ void driveFetchData(DriveState* state, float displ){
 }
 
 
+//Use the data from the sensors hold in state to update the speed of the motors accordingly.
+//state     -> the state of the sensors and motor controller
+//maxSpeed  -> the speed at which the motors are going to run if in a straight line, in range [0.0, 1.0]
+//aim       -> what the sum of sensor data weighted over coefficients should aim to be, usually aim = 0.0
+//correctionSpeed -> the strength of the correction. The difference between the weighted sum and the aim will be multiplied by this value.
+//coefficients -> the coefficients that weight each sensors. They are based on Kp, Kd and Ki for the PID
 void driveUpdateSpeed(DriveState* state, float maxSpeed, float aim, float correctionStrength, float coefficients[NCOEFF]){
     
     //The weightedSum for the PID, meaning the position in the space of the model
@@ -249,7 +257,7 @@ void driveUpdateSpeed(DriveState* state, float maxSpeed, float aim, float correc
         if (state->emergencyTurnSum > 0.0f){
             cmotor_speed(-1, +1, 1.0); //left engine full backwards, right engine full forward, scale speed maximum (1.0)
         } else if (state->emergencyTurnSum < 0.0f) {
-            cmotor_speed(+1, -1, 1.0); //left engine full backwards, right engine full forward, scale speed maximum (1.0)
+            cmotor_speed(+1, -1, 1.0); //left engine full forwards, right engine full backwards, scale speed maximum (1.0)
         }
         
         //Reset the sharp turn memory

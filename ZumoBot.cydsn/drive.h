@@ -73,7 +73,7 @@ void driveWhile(bool (* condition) (DriveState*), DriveState* state, float speed
 bool driveDataIsZero(DriveState* state);
 
 //Fetch data from the reflectance sensors, and put them in range [0.0 + displ, 1.0 0 displ], storing
-//them in state. Store also their integrals and derivatives fro each sensor.
+//them in state. Store also their integrals and derivatives for each sensor.
 void driveFetchData(DriveState* state, float displ);
 
 //Use the data from the sensors hold in state to update the speed of the motors accordingly.
